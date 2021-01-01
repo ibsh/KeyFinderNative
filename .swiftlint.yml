@@ -1,0 +1,25 @@
+disabled_rules: # rule identifiers to exclude from running
+  - trailing_comma
+  - identifier_name
+  - type_name
+  - line_length
+  - file_length
+  - function_body_length
+  - nesting
+  - cyclomatic_complexity
+opt_in_rules: # some rules are only opt-in
+  - control_statement
+  - empty_count
+  - trailing_newline
+  - colon
+  - comma
+included: # paths to include during linting. `--path` is ignored if present.
+  - KeyFinderNative
+  - KeyFinderNativeTests
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
+  - Project/R.generated.swift
+
+large_tuple: # warn user when using 3 values in tuple, give error if there are 4
+   - 3
+   - 4
