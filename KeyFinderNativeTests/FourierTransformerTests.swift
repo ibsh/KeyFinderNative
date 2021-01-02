@@ -9,7 +9,7 @@
 import XCTest
 @testable import KeyFinderNative
 
-class FourierTransformerTests: XCTestCase {
+class FourierTransformTests: XCTestCase {
 
     func testFourierTransform() {
 
@@ -25,11 +25,9 @@ class FourierTransformerTests: XCTestCase {
             sample += sine(index: i, frequency: 13, sampleRate: frameSize, magnitude: 2000)
             sample += sine(index: i, frequency: 20, sampleRate: frameSize, magnitude: 500)
             original[i] = sample
-//            let formatted = String(format: "%.2f", sample)
-//            print("SIN \(i): \(formatted)")
         }
 
-        let transformer = FourierTransformer()
+        let transformer = FourierTransform()
 
         let transformed = transformer.fourier(signal: original)
 

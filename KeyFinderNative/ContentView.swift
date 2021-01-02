@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AVFoundation
 import Combine
 
 struct ContentView: View {
@@ -20,7 +19,7 @@ struct ContentView: View {
 struct Song: Hashable, Codable, Equatable, Identifiable {
     let path: String
     let filename: String
-    let bestMatch: String?
+    let result: String?
     var id: String { return path }
 }
 
@@ -32,7 +31,7 @@ final class SongListModel: ObservableObject {
         }
     }
 
-    fileprivate var matches = [String: Constants.Key]() {
+    fileprivate var results = [String: Result<Constants.Key, Decoder.DecoderError>]() {
         didSet {
             apply()
         }
@@ -41,10 +40,19 @@ final class SongListModel: ObservableObject {
     private func apply() {
         songs = urls.sorted(by: { $0.path < $1.path}).map {
             let path = $0.path
+            let result: String? = {
+                guard let result = results[path] else { return nil }
+                switch result {
+                case .success(let key):
+                    return key.description
+                case .failure(let error):
+                    return error.description
+                }
+            }()
             return Song(
                 path: path,
                 filename: $0.lastPathComponent,
-                bestMatch: matches[path]?.description
+                result: result
             )
         }
     }
@@ -64,14 +72,7 @@ struct SongList: View {
     @ObservedObject var model = SongListModel()
     @State private var activity = Activity.waiting
 
-    private let typeID = "public.file-url"
-
-    private let chromaTransform = ChromaTransform(frameRate: Constants.downsampledFrameRate)
-    private let blackmanWindow = TemporalWindowFactory.window(type: .blackman, N: Constants.fftFrameSize)
-    private let fourierTransformer = FourierTransformer()
-    private let majorProfile = ToneProfile(profile: Constants.majorProfile)
-    private let minorProfile = ToneProfile(profile: Constants.minorProfile)
-    private let silenceProfile = ToneProfile(profile: [Float](repeating: 0, count: Constants.bands))
+    private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
 
@@ -81,13 +82,13 @@ struct SongList: View {
                 ForEach(model.songs) { entry in
                     HStack {
                         Text(entry.filename)
-                        Text(entry.bestMatch ?? String())
+                        Text(entry.result ?? String())
                             .foregroundColor(Color.red)
                     }
                 }
             }
             .disabled(activity != .waiting)
-            .drop(if: activity == .waiting, of: [typeID]) {
+            .drop(if: activity == .waiting, of: [fileURLTypeID]) {
                 drop(items: $0)
             }
             // TODO add onDrop?
@@ -113,17 +114,18 @@ struct SongList: View {
 
         for item in items {
 
-            guard item.registeredTypeIdentifiers.contains(typeID) else {
+            guard item.registeredTypeIdentifiers.contains(fileURLTypeID) else {
                 continue
             }
 
             itemDispatchGroup.enter()
 
-            item.loadItem(forTypeIdentifier: typeID) { urlData, _ in
+            item.loadItem(forTypeIdentifier: fileURLTypeID) { urlData, _ in
                 defer { itemDispatchGroup.leave() }
                 guard let urlData = urlData as? Data else { fatalError("No URL data") }
                 let url = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
-                urls.insert(url)
+                let subURLs = files(inDirectory: url)
+                urls.formUnion(subURLs)
             }
         }
 
@@ -135,11 +137,40 @@ struct SongList: View {
         return true
     }
 
+    // TODO this is crap, I wrote it in no time.
+    private func files(inDirectory url: URL) -> [URL] {
+        let keys: Set<URLResourceKey> = [
+            .isRegularFileKey,
+            .isDirectoryKey,
+        ]
+        var files = [URL]()
+        do {
+            let attributes = try url.resourceValues(forKeys: keys)
+            if attributes.isRegularFile == .some(true) {
+                files.append(url)
+            } else if attributes.isDirectory == .some(true) {
+                guard let enumerator = FileManager.default.enumerator(
+                    at: url,
+                    includingPropertiesForKeys: Array(keys),
+                    options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                ) else {
+                    return []
+                }
+                for case let enumeratedURL as URL in enumerator {
+                    files.append(contentsOf: self.files(inDirectory: enumeratedURL))
+                }
+            }
+        } catch {
+            print(error)
+        }
+        return files
+    }
+
     private func process() {
 
         let urlsToProcess = model
             .urls
-            .filter { model.matches[$0.path] == nil }
+            .filter { model.results[$0.path] == nil }
             .sorted(by: { $0.path < $1.path})
 
         guard urlsToProcess.isEmpty == false else { return }
@@ -150,124 +181,26 @@ struct SongList: View {
 
             DispatchQueue.concurrentPerform(iterations: urlsToProcess.count) { index in
 
-                do {
+                let url = urlsToProcess[index]
 
-                    let url = urlsToProcess[index]
+                let decoder = Decoder()
+                let decodingResult = decoder.decode(url: url)
 
-                    let file = try AVAudioFile(forReading: url)
-
-                    guard let fileBuffer = AVAudioPCMBuffer(
-                        pcmFormat: file.processingFormat,
-                        frameCapacity: AVAudioFrameCount(file.length)
-                    ) else {
-                        print("No file buffer for \(url)")
-                        return
+                switch decodingResult {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        model.results[url.path] = .failure(error)
                     }
-                    try file.read(into: fileBuffer)
+                case .success(let samples):
 
-                    guard let workingFormat = AVAudioFormat(
-                        commonFormat: .pcmFormatFloat32,
-                        sampleRate: Double(Constants.downsampledFrameRate),
-                        channels: 1,
-                        interleaved: false
-                    ) else {
-                        print("No working format for \(url)")
-                        return
-                    }
-
-                    guard let workingBuffer = AVAudioPCMBuffer(
-                        pcmFormat: workingFormat,
-                        frameCapacity: fileBuffer.frameCapacity
-                    ) else {
-                        print("No working buffer for \(url)")
-                        return
-                    }
-
-                    guard let converter = AVAudioConverter(
-                        from: fileBuffer.format,
-                        to: workingBuffer.format
-                    ) else {
-                        print("No converter for \(url)")
-                        return
-                    }
-
-                    let inputBlock: AVAudioConverterInputBlock = { inNumPackets, outStatus in
-                        outStatus.pointee = AVAudioConverterInputStatus.haveData
-                        return fileBuffer
-                    }
-
-                    var conversionError: NSError?
-
-                    converter.convert(to: workingBuffer, error: &conversionError, withInputFrom: inputBlock)
-
-                    if let conversionError = conversionError {
-                        print("ERROR for \(url): \(conversionError)")
-                        return
-                    }
-
-                    guard let channelData = workingBuffer.floatChannelData else {
-                        print("no channel data for \(url)")
-                        return
-                    }
-                    let bufferPointer = UnsafeBufferPointer(
-                        start: channelData[0],
-                        count: Int(workingBuffer.frameLength)
-                    )
-                    let samples = Array(bufferPointer)
-
-                    let fftFrameSize = Constants.fftFrameSize
-                    var windowStart = 0
-                    var chromagram = [[Float]]()
-
-                    while windowStart + fftFrameSize < samples.count {
-                        var localSamples = [Float]()
-                        for index in 0..<fftFrameSize {
-                            localSamples.append(samples[windowStart + index] * blackmanWindow[index])
-                        }
-                        let magnitudes = fourierTransformer.fourier(signal: localSamples)
-                        let chromaVector = chromaTransform.chromaVector(magnitudes: magnitudes)
-                        chromagram.append(chromaVector)
-                        windowStart += Constants.hopSize
-                    }
-
-                    if windowStart < samples.count {
-                        var localSamples = [Float](repeating: 0, count: fftFrameSize)
-                        for offsetIndex in windowStart..<samples.count {
-                            let index = offsetIndex % fftFrameSize
-                            localSamples[index] = samples[offsetIndex] * blackmanWindow[index]
-                        }
-                        let magnitudes = fourierTransformer.fourier(signal: localSamples)
-                        let chromaVector = chromaTransform.chromaVector(magnitudes: magnitudes)
-                        chromagram.append(chromaVector)
-                    }
-
-                    var chromaVector = [Float](repeating: 0, count: Constants.bands)
-                    let hops = Float(chromagram.count)
-                    for hop in chromagram {
-                        for band in 0..<Constants.bands {
-                            chromaVector[band] += hop[band] / hops
-                        }
-                    }
-
-                    var scores = [Float](repeating: 0, count: Constants.semitones * 2)
-                    for i in 0..<Constants.semitones {
-                        scores[i*2] = majorProfile.cosineSimilarity(input: chromaVector, offset: i)
-                        scores[(i*2)+1] = minorProfile.cosineSimilarity(input: chromaVector, offset: i)
-                    }
-                    var bestScore: Float = silenceProfile.cosineSimilarity(input: chromaVector, offset: 0)
-                    var bestMatch = Constants.Key.silence
-                    for (i, score) in scores.enumerated() where score > bestScore {
-                        bestScore = score
-                        bestMatch = Constants.Key.allCases[i]
-                    }
+                    let spectrumAnalyser = SpectrumAnalyser()
+                    let classifier = Toolbox.classifierFactory()
+                    let chromaVector = spectrumAnalyser.chromaVector(samples: samples)
+                    let key = classifier.classify(chromaVector: chromaVector)
 
                     DispatchQueue.main.async {
-                        model.matches[url.path] = bestMatch
+                        model.results[url.path] = .success(key)
                     }
-
-                } catch {
-                    print("ERROR: \(error)")
-                    return
                 }
             }
 

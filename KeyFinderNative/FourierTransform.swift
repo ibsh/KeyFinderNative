@@ -9,31 +9,46 @@
 import Foundation
 import Accelerate
 
-final class FourierTransformer {
+final class FourierTransform {
 
-    func fourier(signal: [Float]) -> [Float] {
+    private let frameSize: Int
+    private let halfN: Int
+    private let fftSetup: vDSP.FFT<DSPSplitComplex>
 
-        let signalLength = vDSP_Length(signal.count)
+    private var forwardInputReal: [Float]
+    private var forwardInputImag: [Float]
+    private var forwardOutputReal: [Float]
+    private var forwardOutputImag: [Float]
+    private var magnitudes: [Float]
 
-        let log2n = vDSP_Length(log2(Float(signalLength)))
-
+    init(frameSize: Int) {
+        self.frameSize = frameSize
+        halfN = frameSize / 2
         guard let fftSetup = vDSP.FFT(
-            log2n: log2n,
+            log2n: vDSP_Length(log2(Float(frameSize))),
             radix: .radix2,
             ofType: DSPSplitComplex.self
         ) else {
-            print("bad things")
-            return []
+            fatalError("Could not build FFT setup")
         }
+        self.fftSetup = fftSetup
 
-        let halfSignalLength = Int(signalLength / 2)
+        forwardInputReal = [Float](repeating: 0, count: halfN)
+        forwardInputImag = [Float](repeating: 0, count: halfN)
+        forwardOutputReal = [Float](repeating: 0, count: halfN)
+        forwardOutputImag = [Float](repeating: 0, count: halfN)
+        magnitudes = [Float](repeating: 0, count: halfN)
+    }
 
-        var forwardInputReal = [Float](repeating: 0, count: halfSignalLength)
-        var forwardInputImag = [Float](repeating: 0, count: halfSignalLength)
-        var forwardOutputReal = [Float](repeating: 0, count: halfSignalLength)
-        var forwardOutputImag = [Float](repeating: 0, count: halfSignalLength)
+    convenience init() {
+        self.init(frameSize: Constants.fftFrameSize)
+    }
 
-        var magnitudes = [Float](repeating: 0, count: halfSignalLength)
+    func fourier(signal: [Float]) -> [Float] {
+
+        guard signal.count == frameSize else {
+            fatalError("Invalid signal length")
+        }
 
         forwardInputReal.withUnsafeMutableBufferPointer { forwardInputRealPtr in
             forwardInputImag.withUnsafeMutableBufferPointer { forwardInputImagPtr in
