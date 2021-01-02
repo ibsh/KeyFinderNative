@@ -73,7 +73,7 @@ struct SongList: View {
     private let minorProfile = ToneProfile(profile: Constants.minorProfile)
     private let silenceProfile = ToneProfile(profile: [Float](repeating: 0, count: Constants.bands))
 
-    private let processingQueue = DispatchQueue(label: "processing")
+    private let processingQueue = DispatchQueue.global(qos: .userInitiated)
 
     var body: some View {
         VStack {
@@ -82,6 +82,7 @@ struct SongList: View {
                     HStack {
                         Text(entry.filename)
                         Text(entry.bestMatch ?? String())
+                            .foregroundColor(Color.red)
                     }
                 }
             }
@@ -136,21 +137,22 @@ struct SongList: View {
 
     private func process() {
 
-        let urlsToProcess = model.urls.filter { model.matches[$0.path] == nil }
+        let urlsToProcess = model
+            .urls
+            .filter { model.matches[$0.path] == nil }
+            .sorted(by: { $0.path < $1.path})
+
         guard urlsToProcess.isEmpty == false else { return }
 
         activity = .processing
 
         processingQueue.async {
 
-            let itemDispatchGroup = DispatchGroup()
-
-            for url in urlsToProcess {
-
-                itemDispatchGroup.enter()
-                defer { itemDispatchGroup.leave() }
+            DispatchQueue.concurrentPerform(iterations: urlsToProcess.count) { index in
 
                 do {
+
+                    let url = urlsToProcess[index]
 
                     let file = try AVAudioFile(forReading: url)
 
@@ -269,7 +271,7 @@ struct SongList: View {
                 }
             }
 
-            itemDispatchGroup.notify(queue: .main) {
+            DispatchQueue.main.async {
                 activity = .waiting
             }
         }
