@@ -39,6 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let contentView = ContentView()
         window.contentView = NSHostingView(rootView: contentView)
         window.makeKeyAndOrderFront(nil)
+        window.styleMask.remove(.closable)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
