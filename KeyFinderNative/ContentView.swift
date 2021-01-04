@@ -102,13 +102,30 @@ struct SongList: View {
                 ForEach(model.songs) { entry in
                     HStack {
                         Text(entry.filename)
-                        Text(entry.title ?? String())
-                            .foregroundColor(.yellow)
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding([.leading, .trailing])
+                            .lineLimit(1)
+                            .foregroundColor(Color(.labelColor))
                         Text(entry.artist ?? String())
-                            .foregroundColor(.orange)
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding([.leading, .trailing])
+                            .lineLimit(1)
+                            .foregroundColor(Color(.labelColor))
+                        Text(entry.title ?? String())
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding([.leading, .trailing])
+                            .lineLimit(1)
+                            .foregroundColor(Color(.labelColor))
                         Text(entry.comment ?? String())
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding([.leading, .trailing])
+                            .lineLimit(1)
+                            .foregroundColor(Color(.labelColor))
                         Text(entry.result ?? String())
-                            .foregroundColor(.red)
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .padding([.leading, .trailing])
+                            .lineLimit(1)
+                            .foregroundColor(.green)
                     }
                 }
             }
@@ -167,7 +184,7 @@ struct SongList: View {
 
     private func readTags(urls: Set<URL>) {
         activity = .readingTags
-        var urls = urls.sorted(by: { $0.path < $1.path})
+        let urls = urls.sorted(by: { $0.path < $1.path })
         processingQueue.async {
             readTags(urls: urls, tags: [:])
         }
@@ -176,12 +193,19 @@ struct SongList: View {
     private func readTags(urls: [URL], tags: [String: Tag]? = nil) {
         guard urls.isEmpty == false else {
             DispatchQueue.main.async {
-                model.tags.merge(tags ?? [:], uniquingKeysWith: { return $1 })
+                model.tags.merge(tags ?? [:], uniquingKeysWith: { $1 })
                 activity = .waiting
             }
             return
         }
         var tags = tags ?? [String: Tag]()
+        if tags.count >= 20 {
+            let mergeTags = tags
+            DispatchQueue.main.async {
+                model.tags.merge(mergeTags, uniquingKeysWith: { $1 })
+            }
+            tags.removeAll()
+        }
         var urls = urls
         let url = urls.removeFirst()
         Toolbox.tagReaderFactory().readTag(url: url) { tag in
