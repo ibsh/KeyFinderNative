@@ -16,9 +16,18 @@ struct ContentView: View {
     }
 }
 
+struct Tag {
+    let artist: String?
+    let title: String?
+    let comment: String?
+}
+
 struct Song: Hashable, Codable, Equatable, Identifiable {
     let path: String
     let filename: String
+    let artist: String?
+    let title: String?
+    let comment: String?
     let result: String?
     var id: String { return path }
 }
@@ -26,6 +35,12 @@ struct Song: Hashable, Codable, Equatable, Identifiable {
 final class SongListModel: ObservableObject {
 
     fileprivate var urls = Set<URL>() {
+        didSet {
+            apply()
+        }
+    }
+
+    fileprivate var tags = [String: Tag]() {
         didSet {
             apply()
         }
@@ -49,9 +64,13 @@ final class SongListModel: ObservableObject {
                     return error.description
                 }
             }()
+            let tag: Tag? = tags[path]
             return Song(
                 path: path,
                 filename: $0.lastPathComponent,
+                artist: tag?.artist,
+                title: tag?.title,
+                comment: tag?.comment,
                 result: result
             )
         }
@@ -65,6 +84,7 @@ struct SongList: View {
     private enum Activity {
         case waiting
         case dropping
+        case readingTags
         case processing
         case tagging
     }
@@ -82,8 +102,13 @@ struct SongList: View {
                 ForEach(model.songs) { entry in
                     HStack {
                         Text(entry.filename)
+                        Text(entry.title ?? String())
+                            .foregroundColor(.yellow)
+                        Text(entry.artist ?? String())
+                            .foregroundColor(.orange)
+                        Text(entry.comment ?? String())
                         Text(entry.result ?? String())
-                            .foregroundColor(Color.red)
+                            .foregroundColor(.red)
                     }
                 }
             }
@@ -99,6 +124,7 @@ struct SongList: View {
                 }
                 .disabled(activity != .waiting)
             }
+            .padding()
         }
     }
 
@@ -130,14 +156,41 @@ struct SongList: View {
         }
 
         itemDispatchGroup.notify(queue: .main) {
-            activity = .waiting
-            model.urls.formUnion(urls)
+            let oldModelURLs = model.urls
+            let newModelURLs = oldModelURLs.union(urls)
+            model.urls = newModelURLs
+            readTags(urls: newModelURLs.subtracting(oldModelURLs))
         }
 
         return true
     }
 
-    // TODO this is crap, I wrote it in no time.
+    private func readTags(urls: Set<URL>) {
+        activity = .readingTags
+        var urls = urls.sorted(by: { $0.path < $1.path})
+        processingQueue.async {
+            readTags(urls: urls, tags: [:])
+        }
+    }
+
+    private func readTags(urls: [URL], tags: [String: Tag]? = nil) {
+        guard urls.isEmpty == false else {
+            DispatchQueue.main.async {
+                model.tags.merge(tags ?? [:], uniquingKeysWith: { return $1 })
+                activity = .waiting
+            }
+            return
+        }
+        var tags = tags ?? [String: Tag]()
+        var urls = urls
+        let url = urls.removeFirst()
+        Toolbox.tagReaderFactory().readTag(url: url) { tag in
+            tags[url.path] = tag
+            readTags(urls: urls, tags: tags)
+        }
+    }
+
+    // TODO this is probably crap, I wrote it in no time.
     private func files(inDirectory url: URL) -> [URL] {
         let keys: Set<URLResourceKey> = [
             .isRegularFileKey,
@@ -186,11 +239,11 @@ struct SongList: View {
                 let decoder = Decoder()
                 let decodingResult = decoder.decode(url: url)
 
+                var result: Result<Constants.Key, Decoder.DecoderError>
+
                 switch decodingResult {
                 case .failure(let error):
-                    DispatchQueue.main.async {
-                        model.results[url.path] = .failure(error)
-                    }
+                    result = .failure(error)
                 case .success(let samples):
 
                     let spectrumAnalyser = SpectrumAnalyser()
@@ -198,9 +251,11 @@ struct SongList: View {
                     let chromaVector = spectrumAnalyser.chromaVector(samples: samples)
                     let key = classifier.classify(chromaVector: chromaVector)
 
-                    DispatchQueue.main.async {
-                        model.results[url.path] = .success(key)
-                    }
+                    result = .success(key)
+                }
+
+                DispatchQueue.main.async {
+                    model.results[url.path] = result
                 }
             }
 

@@ -18,6 +18,7 @@
 		61157F56259D54FE00D953D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61157F55259D54FE00D953D9 /* Preview Assets.xcassets */; };
 		61157F59259D54FE00D953D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61157F57259D54FE00D953D9 /* Main.storyboard */; };
 		61157F65259D54FE00D953D9 /* FourierTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */; };
+		61A0244525A17A2E0082C4C3 /* TagReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A0244425A17A2E0082C4C3 /* TagReader.swift */; };
 		61A6868525A12F7000056181 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868425A12F7000056181 /* Decoder.swift */; };
 		61A6868925A1328E00056181 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868825A1328E00056181 /* Toolbox.swift */; };
 		61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */; };
@@ -51,6 +52,7 @@
 		61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyFinderNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourierTransformerTests.swift; sourceTree = "<group>"; };
 		61157F66259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61A0244425A17A2E0082C4C3 /* TagReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagReader.swift; sourceTree = "<group>"; };
 		61A6868425A12F7000056181 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		61A6868825A1328E00056181 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 		61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumAnalyser.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				61122855259FCEB600681ED5 /* Constants.swift */,
 				6112285D259FDF7400681ED5 /* ToneProfile.swift */,
 				61A6868825A1328E00056181 /* Toolbox.swift */,
+				61A0244425A17A2E0082C4C3 /* TagReader.swift */,
 				61157F52259D54FE00D953D9 /* Assets.xcassets */,
 				61157F57259D54FE00D953D9 /* Main.storyboard */,
 				61157F5A259D54FE00D953D9 /* Info.plist */,
@@ -261,6 +264,7 @@
 				61157F4F259D54FD00D953D9 /* AppDelegate.swift in Sources */,
 				61122852259FCE0100681ED5 /* ChromaTransform.swift in Sources */,
 				61A6868925A1328E00056181 /* Toolbox.swift in Sources */,
+				61A0244525A17A2E0082C4C3 /* TagReader.swift in Sources */,
 				61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */,
 				6112285E259FDF7400681ED5 /* ToneProfile.swift in Sources */,
 				61A6868525A12F7000056181 /* Decoder.swift in Sources */,
