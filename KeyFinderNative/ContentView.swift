@@ -16,18 +16,15 @@ struct ContentView: View {
     }
 }
 
-struct Tag {
-    let artist: String?
-    let title: String?
-    let comment: String?
-}
-
 struct Song: Hashable, Codable, Equatable, Identifiable {
     let path: String
     let filename: String
     let artist: String?
     let title: String?
+    let album: String?
     let comment: String?
+    let grouping: String?
+    let key: String?
     let result: String?
     var id: String { return path }
 }
@@ -70,7 +67,10 @@ final class SongListModel: ObservableObject {
                 filename: $0.lastPathComponent,
                 artist: tag?.artist,
                 title: tag?.title,
+                album: tag?.album,
                 comment: tag?.comment,
+                grouping: tag?.grouping,
+                key: tag?.key,
                 result: result
             )
         }
@@ -99,34 +99,11 @@ struct SongList: View {
     var body: some View {
         VStack {
             List {
-                ForEach(model.songs) { entry in
-                    HStack {
-                        Text(entry.filename)
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .padding([.leading, .trailing])
-                            .lineLimit(1)
-                            .foregroundColor(Color(.labelColor))
-                        Text(entry.artist ?? String())
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .padding([.leading, .trailing])
-                            .lineLimit(1)
-                            .foregroundColor(Color(.labelColor))
-                        Text(entry.title ?? String())
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .padding([.leading, .trailing])
-                            .lineLimit(1)
-                            .foregroundColor(Color(.labelColor))
-                        Text(entry.comment ?? String())
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .padding([.leading, .trailing])
-                            .lineLimit(1)
-                            .foregroundColor(Color(.labelColor))
-                        Text(entry.result ?? String())
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .padding([.leading, .trailing])
-                            .lineLimit(1)
-                            .foregroundColor(.green)
-                    }
+                HeaderRow()
+                    .modifier(RowSpacingStyle())
+                ForEach(model.songs) { song in
+                    SongRow(song: song)
+                        .modifier(RowSpacingStyle())
                 }
             }
             .disabled(activity != .waiting)
@@ -287,35 +264,6 @@ struct SongList: View {
                 activity = .waiting
             }
         }
-    }
-}
-
-struct Droppable: ViewModifier {
-    let condition: Bool
-    let typeIDs: [String]
-    let isTargeted: Binding<Bool>?
-    let perform: ([NSItemProvider]) -> Bool
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if condition {
-            content.onDrop(of: typeIDs, isTargeted: isTargeted, perform: perform)
-        } else {
-            content
-        }
-    }
-}
-
-extension View {
-    public func drop(if condition: Bool, of typeIDs: [String], isTargeted: Binding<Bool>? = nil, perform: @escaping ([NSItemProvider]) -> Bool) -> some View {
-        self.modifier(
-            Droppable(
-                condition: condition,
-                typeIDs: typeIDs,
-                isTargeted: isTargeted,
-                perform: perform
-            )
-        )
     }
 }
 
