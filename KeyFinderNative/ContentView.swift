@@ -185,6 +185,7 @@ struct SongList: View {
         }
         var urls = urls
         let url = urls.removeFirst()
+        // TODO farm this out to N readers, it's still slow in serial.
         Toolbox.tagReaderFactory().readTag(url: url) { tag in
             tags[url.path] = tag
             readTags(urls: urls, tags: tags)
