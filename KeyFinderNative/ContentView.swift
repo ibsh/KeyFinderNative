@@ -110,7 +110,7 @@ struct SongList: View {
             .drop(if: activity == .waiting, of: [fileURLTypeID]) {
                 drop(items: $0)
             }
-            // TODO add onDrop?
+            // TODO add onDrag?
             HStack {
                 Text("Progress text")
                 Button("Find keys") {

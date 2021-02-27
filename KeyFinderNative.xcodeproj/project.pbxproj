@@ -18,6 +18,8 @@
 		61157F56259D54FE00D953D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61157F55259D54FE00D953D9 /* Preview Assets.xcassets */; };
 		61157F59259D54FE00D953D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61157F57259D54FE00D953D9 /* Main.storyboard */; };
 		61157F65259D54FE00D953D9 /* FourierTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */; };
+		614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614B6BBD25C7492B00655B73 /* PreferencesView.swift */; };
+		6185A63A25D9F7C800AC4152 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6185A63925D9F7C800AC4152 /* Preferences.swift */; };
 		61A0244525A17A2E0082C4C3 /* TagReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A0244425A17A2E0082C4C3 /* TagReader.swift */; };
 		61A6868525A12F7000056181 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868425A12F7000056181 /* Decoder.swift */; };
 		61A6868925A1328E00056181 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868825A1328E00056181 /* Toolbox.swift */; };
@@ -54,6 +56,8 @@
 		61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyFinderNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourierTransformerTests.swift; sourceTree = "<group>"; };
 		61157F66259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		614B6BBD25C7492B00655B73 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		6185A63925D9F7C800AC4152 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		61A0244425A17A2E0082C4C3 /* TagReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagReader.swift; sourceTree = "<group>"; };
 		61A6868425A12F7000056181 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		61A6868825A1328E00056181 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 			children = (
 				61157F4E259D54FD00D953D9 /* AppDelegate.swift */,
 				61157F50259D54FD00D953D9 /* ContentView.swift */,
+				614B6BBD25C7492B00655B73 /* PreferencesView.swift */,
+				6185A63925D9F7C800AC4152 /* Preferences.swift */,
 				61DAA14525AA90A200512FE9 /* Rows.swift */,
 				61DAA14925AA90F500512FE9 /* Droppable.swift */,
 				61A6868425A12F7000056181 /* Decoder.swift */,
@@ -266,6 +272,7 @@
 			files = (
 				61A6869325A137B300056181 /* Classifier.swift in Sources */,
 				61122856259FCEB600681ED5 /* Constants.swift in Sources */,
+				6185A63A25D9F7C800AC4152 /* Preferences.swift in Sources */,
 				61157F51259D54FD00D953D9 /* ContentView.swift in Sources */,
 				61DAA14625AA90A200512FE9 /* Rows.swift in Sources */,
 				61157F4F259D54FD00D953D9 /* AppDelegate.swift in Sources */,
@@ -277,6 +284,7 @@
 				6112285E259FDF7400681ED5 /* ToneProfile.swift in Sources */,
 				61A6868525A12F7000056181 /* Decoder.swift in Sources */,
 				6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */,
+				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

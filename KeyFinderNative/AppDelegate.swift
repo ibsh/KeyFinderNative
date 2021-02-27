@@ -13,6 +13,7 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
+    var prefsWindow: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
@@ -44,5 +45,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
+    }
+
+    @IBAction func openPrefsWindow(_ sender: NSMenuItem) {
+        prefsWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 1, height: 1),
+            styleMask: [
+                .titled,
+                .closable,
+                .fullSizeContentView,
+            ],
+            backing: .buffered,
+            defer: false
+        )
+        let prefsView = PreferencesView(window: prefsWindow)
+        prefsWindow.title = "Preferences"
+        prefsWindow.center()
+        prefsWindow.setFrameAutosaveName("Preferences Window")
+        prefsWindow.contentView = NSHostingView(rootView: prefsView)
+        prefsWindow.makeKeyAndOrderFront(nil)
     }
 }
