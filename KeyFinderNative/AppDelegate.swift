@@ -46,6 +46,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
+}
+
+extension AppDelegate {
 
     @IBAction func openPrefsWindow(_ sender: NSMenuItem) {
         prefsWindow = NSWindow(

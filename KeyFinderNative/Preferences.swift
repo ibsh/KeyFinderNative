@@ -8,13 +8,25 @@
 
 import Foundation
 
+protocol InitializableWithOptional {
+    associatedtype T
+    init?(maybeRawValue: T?)
+}
+
+extension InitializableWithOptional where Self: RawRepresentable {
+    init?(maybeRawValue: RawValue?) {
+        guard let rawValue = maybeRawValue else { return nil }
+        self.init(rawValue: rawValue)
+    }
+}
+
 struct Preferences {
 
     var skipFilesWithExistingMetadata: Bool
     var writeAutomatically: Bool
     var skipFilesLongerThanMinutes: Int
 
-    enum WhatToWrite: Int, Identifiable, CaseIterable {
+    enum WhatToWrite: Int, Identifiable, CaseIterable, InitializableWithOptional {
         case keys
         case customCodes
         case both
@@ -24,7 +36,7 @@ struct Preferences {
 
     var whatToWrite: WhatToWrite
 
-    enum HowToWrite: Int, Identifiable {
+    enum HowToWrite: Int, Identifiable, InitializableWithOptional {
         case no
         case prepend
         case append
@@ -66,13 +78,13 @@ extension Preferences {
         skipFilesWithExistingMetadata = (ud.value(forKey: k.skipFilesWithExistingMetadata) as? Bool) ?? d.skipFilesWithExistingMetadata
         skipFilesLongerThanMinutes = (ud.value(forKey: k.skipFilesLongerThanMinutes) as? Int) ?? d.skipFilesLongerThanMinutes
         writeAutomatically = (ud.value(forKey: k.writeAutomatically) as? Bool) ?? d.writeAutomatically
-        whatToWrite = (ud.value(forKey: k.whatToWrite) as? WhatToWrite) ?? d.whatToWrite
-        howToWriteToTitleTag = (ud.value(forKey: k.howToWriteToTitleTag) as? HowToWrite) ?? d.howToWriteToTitleTag
-        howToWriteToArtistTag = (ud.value(forKey: k.howToWriteToArtistTag) as? HowToWrite) ?? d.howToWriteToArtistTag
-        howToWriteToAlbumTag = (ud.value(forKey: k.howToWriteToAlbumTag) as? HowToWrite) ?? d.howToWriteToAlbumTag
-        howToWriteToCommentTag = (ud.value(forKey: k.howToWriteToCommentTag) as? HowToWrite) ?? d.howToWriteToCommentTag
-        howToWriteToGroupingTag = (ud.value(forKey: k.howToWriteToGroupingTag) as? HowToWrite) ?? d.howToWriteToGroupingTag
-        howToWriteToKeyTag = (ud.value(forKey: k.howToWriteToKeyTag) as? HowToWrite) ?? d.howToWriteToKeyTag
+        whatToWrite = WhatToWrite(maybeRawValue: ud.value(forKey: k.whatToWrite) as? Int) ?? d.whatToWrite
+        howToWriteToTitleTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToTitleTag) as? Int) ?? d.howToWriteToTitleTag
+        howToWriteToArtistTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToArtistTag) as? Int) ?? d.howToWriteToArtistTag
+        howToWriteToAlbumTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToAlbumTag) as? Int) ?? d.howToWriteToAlbumTag
+        howToWriteToCommentTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToCommentTag) as? Int) ?? d.howToWriteToCommentTag
+        howToWriteToGroupingTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToGroupingTag) as? Int) ?? d.howToWriteToGroupingTag
+        howToWriteToKeyTag = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToKeyTag) as? Int) ?? d.howToWriteToKeyTag
         tagDelimiter = (ud.value(forKey: k.tagDelimiter) as? String) ?? d.tagDelimiter
         customCodesMajor = (ud.value(forKey: k.customCodesMajor) as? [String]) ?? d.customCodesMajor
         customCodesMinor = (ud.value(forKey: k.customCodesMinor) as? [String]) ?? d.customCodesMinor
@@ -126,20 +138,21 @@ private extension Preferences {
     enum Constants {
 
         enum UserDefaultsKeys {
-            static let skipFilesWithExistingMetadata = "skipFilesWithExistingMetadata"
-            static let skipFilesLongerThanMinutes = "skipFilesLongerThanMinutes"
-            static let writeAutomatically = "writeAutomatically"
-            static let whatToWrite = "whatToWrite"
-            static let howToWriteToTitleTag = "howToWriteToTitleTag"
-            static let howToWriteToArtistTag = "howToWriteToArtistTag"
-            static let howToWriteToAlbumTag = "howToWriteToAlbumTag"
-            static let howToWriteToCommentTag = "howToWriteToCommentTag"
-            static let howToWriteToGroupingTag = "howToWriteToGroupingTag"
-            static let howToWriteToKeyTag = "howToWriteToKeyTag"
-            static let tagDelimiter = "tagDelimiter"
-            static let customCodesMajor = "customCodesMajor"
-            static let customCodesMinor = "customCodesMinor"
-            static let customCodeSilence = "customCodesSilence"
+            private static let prefix = "uk.co.ibrahimshaath.keyfinder."
+            static let skipFilesWithExistingMetadata = "\(prefix)skipFilesWithExistingMetadata"
+            static let skipFilesLongerThanMinutes = "\(prefix)skipFilesLongerThanMinutes"
+            static let writeAutomatically = "\(prefix)writeAutomatically"
+            static let whatToWrite = "\(prefix)whatToWrite"
+            static let howToWriteToTitleTag = "\(prefix)howToWriteToTitleTag"
+            static let howToWriteToArtistTag = "\(prefix)howToWriteToArtistTag"
+            static let howToWriteToAlbumTag = "\(prefix)howToWriteToAlbumTag"
+            static let howToWriteToCommentTag = "\(prefix)howToWriteToCommentTag"
+            static let howToWriteToGroupingTag = "\(prefix)howToWriteToGroupingTag"
+            static let howToWriteToKeyTag = "\(prefix)howToWriteToKeyTag"
+            static let tagDelimiter = "\(prefix)tagDelimiter"
+            static let customCodesMajor = "\(prefix)customCodesMajor"
+            static let customCodesMinor = "\(prefix)customCodesMinor"
+            static let customCodeSilence = "\(prefix)customCodesSilence"
         }
 
         enum Defaults {

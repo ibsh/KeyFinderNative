@@ -17,6 +17,7 @@ struct PreferencesView: View {
 
     var body: some View {
         VStack {
+            Toggle("Write to tags/files automatically during batch jobs", isOn: $preferences.writeAutomatically)
             Toggle("Skip files that already have metadata", isOn: $preferences.skipFilesWithExistingMetadata)
             HStack {
                 Text("Skip files longer than (minutes)")
@@ -24,9 +25,10 @@ struct PreferencesView: View {
                     String(),
                     value: $preferences.skipFilesLongerThanMinutes,
                     formatter: NumberFormatter()
-                ).disableAutocorrection(true)
+                )
+                .disableAutocorrection(true)
+                .frame(width: 48, height: nil, alignment: .trailing)
             }
-            Toggle("Write to tags/files automatically during batch jobs", isOn: $preferences.writeAutomatically)
             Divider()
             HStack {
                 VStack {
@@ -67,10 +69,27 @@ struct PreferencesView: View {
                             Text(value.description).tag(value)
                         }
                     }
-                    TextField(
-                        "Delimiter",
-                        text: $preferences.tagDelimiter
-                    ).disableAutocorrection(true)
+                    HStack {
+                        Text("Delimiter for prepend/append")
+                        TextField(
+                            String(),
+                            text: $preferences.tagDelimiter
+                        )
+                        .disableAutocorrection(true)
+                        .frame(width: 48, height: nil, alignment: .trailing)
+                    }
+                    .disabled(
+                        preferences.howToWriteToTitleTag != .prepend
+                            && preferences.howToWriteToArtistTag != .prepend
+                            && preferences.howToWriteToAlbumTag != .prepend
+                            && preferences.howToWriteToCommentTag != .prepend
+                            && preferences.howToWriteToGroupingTag != .prepend
+                            && preferences.howToWriteToTitleTag != .append
+                            && preferences.howToWriteToArtistTag != .append
+                            && preferences.howToWriteToAlbumTag != .append
+                            && preferences.howToWriteToCommentTag != .append
+                            && preferences.howToWriteToGroupingTag != .append
+                    )
                 }
                 Divider()
                 VStack {
@@ -133,14 +152,14 @@ extension PreferencesView {
     private func keyCode(text: String, binding: Binding<String>) -> some View {
         return HStack {
             Text(text)
-                .frame(width: 32, height: nil, alignment: .leading)
+                .frame(width: 34)
             TextField(
                 String(),
                 text: binding
             )
             .disableAutocorrection(true)
-            .frame(width: 48, height: nil, alignment: .trailing)
-        }.frame(width: nil, height: nil, alignment: .trailing)
+            .frame(width: 48)
+        }
     }
 }
 
