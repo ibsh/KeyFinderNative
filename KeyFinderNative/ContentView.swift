@@ -56,7 +56,7 @@ final class SongListModel: ObservableObject {
                 guard let result = results[path] else { return nil }
                 switch result {
                 case .success(let key):
-                    return key.description
+                    return key.displayString(preferences: Preferences())
                 case .failure(let error):
                     return error.description
                 }

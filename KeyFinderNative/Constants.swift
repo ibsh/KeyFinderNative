@@ -185,35 +185,76 @@ enum Constants {
     }()
 }
 
-extension Constants.Key: CustomStringConvertible {
+extension Constants.Key {
 
-    var description: String {
+    private var defaultString: String {
         switch self {
-        case .AMajor: return "A"
-        case .AMinor: return "Am"
+        case .AMajor:     return "A"
+        case .AMinor:     return "Am"
         case .BFlatMajor: return "Bb"
         case .BFlatMinor: return "Bbm"
-        case .BMajor: return "B"
-        case .BMinor: return "Bm"
-        case .CMajor: return "C"
-        case .CMinor: return "Cm"
+        case .BMajor:     return "B"
+        case .BMinor:     return "Bm"
+        case .CMajor:     return "C"
+        case .CMinor:     return "Cm"
         case .DFlatMajor: return "Db"
         case .DFlatMinor: return "Dbm"
-        case .DMajor: return "D"
-        case .DMinor: return "Dm"
+        case .DMajor:     return "D"
+        case .DMinor:     return "Dm"
         case .EFlatMajor: return "Eb"
         case .EFlatMinor: return "Ebm"
-        case .EMajor: return "E"
-        case .EMinor: return "Em"
-        case .FMajor: return "F"
-        case .FMinor: return "Fm"
+        case .EMajor:     return "E"
+        case .EMinor:     return "Em"
+        case .FMajor:     return "F"
+        case .FMinor:     return "Fm"
         case .GFlatMajor: return "Gb"
         case .GFlatMinor: return "Gbm"
-        case .GMajor: return "G"
-        case .GMinor: return "Gm"
+        case .GMajor:     return "G"
+        case .GMinor:     return "Gm"
         case .AFlatMajor: return "Ab"
         case .AFlatMinor: return "Abm"
-        case .silence: return "..."
+        case .silence:    return String()
+        }
+    }
+
+    private func customCode(preferences: Preferences) -> String {
+        switch self {
+        case .AMajor:     return preferences.customCodesMajor[0]
+        case .AMinor:     return preferences.customCodesMinor[0]
+        case .BFlatMajor: return preferences.customCodesMajor[1]
+        case .BFlatMinor: return preferences.customCodesMinor[1]
+        case .BMajor:     return preferences.customCodesMajor[2]
+        case .BMinor:     return preferences.customCodesMinor[2]
+        case .CMajor:     return preferences.customCodesMajor[3]
+        case .CMinor:     return preferences.customCodesMinor[3]
+        case .DFlatMajor: return preferences.customCodesMajor[4]
+        case .DFlatMinor: return preferences.customCodesMinor[4]
+        case .DMajor:     return preferences.customCodesMajor[5]
+        case .DMinor:     return preferences.customCodesMinor[5]
+        case .EFlatMajor: return preferences.customCodesMajor[6]
+        case .EFlatMinor: return preferences.customCodesMinor[6]
+        case .EMajor:     return preferences.customCodesMajor[7]
+        case .EMinor:     return preferences.customCodesMinor[7]
+        case .FMajor:     return preferences.customCodesMajor[8]
+        case .FMinor:     return preferences.customCodesMinor[8]
+        case .GFlatMajor: return preferences.customCodesMajor[9]
+        case .GFlatMinor: return preferences.customCodesMinor[9]
+        case .GMajor:     return preferences.customCodesMajor[10]
+        case .GMinor:     return preferences.customCodesMinor[10]
+        case .AFlatMajor: return preferences.customCodesMajor[11]
+        case .AFlatMinor: return preferences.customCodesMinor[11]
+        case .silence:    return preferences.customCodeSilence
+        }
+    }
+
+    func displayString(preferences: Preferences) -> String {
+        switch preferences.whatToWrite {
+        case .keys:
+            return defaultString
+        case .customCodes:
+            return customCode(preferences: preferences)
+        case .both:
+            return "\(customCode(preferences: preferences)) \(defaultString)"
         }
     }
 }
