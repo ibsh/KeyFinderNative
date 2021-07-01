@@ -232,6 +232,8 @@ struct SongList: View {
 
         activity = .processing
 
+        let preferences = Preferences()
+
         processingQueue.async {
 
             DispatchQueue.concurrentPerform(iterations: urlsToProcess.count) { index in
@@ -258,6 +260,10 @@ struct SongList: View {
 
                 DispatchQueue.main.async {
                     model.results[url.path] = result
+                }
+
+                if preferences.writeAutomatically {
+                    // TODO write process
                 }
             }
 
