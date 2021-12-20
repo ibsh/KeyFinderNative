@@ -229,7 +229,7 @@ struct SongList: View {
         let urlsToProcess = model
             .urls
             .filter { model.results[$0.path] == nil }
-            .sorted(by: { $0.path < $1.path})
+            .sorted(by: { $0.path < $1.path })
 
         guard urlsToProcess.isEmpty == false else { return }
 
