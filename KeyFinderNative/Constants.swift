@@ -204,6 +204,8 @@ enum Constants {
             static let key = "itlk/com.apple.itunes.initialkey"
         }
     }
+
+    static let parallelTagReaders = 10
 }
 
 extension Constants.Key {

@@ -95,6 +95,7 @@ struct SongList: View {
     private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
+    private let tagReadingSemaphore = DispatchSemaphore(value: Constants.parallelTagReaders)
 
     var body: some View {
         VStack {
@@ -160,35 +161,37 @@ struct SongList: View {
     }
 
     private func readTags(urls: Set<URL>) {
-        activity = .readingTags
-        let urls = urls.sorted(by: { $0.path < $1.path })
-        processingQueue.async {
-            readTags(urls: urls, tags: [:])
-        }
-    }
-
-    private func readTags(urls: [URL], tags: [String: Tag]? = nil) {
         guard urls.isEmpty == false else {
-            DispatchQueue.main.async {
-                model.tags.merge(tags ?? [:], uniquingKeysWith: { $1 })
-                activity = .waiting
-            }
+            activity = .waiting
             return
         }
-        var tags = tags ?? [String: Tag]()
-        if tags.count >= 20 {
-            let mergeTags = tags
-            DispatchQueue.main.async {
-                model.tags.merge(mergeTags, uniquingKeysWith: { $1 })
+
+        activity = .readingTags
+
+        let totalCount = urls.count
+
+        var tagsToMerge = [String: Tag]()
+        var completedCount = 0
+
+        for url in urls.sorted(by: { $0.path < $1.path }) {
+            processingQueue.async {
+                tagReadingSemaphore.wait()
+                Toolbox.tagReaderFactory().readTag(url: url) { tag in
+                    DispatchQueue.main.async {
+                        tagsToMerge[url.path] = tag
+                        completedCount += 1
+                        if tagsToMerge.count >= 20 {
+                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            tagsToMerge.removeAll()
+                        }
+                        if completedCount >= totalCount {
+                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            activity = .waiting
+                        }
+                        tagReadingSemaphore.signal()
+                    }
+                }
             }
-            tags.removeAll()
-        }
-        var urls = urls
-        let url = urls.removeFirst()
-        // TODO farm this out to N readers, it's still slow in serial.
-        Toolbox.tagReaderFactory().readTag(url: url) { tag in
-            tags[url.path] = tag
-            readTags(urls: urls, tags: tags)
         }
     }
 
