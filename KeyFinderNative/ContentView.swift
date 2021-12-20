@@ -52,15 +52,6 @@ final class SongListModel: ObservableObject {
     private func apply() {
         songs = urls.sorted(by: { $0.path < $1.path}).map {
             let path = $0.path
-            let result: String? = {
-                guard let result = results[path] else { return nil }
-                switch result {
-                case .success(let key):
-                    return key.displayString(preferences: Preferences())
-                case .failure(let error):
-                    return error.description
-                }
-            }()
             let tag: Tag? = tags[path]
             return Song(
                 path: path,
@@ -71,8 +62,20 @@ final class SongListModel: ObservableObject {
                 comment: tag?.comment,
                 grouping: tag?.grouping,
                 key: tag?.key,
-                result: result
+                result: result(path: path)
             )
+        }
+    }
+
+    private func result(path: String) -> String? {
+        guard let result = results[path] else {
+            return nil
+        }
+        switch result {
+        case .success(let key):
+            return key.displayString(preferences: Preferences())
+        case .failure(let error):
+            return error.description
         }
     }
 
