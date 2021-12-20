@@ -38,23 +38,23 @@ final class TagReader {
                 for format in asset.availableMetadataFormats {
                     for item in asset.metadata(forFormat: format) {
                         switch item.identifier?.rawValue.lowercased() {
-                        case "id3/tit2",
-                             "itsk/%A9nam":
+                        case Constants.TagIDs.id3.title,
+                             Constants.TagIDs.iTunes.title:
                             title = item.stringValue
-                        case "id3/tpe1",
-                             "itsk/%a9art":
+                        case Constants.TagIDs.id3.artist,
+                             Constants.TagIDs.iTunes.artist:
                             artist = item.stringValue
-                        case "id3/talb",
-                             "itsk/%a9alb":
+                        case Constants.TagIDs.id3.album,
+                             Constants.TagIDs.iTunes.album:
                             album = item.stringValue
-                        case "id3/comm",
-                             "itsk/%a9cmt":
+                        case Constants.TagIDs.id3.comment,
+                             Constants.TagIDs.iTunes.comment:
                             comment = item.stringValue
-                        case "id3/tit1",
-                             "itsk/%a9grp":
+                        case Constants.TagIDs.id3.grouping,
+                             Constants.TagIDs.iTunes.grouping:
                             grouping = item.stringValue
-                        case "id3/tkey",
-                             "itlk/com.apple.itunes.initialkey":
+                        case Constants.TagIDs.id3.key,
+                             Constants.TagIDs.iTunes.key:
                             key = item.stringValue
                         default:
                             break
