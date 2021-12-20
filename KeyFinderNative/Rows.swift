@@ -39,7 +39,14 @@ struct SongRow: View {
             Text(song.comment ?? String()).modifier(DefaultCellStyle())
             Text(song.grouping ?? String()).modifier(DefaultCellStyle())
             Text(song.key ?? String()).modifier(DefaultCellStyle())
-            Text(song.result ?? String()).modifier(ResultCellStyle())
+            switch song.result {
+            case .none:
+                Text(String()).modifier(DefaultCellStyle())
+            case .success(let result):
+                Text(result).modifier(SuccessCellStyle())
+            case .failure(let result):
+                Text(result).modifier(FailureCellStyle())
+            }
         }
         .contextMenu {
             Button(action: {
@@ -95,11 +102,20 @@ struct DefaultCellStyle: ViewModifier {
     }
 }
 
-struct ResultCellStyle: ViewModifier {
+struct SuccessCellStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
             .modifier(BaseCellStyle())
             .foregroundColor(.green)
+    }
+}
+
+struct FailureCellStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+            .modifier(BaseCellStyle())
+            .foregroundColor(.red)
     }
 }

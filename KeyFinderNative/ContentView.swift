@@ -16,7 +16,13 @@ struct ContentView: View {
     }
 }
 
-struct Song: Hashable, Codable, Equatable, Identifiable {
+struct Song: Hashable, Equatable, Identifiable {
+
+    enum Result: Hashable {
+        case success(String)
+        case failure(String)
+    }
+
     let path: String
     let filename: String
     let artist: String?
@@ -25,7 +31,7 @@ struct Song: Hashable, Codable, Equatable, Identifiable {
     let comment: String?
     let grouping: String?
     let key: String?
-    let result: String?
+    let result: Result?
     var id: String { return path }
 }
 
@@ -67,15 +73,15 @@ final class SongListModel: ObservableObject {
         }
     }
 
-    private func result(path: String) -> String? {
+    private func result(path: String) -> Song.Result? {
         guard let result = results[path] else {
             return nil
         }
         switch result {
         case .success(let key):
-            return key.displayString(preferences: Preferences())
+            return .success(key.displayString(preferences: Preferences()))
         case .failure(let error):
-            return error.description
+            return .failure(error.localizedDescription)
         }
     }
 
@@ -255,12 +261,10 @@ struct SongList: View {
                 case .failure(let error):
                     result = .failure(error)
                 case .success(let samples):
-
                     let spectrumAnalyser = SpectrumAnalyser()
                     let classifier = Toolbox.classifierFactory()
                     let chromaVector = spectrumAnalyser.chromaVector(samples: samples)
                     let key = classifier.classify(chromaVector: chromaVector)
-
                     result = .success(key)
                 }
 
