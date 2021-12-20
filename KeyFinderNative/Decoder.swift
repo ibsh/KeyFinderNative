@@ -75,7 +75,11 @@ final class Decoder {
 
             var conversionError: NSError?
 
-            converter.convert(to: workingBuffer, error: &conversionError, withInputFrom: inputBlock)
+            converter.convert(
+                to: workingBuffer,
+                error: &conversionError,
+                withInputFrom: inputBlock
+            )
 
             if let conversionError = conversionError {
                 return .failure(.other(conversionError))
