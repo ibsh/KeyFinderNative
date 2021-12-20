@@ -126,6 +126,7 @@ struct PreferencesView: View {
                         keyCode(text: "Gm", binding: $preferences.customCodesMinor[10])
                         keyCode(text: "Abm", binding: $preferences.customCodesMinor[11])
                     }
+                    // TODO this doesn't look right at all.
                     HStack {
                         Spacer()
                         keyCode(text: "None", binding: $preferences.customCodeSilence)
