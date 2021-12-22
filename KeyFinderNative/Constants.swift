@@ -196,7 +196,7 @@ enum Constants {
         }
 
         enum iTunes {
-            static let title = "itsk/%A9nam"
+            static let title = "itsk/%a9nam"
             static let artist = "itsk/%a9art"
             static let album = "itsk/%a9alb"
             static let comment = "itsk/%a9cmt"
