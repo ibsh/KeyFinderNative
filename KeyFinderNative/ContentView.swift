@@ -11,84 +11,12 @@ import Combine
 
 struct ContentView: View {
     var body: some View {
-        SongList()
+        SongListView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
-struct Song: Hashable, Equatable, Identifiable {
-
-    enum Result: Hashable {
-        case success(String)
-        case failure(String)
-    }
-
-    let path: String
-    let filename: String
-    let artist: String?
-    let title: String?
-    let album: String?
-    let comment: String?
-    let grouping: String?
-    let key: String?
-    let result: Result?
-    var id: String { return path }
-}
-
-final class SongListModel: ObservableObject {
-
-    fileprivate var urls = Set<URL>() {
-        didSet {
-            apply()
-        }
-    }
-
-    fileprivate var tags = [String: Tag]() {
-        didSet {
-            apply()
-        }
-    }
-
-    fileprivate var results = [String: Result<Constants.Key, Decoder.DecoderError>]() {
-        didSet {
-            apply()
-        }
-    }
-
-    private func apply() {
-        songs = urls.sorted(by: { $0.path < $1.path}).map {
-            let path = $0.path
-            let tag: Tag? = tags[path]
-            return Song(
-                path: path,
-                filename: $0.lastPathComponent,
-                artist: tag?.artist,
-                title: tag?.title,
-                album: tag?.album,
-                comment: tag?.comment,
-                grouping: tag?.grouping,
-                key: tag?.key,
-                result: result(path: path)
-            )
-        }
-    }
-
-    private func result(path: String) -> Song.Result? {
-        guard let result = results[path] else {
-            return nil
-        }
-        switch result {
-        case .success(let key):
-            return .success(key.displayString(preferences: Preferences()))
-        case .failure(let error):
-            return .failure(error.localizedDescription)
-        }
-    }
-
-    @Published var songs = [Song]()
-}
-
-struct SongList: View {
+struct SongListView: View {
 
     private enum Activity {
         case waiting
@@ -98,7 +26,7 @@ struct SongList: View {
         case tagging
     }
 
-    @ObservedObject var model = SongListModel()
+    @ObservedObject var model = SongListViewModel()
     @State private var activity = Activity.waiting
 
     private let fileURLTypeID = "public.file-url"
