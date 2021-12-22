@@ -186,6 +186,8 @@ enum Constants {
 
     enum TagIDs {
 
+        static let urlAssetKey = "availableMetadataFormats"
+
         enum id3 {
             static let title = "id3/tit2"
             static let artist = "id3/tpe1"

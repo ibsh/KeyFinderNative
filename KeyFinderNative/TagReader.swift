@@ -22,7 +22,7 @@ final class TagReader {
 
     func readTag(url: URL, completion: @escaping (Tag?) -> Void) {
         let asset = AVURLAsset(url: url)
-        let formatsKey = "availableMetadataFormats"
+        let formatsKey = Constants.TagIDs.urlAssetKey
         asset.loadValuesAsynchronously(forKeys: [formatsKey]) {
             var error: NSError?
             let status = asset.statusOfValue(forKey: formatsKey, error: &error)
