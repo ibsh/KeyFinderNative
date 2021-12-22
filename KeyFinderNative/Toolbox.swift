@@ -12,8 +12,10 @@ import AVFoundation
 enum Toolbox {
 
     private static var _workingFormat: AVAudioFormat?
-
+    private static let workingFormatLock = NSRecursiveLock()
     static func workingFormatFactory() -> AVAudioFormat {
+        workingFormatLock.lock()
+        defer { workingFormatLock.unlock() }
         if let workingFormat = _workingFormat {
             return workingFormat
         }
@@ -30,7 +32,10 @@ enum Toolbox {
     }
 
     private static var _blackmanWindow: [Float]?
+    private static let blackmanWindowLock = NSRecursiveLock()
     static func blackmanWindowFactory() -> [Float] {
+        blackmanWindowLock.lock()
+        defer { blackmanWindowLock.unlock() }
         if let blackmanWindow = _blackmanWindow {
             return blackmanWindow
         }
@@ -47,7 +52,10 @@ enum Toolbox {
     }
 
     private static var _chromaTransform: ChromaTransform?
+    private static let chromaTransformLock = NSRecursiveLock()
     static func chromaTransformFactory() -> ChromaTransform {
+        chromaTransformLock.lock()
+        defer { chromaTransformLock.unlock() }
         if let chromaTransform = _chromaTransform {
             return chromaTransform
         }
@@ -57,7 +65,10 @@ enum Toolbox {
     }
 
     private static var _classifier: Classifier?
+    private static let classifierLock = NSRecursiveLock()
     static func classifierFactory() -> Classifier {
+        classifierLock.lock()
+        defer { classifierLock.unlock() }
         if let classifier = _classifier {
             return classifier
         }
@@ -67,7 +78,10 @@ enum Toolbox {
     }
 
     private static var _tagReader: TagReader?
+    private static let tagReaderLock = NSRecursiveLock()
     static func tagReaderFactory() -> TagReader {
+        tagReaderLock.lock()
+        defer { tagReaderLock.unlock() }
         if let tagReader = _tagReader {
             return tagReader
         }
