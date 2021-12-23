@@ -32,7 +32,7 @@ final class SongListViewModel: ObservableObject {
         songs = urls.sorted(by: { $0.path < $1.path}).map {
             let path = $0.path
             let tag: Tag? = tags[path]
-            return Song(
+            return SongViewModel(
                 path: path,
                 filename: $0.lastPathComponent,
                 artist: tag?.artist,
@@ -46,7 +46,7 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    private func result(path: String) -> Song.Result? {
+    private func result(path: String) -> SongViewModel.Result? {
         guard let result = results[path] else {
             return nil
         }
@@ -58,5 +58,5 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    @Published var songs = [Song]()
+    @Published var songs = [SongViewModel]()
 }

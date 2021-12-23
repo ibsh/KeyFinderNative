@@ -11,12 +11,12 @@ import Combine
 
 struct ContentView: View {
     var body: some View {
-        SongListView()
+        ContentViewBody()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
-struct SongListView: View {
+struct ContentViewBody: View {
 
     private enum Activity {
         case waiting
@@ -26,28 +26,21 @@ struct SongListView: View {
         case tagging
     }
 
-    @ObservedObject var model = SongListViewModel()
     @State private var activity = Activity.waiting
 
     private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
     private let tagReadingSemaphore = DispatchSemaphore(value: Constants.parallelTagReaders)
+    private let songListView = SongListView()
 
     var body: some View {
         VStack {
-            List {
-                HeaderRow()
-                    .modifier(RowSpacingStyle())
-                ForEach(model.songs) { song in
-                    SongRow(song: song)
-                        .modifier(RowSpacingStyle())
+            songListView
+                .disabled(activity != .waiting)
+                .drop(if: activity == .waiting, of: [fileURLTypeID]) {
+                    drop(items: $0)
                 }
-            }
-            .disabled(activity != .waiting)
-            .drop(if: activity == .waiting, of: [fileURLTypeID]) {
-                drop(items: $0)
-            }
             // TODO add onDrag?
             HStack {
                 Text("Progress text")
@@ -88,9 +81,9 @@ struct SongListView: View {
         }
 
         itemDispatchGroup.notify(queue: .main) {
-            let oldModelURLs = model.urls
+            let oldModelURLs = songListView.model.urls
             let newModelURLs = oldModelURLs.union(urls)
-            model.urls = newModelURLs
+            songListView.model.urls = newModelURLs
             readTags(urls: newModelURLs.subtracting(oldModelURLs))
         }
 
@@ -118,11 +111,11 @@ struct SongListView: View {
                         tagsToMerge[url.path] = tag
                         completedCount += 1
                         if tagsToMerge.count >= 20 {
-                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            songListView.model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
                             tagsToMerge.removeAll()
                         }
                         if completedCount >= totalCount {
-                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            songListView.model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
                             activity = .waiting
                         }
                         tagReadingSemaphore.signal()
@@ -163,9 +156,9 @@ struct SongListView: View {
 
     private func process() {
 
-        let urlsToProcess = model
+        let urlsToProcess = songListView.model
             .urls
-            .filter { model.results[$0.path] == nil }
+            .filter { songListView.model.results[$0.path] == nil }
             .sorted(by: { $0.path < $1.path })
 
         guard urlsToProcess.isEmpty == false else { return }
@@ -197,7 +190,7 @@ struct SongListView: View {
                 }
 
                 DispatchQueue.main.async {
-                    model.results[url.path] = result
+                    songListView.model.results[url.path] = result
                 }
 
                 if preferences.writeAutomatically {

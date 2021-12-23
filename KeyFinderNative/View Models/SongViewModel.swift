@@ -1,5 +1,5 @@
 //
-//  Song.swift
+//  SongViewModel.swift
 //  KeyFinderNative
 //
 //  Created by Ibrahim Sha'ath on 22/12/2021.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Song: Hashable, Equatable, Identifiable {
+struct SongViewModel: Hashable, Equatable, Identifiable {
 
     enum Result: Hashable {
         case success(String)

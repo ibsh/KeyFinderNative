@@ -28,7 +28,7 @@ struct HeaderRow: View {
 
 struct SongRow: View {
 
-    @State var song: Song
+    @State var song: SongViewModel
 
     var body: some View {
         HStack(spacing: cellSpacing) {
