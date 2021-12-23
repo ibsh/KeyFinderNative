@@ -13,18 +13,23 @@ struct SongListView: View {
     @ObservedObject var model = SongListViewModel()
 
     var body: some View {
-//        if #available(macOS 11, *) {
-//            ScrollView {
-//                LazyVGrid(
-//                    columns: Array(
-//                        repeating: GridItem(.adaptive(minimum: 80, maximum: 500)),
-//                        count: 8
-//                    ),
-//                    spacing: 4
-//                ) {
-//                    HeaderCells()
-//                    ForEach(model.songs) { song in
-//                        SongCells(song: song)
+//        if #available(macOS 12, *) {
+//            Table(model.songs) {
+//                TableColumn("Filename") { Text($0.filename) }
+//                TableColumn("Title tag") { Text($0.title) }
+//                TableColumn("Artist tag") { Text($0.artist) }
+//                TableColumn("Album tag") { Text($0.album) }
+//                TableColumn("Comment tag") { Text($0.comment) }
+//                TableColumn("Grouping tag") { Text($0.grouping) }
+//                TableColumn("Key tag") { Text($0.key) }
+//                TableColumn("Detected key") {
+//                    switch $0.result {
+//                    case .none:
+//                        Text(String())
+//                    case .success(let result):
+//                        Text(result)
+//                    case .failure(let result):
+//                        Text(result)
 //                    }
 //                }
 //            }
