@@ -13,13 +13,30 @@ struct SongListView: View {
     @ObservedObject var model = SongListViewModel()
 
     var body: some View {
-        List {
-            HeaderRow()
-                .modifier(RowSpacingStyle())
-            ForEach(model.songs) { song in
-                SongRow(song: song)
+//        if #available(macOS 11, *) {
+//            ScrollView {
+//                LazyVGrid(
+//                    columns: Array(
+//                        repeating: GridItem(.adaptive(minimum: 80, maximum: 500)),
+//                        count: 8
+//                    ),
+//                    spacing: 4
+//                ) {
+//                    HeaderCells()
+//                    ForEach(model.songs) { song in
+//                        SongCells(song: song)
+//                    }
+//                }
+//            }
+//        } else {
+            List {
+                HeaderRow()
                     .modifier(RowSpacingStyle())
+                ForEach(model.songs) { song in
+                    SongRow(song: song)
+                        .modifier(RowSpacingStyle())
+                }
             }
-        }
+//        }
     }
 }
