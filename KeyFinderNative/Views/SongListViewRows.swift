@@ -11,46 +11,62 @@ import SwiftUI
 
 private let cellSpacing: CGFloat = 4
 
+struct HeaderCells: View {
+    var body: some View {
+        Text("Filename").modifier(HeaderCellStyle())
+        Text("Title tag").modifier(HeaderCellStyle())
+        Text("Artist tag").modifier(HeaderCellStyle())
+        Text("Album tag").modifier(HeaderCellStyle())
+        Text("Comment tag").modifier(HeaderCellStyle())
+        Text("Grouping tag").modifier(HeaderCellStyle())
+        Text("Key tag").modifier(HeaderCellStyle())
+        Text("Detected key").modifier(HeaderCellStyle())
+    }
+}
+
 struct HeaderRow: View {
     var body: some View {
         HStack(spacing: cellSpacing) {
-            Text("Filename").modifier(HeaderCellStyle())
-            Text("Title tag").modifier(HeaderCellStyle())
-            Text("Artist tag").modifier(HeaderCellStyle())
-            Text("Album tag").modifier(HeaderCellStyle())
-            Text("Comment tag").modifier(HeaderCellStyle())
-            Text("Grouping tag").modifier(HeaderCellStyle())
-            Text("Key tag").modifier(HeaderCellStyle())
-            Text("Detected key").modifier(HeaderCellStyle())
+            HeaderCells()
+        }
+    }
+}
+
+struct SongCells: View {
+
+    @State var song: SongViewModel
+
+    var body: some View {
+        Text(song.filename).modifier(DefaultCellStyle())
+        Text(song.title ?? String()).modifier(DefaultCellStyle())
+        Text(song.artist ?? String()).modifier(DefaultCellStyle())
+        Text(song.album ?? String()).modifier(DefaultCellStyle())
+        Text(song.comment ?? String()).modifier(DefaultCellStyle())
+        Text(song.grouping ?? String()).modifier(DefaultCellStyle())
+        Text(song.key ?? String()).modifier(DefaultCellStyle())
+        switch song.result {
+        case .none:
+            Text(String()).modifier(DefaultCellStyle())
+        case .success(let result):
+            Text(result).modifier(SuccessCellStyle())
+        case .failure(let result):
+            Text(result).modifier(FailureCellStyle())
         }
     }
 }
 
 struct SongRow: View {
 
-    @State var song: SongViewModel
+    let song: SongViewModel
 
     var body: some View {
         HStack(spacing: cellSpacing) {
-            Text(song.filename).modifier(DefaultCellStyle())
-            Text(song.title ?? String()).modifier(DefaultCellStyle())
-            Text(song.artist ?? String()).modifier(DefaultCellStyle())
-            Text(song.album ?? String()).modifier(DefaultCellStyle())
-            Text(song.comment ?? String()).modifier(DefaultCellStyle())
-            Text(song.grouping ?? String()).modifier(DefaultCellStyle())
-            Text(song.key ?? String()).modifier(DefaultCellStyle())
-            switch song.result {
-            case .none:
-                Text(String()).modifier(DefaultCellStyle())
-            case .success(let result):
-                Text(result).modifier(SuccessCellStyle())
-            case .failure(let result):
-                Text(result).modifier(FailureCellStyle())
-            }
+            SongCells(song: song)
         }
         .contextMenu {
+            // TODO Add tagging I guess?
             Button(action: {
-                // change country setting
+                // TODO show in finder.
             }, label: {
                 Text("Show in Finder")
             })
@@ -60,12 +76,14 @@ struct SongRow: View {
 
 struct RowSpacingStyle: ViewModifier {
     func body(content: Content) -> some View {
-        content.listRowInsets(.init(
-            top: cellSpacing / 2,
-            leading: cellSpacing / 2,
-            bottom: cellSpacing / 2,
-            trailing: cellSpacing / 2
-        ))
+        content.listRowInsets(
+            EdgeInsets(
+                top: cellSpacing / 2,
+                leading: cellSpacing / 2,
+                bottom: cellSpacing / 2,
+                trailing: cellSpacing / 2
+            )
+        )
     }
 }
 
