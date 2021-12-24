@@ -272,7 +272,7 @@ extension Constants.Key {
         }
     }
 
-    func displayString(preferences: Preferences) -> String {
+    func resultString(preferences: Preferences) -> String {
         switch preferences.whatToWrite {
         case .keys:
             return defaultString

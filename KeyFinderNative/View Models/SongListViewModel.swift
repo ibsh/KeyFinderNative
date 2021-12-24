@@ -52,7 +52,7 @@ final class SongListViewModel: ObservableObject {
         }
         switch result {
         case .success(let key):
-            return .success(key.displayString(preferences: Preferences()))
+            return .success(key.resultString(preferences: Preferences()))
         case .failure(let error):
             return .failure(error.localizedDescription)
         }

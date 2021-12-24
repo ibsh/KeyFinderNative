@@ -17,7 +17,7 @@ struct PreferencesView: View {
 
     var body: some View {
         VStack {
-            Toggle("Write to tags/files automatically during batch jobs", isOn: $preferences.writeAutomatically)
+            Toggle("Write to tags automatically during batch jobs", isOn: $preferences.writeAutomatically)
             Toggle("Skip files that already have metadata", isOn: $preferences.skipFilesWithExistingMetadata)
             HStack {
                 Text("Skip files longer than (minutes)")

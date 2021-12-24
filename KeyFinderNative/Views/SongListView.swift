@@ -10,7 +10,9 @@ import SwiftUI
 
 struct SongListView: View {
 
-    @ObservedObject var model = SongListViewModel()
+    @ObservedObject var model: SongListViewModel
+    let writeToTags: SongHandler
+    let showInFinder: SongHandler
 
     var body: some View {
 //        if #available(macOS 12, *) {
@@ -38,7 +40,11 @@ struct SongListView: View {
                 HeaderRow()
                     .modifier(RowSpacingStyle())
                 ForEach(model.songs) { song in
-                    SongRow(song: song)
+                    SongRow(
+                        song: song,
+                        writeToTags: writeToTags,
+                        showInFinder: showInFinder
+                    )
                         .modifier(RowSpacingStyle())
                 }
             }

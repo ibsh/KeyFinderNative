@@ -27,16 +27,20 @@ struct ContentViewBody: View {
     }
 
     @State private var activity = Activity.waiting
+    @ObservedObject var model = SongListViewModel()
 
     private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
     private let tagReadingSemaphore = DispatchSemaphore(value: Constants.parallelTagReaders)
-    private let songListView = SongListView()
 
     var body: some View {
         VStack {
-            songListView
+            SongListView(
+                model: self.model,
+                writeToTags: self.writeToTags,
+                showInFinder: self.showInFinder
+            )
                 .disabled(activity != .waiting)
                 .drop(if: activity == .waiting, of: [fileURLTypeID]) {
                     drop(items: $0)
@@ -81,9 +85,9 @@ struct ContentViewBody: View {
         }
 
         itemDispatchGroup.notify(queue: .main) {
-            let oldModelURLs = songListView.model.urls
+            let oldModelURLs = model.urls
             let newModelURLs = oldModelURLs.union(urls)
-            songListView.model.urls = newModelURLs
+            model.urls = newModelURLs
             readTags(urls: newModelURLs.subtracting(oldModelURLs))
         }
 
@@ -111,11 +115,11 @@ struct ContentViewBody: View {
                         tagsToMerge[url.path] = tag
                         completedCount += 1
                         if tagsToMerge.count >= 20 {
-                            songListView.model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
                             tagsToMerge.removeAll()
                         }
                         if completedCount >= totalCount {
-                            songListView.model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
                             activity = .waiting
                         }
                         tagReadingSemaphore.signal()
@@ -156,9 +160,9 @@ struct ContentViewBody: View {
 
     private func process() {
 
-        let urlsToProcess = songListView.model
+        let urlsToProcess = model
             .urls
-            .filter { songListView.model.results[$0.path] == nil }
+            .filter { model.results[$0.path] == nil }
             .sorted(by: { $0.path < $1.path })
 
         guard urlsToProcess.isEmpty == false else { return }
@@ -190,17 +194,71 @@ struct ContentViewBody: View {
                 }
 
                 DispatchQueue.main.async {
-                    songListView.model.results[url.path] = result
-                }
-
-                if preferences.writeAutomatically {
-                    // TODO write process
+                    model.results[url.path] = result
                 }
             }
 
             DispatchQueue.main.async {
                 activity = .waiting
+
+                if preferences.writeAutomatically {
+                    writeToTags(urlsToProcess, preferences: preferences)
+                }
             }
+        }
+    }
+
+    private func writeToTags(_ urls: [URL], preferences: Preferences) {
+
+        guard urls.isEmpty == false else { return }
+
+        activity = .tagging
+
+        processingQueue.async {
+            for url in urls {
+                guard let result = model.results[url.path] else { continue }
+                switch result {
+                case .failure:
+                    continue
+                case .success(let key):
+                    let writer = TagWriter(url: url, key: key)
+                    writer.writeTags(preferences: preferences)
+                }
+            }
+
+            DispatchQueue.main.async {
+                readTags(urls: Set(urls))
+            }
+        }
+    }
+
+    private func writeToTags(_ song: SongViewModel) {
+
+        activity = .tagging
+
+        let url = URL(fileURLWithPath: song.path)
+        guard let result = model.results[url.path] else { return }
+
+        switch result {
+        case .failure:
+            return
+        case .success(let key):
+            processingQueue.async {
+                let writer = TagWriter(url: url, key: key)
+                writer.writeTags(preferences: Preferences())
+                DispatchQueue.main.async {
+                    readTags(urls: Set([url]))
+                }
+            }
+        }
+    }
+
+    private func showInFinder(_ song: SongViewModel) {
+        let url = URL(fileURLWithPath: song.path)
+        if url.hasDirectoryPath {
+            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path)
+        } else {
+            NSWorkspace.shared.activateFileViewerSelecting([url])
         }
     }
 }

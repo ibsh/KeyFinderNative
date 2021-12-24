@@ -21,8 +21,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             contentRect: NSRect(
                 x: 0,
                 y: 0,
-                width: 480,
-                height: 300
+                width: 800,
+                height: 500
             ),
             styleMask: [
                 .titled,

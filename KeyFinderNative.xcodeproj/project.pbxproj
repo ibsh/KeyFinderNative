@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		6109AC562774E6DA0056D433 /* SongViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC542774E6DA0056D433 /* SongViewModel.swift */; };
 		6109AC572774E6DA0056D433 /* SongListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC552774E6DA0056D433 /* SongListViewModel.swift */; };
+		6109AC5F2774E7D10056D433 /* TagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC5C2774E7D00056D433 /* TagWriter.swift */; };
+		6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC5E2774E7D10056D433 /* TagLibWrapper.mm */; };
+		6109AC652774F5FC0056D433 /* TagLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6109AC642774F5FC0056D433 /* TagLib.framework */; };
+		6109AC662774F5FC0056D433 /* TagLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6109AC642774F5FC0056D433 /* TagLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		61122846259ECEDD00681ED5 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61122845259ECEDD00681ED5 /* TestHelpers.swift */; };
 		6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61122849259ECFAB00681ED5 /* FourierTransform.swift */; };
 		61122852259FCE0100681ED5 /* ChromaTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61122851259FCE0100681ED5 /* ChromaTransform.swift */; };
@@ -43,12 +47,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		619E9B1B27739A43004A7233 /* Embed Frameworks */ = {
+		6109AC5B2774E78D0056D433 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6109AC662774F5FC0056D433 /* TagLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,6 +63,10 @@
 /* Begin PBXFileReference section */
 		6109AC542774E6DA0056D433 /* SongViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongViewModel.swift; sourceTree = "<group>"; };
 		6109AC552774E6DA0056D433 /* SongListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongListViewModel.swift; sourceTree = "<group>"; };
+		6109AC5C2774E7D00056D433 /* TagWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWriter.swift; sourceTree = "<group>"; };
+		6109AC5D2774E7D10056D433 /* TagLibWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibWrapper.h; sourceTree = "<group>"; };
+		6109AC5E2774E7D10056D433 /* TagLibWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TagLibWrapper.mm; sourceTree = "<group>"; };
+		6109AC642774F5FC0056D433 /* TagLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TagLib.framework; path = Carthage/Build/Mac/TagLib.framework; sourceTree = "<group>"; };
 		61122845259ECEDD00681ED5 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		61122849259ECFAB00681ED5 /* FourierTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourierTransform.swift; sourceTree = "<group>"; };
 		61122851259FCE0100681ED5 /* ChromaTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaTransform.swift; sourceTree = "<group>"; };
@@ -77,6 +86,7 @@
 		6116B0352773F4250042B65F /* SongListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListView.swift; sourceTree = "<group>"; };
 		614B6BBD25C7492B00655B73 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		6185A63925D9F7C800AC4152 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		619E9B2F2773A9D3004A7233 /* KeyFinderNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KeyFinderNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		61A0244425A17A2E0082C4C3 /* TagReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagReader.swift; sourceTree = "<group>"; };
 		61A6868425A12F7000056181 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		61A6868825A1328E00056181 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
@@ -91,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6109AC652774F5FC0056D433 /* TagLib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,12 +115,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6109AC582774E78D0056D433 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6109AC642774F5FC0056D433 /* TagLib.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		61157F42259D54FD00D953D9 = {
 			isa = PBXGroup;
 			children = (
 				61157F4D259D54FD00D953D9 /* KeyFinderNative */,
 				61157F63259D54FE00D953D9 /* KeyFinderNativeTests */,
 				61157F4C259D54FD00D953D9 /* Products */,
+				6109AC582774E78D0056D433 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				61157F4E259D54FD00D953D9 /* AppDelegate.swift */,
+				619E9B2F2773A9D3004A7233 /* KeyFinderNative-Bridging-Header.h */,
 				6116B0392773F4AD0042B65F /* Logic */,
 				6116B03A2773F57A0042B65F /* View Models */,
 				6116B0372773F4750042B65F /* Views */,
@@ -189,6 +210,9 @@
 				61122851259FCE0100681ED5 /* ChromaTransform.swift */,
 				6112285D259FDF7400681ED5 /* ToneProfile.swift */,
 				61A0244425A17A2E0082C4C3 /* TagReader.swift */,
+				6109AC5C2774E7D00056D433 /* TagWriter.swift */,
+				6109AC5D2774E7D10056D433 /* TagLibWrapper.h */,
+				6109AC5E2774E7D10056D433 /* TagLibWrapper.mm */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -213,7 +237,8 @@
 				61157F47259D54FD00D953D9 /* Sources */,
 				61157F48259D54FD00D953D9 /* Frameworks */,
 				61157F49259D54FD00D953D9 /* Resources */,
-				619E9B1B27739A43004A7233 /* Embed Frameworks */,
+				619E9B2C2773A8DB004A7233 /* ShellScript */,
+				6109AC5B2774E78D0056D433 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -254,6 +279,7 @@
 				TargetAttributes = {
 					61157F4A259D54FD00D953D9 = {
 						CreatedOnToolsVersion = 11.2.1;
+						LastSwiftMigration = 1320;
 					};
 					61157F5F259D54FE00D953D9 = {
 						CreatedOnToolsVersion = 11.2.1;
@@ -318,6 +344,25 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
+		619E9B2C2773A8DB004A7233 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/Mac/TagLib.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PROJECTS)/$(FRAMEWORKS_FOLDER_PATH)/TagLib.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -335,6 +380,7 @@
 				6116B0362773F4250042B65F /* SongListView.swift in Sources */,
 				61A6868925A1328E00056181 /* Toolbox.swift in Sources */,
 				61A0244525A17A2E0082C4C3 /* TagReader.swift in Sources */,
+				6109AC5F2774E7D10056D433 /* TagWriter.swift in Sources */,
 				61DAA14A25AA90F500512FE9 /* Droppable.swift in Sources */,
 				6109AC562774E6DA0056D433 /* SongViewModel.swift in Sources */,
 				61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */,
@@ -342,6 +388,7 @@
 				61A6868525A12F7000056181 /* Decoder.swift in Sources */,
 				6109AC572774E6DA0056D433 /* SongListViewModel.swift in Sources */,
 				6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */,
+				6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */,
 				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +543,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = KeyFinderNative/KeyFinderNative.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -504,6 +552,10 @@
 				DEVELOPMENT_TEAM = UUSBU2VG2P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = KeyFinderNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -514,6 +566,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.ibrahimshaath.KeyFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "KeyFinderNative/KeyFinderNative-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -523,6 +576,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = KeyFinderNative/KeyFinderNative.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -531,6 +585,10 @@
 				DEVELOPMENT_TEAM = UUSBU2VG2P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = KeyFinderNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -541,6 +599,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.ibrahimshaath.KeyFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "KeyFinderNative/KeyFinderNative-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

@@ -55,18 +55,26 @@ struct SongCells: View {
     }
 }
 
+typealias SongHandler = (SongViewModel) -> Void
+
 struct SongRow: View {
 
     let song: SongViewModel
+    let writeToTags: SongHandler
+    let showInFinder: SongHandler
 
     var body: some View {
         HStack(spacing: cellSpacing) {
             SongCells(song: song)
         }
         .contextMenu {
-            // TODO Add tagging I guess?
             Button(action: {
-                // TODO show in finder.
+                writeToTags(self.song)
+            }, label: {
+                Text("Write to tags")
+            })
+            Button(action: {
+                showInFinder(self.song)
             }, label: {
                 Text("Show in Finder")
             })
