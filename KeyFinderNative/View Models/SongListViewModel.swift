@@ -16,7 +16,7 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    var tags = [String: Tag]() {
+    var tags = [String: SongTags]() {
         didSet {
             apply()
         }
@@ -31,16 +31,16 @@ final class SongListViewModel: ObservableObject {
     private func apply() {
         songs = urls.sorted(by: { $0.path < $1.path}).map {
             let path = $0.path
-            let tag: Tag? = tags[path]
+            let songTags: SongTags? = tags[path]
             return SongViewModel(
                 path: path,
                 filename: $0.lastPathComponent,
-                artist: tag?.artist,
-                title: tag?.title,
-                album: tag?.album,
-                comment: tag?.comment,
-                grouping: tag?.grouping,
-                key: tag?.key,
+                artist: songTags?.artist,
+                title: songTags?.title,
+                album: songTags?.album,
+                comment: songTags?.comment,
+                grouping: songTags?.grouping,
+                key: songTags?.key,
                 result: result(path: path)
             )
         }

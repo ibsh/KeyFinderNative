@@ -32,6 +32,13 @@ NS_ASSUME_NONNULL_BEGIN
                      overwriteKey:(BOOL)overwriteKey
                      tagDelimiter:(NSString *)tagDelimiter;
 
+- (NSString *)getTitle;
+- (NSString *)getArtist;
+- (NSString *)getAlbum;
+- (NSString *)getComment;
+- (NSString *)getGrouping;
+- (NSString *)getKey;
+
 @end
 
 NS_ASSUME_NONNULL_END

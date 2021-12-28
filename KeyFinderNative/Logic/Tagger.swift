@@ -1,24 +1,44 @@
 //
-//  TagWriter.swift
+//  Tagger.swift
 //  KeyFinderNative
 //
-//  Created by Ibrahim Sha'ath on 22/12/2021.
+//  Created by Ibrahim Sha'ath on 28/12/2021.
 //  Copyright © 2021 Ibrahim Sha'ath. All rights reserved.
 //
 
 import Foundation
+import AVFoundation
 
-final class TagWriter {
+struct SongTags {
+    let title: String?
+    let artist: String?
+    let album: String?
+    let comment: String?
+    let grouping: String?
+    let key: String?
+}
+
+final class Tagger {
 
     private let url: URL
-    private let key: Constants.Key
 
-    init(url: URL, key: Constants.Key) {
+    init(url: URL) {
         self.url = url
-        self.key = key
     }
 
-    func writeTags(preferences: Preferences) {
+    func readTags() -> SongTags? {
+        let wrapper = TagLibWrapper(url: url)
+        return SongTags(
+            title: wrapper.getTitle(),
+            artist: wrapper.getArtist(),
+            album: wrapper.getAlbum(),
+            comment: wrapper.getComment(),
+            grouping: wrapper.getGrouping(),
+            key: wrapper.getKey()
+        )
+    }
+
+    func writeTags(key: Constants.Key, preferences: Preferences) {
         let wrapper = TagLibWrapper(url: url)
         wrapper.writeTags(
             withResultString: key.resultString(preferences: preferences),

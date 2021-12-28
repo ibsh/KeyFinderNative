@@ -76,17 +76,4 @@ enum Toolbox {
         _classifier = classifier
         return classifier
     }
-
-    private static var _tagReader: TagReader?
-    private static let tagReaderLock = NSRecursiveLock()
-    static func tagReaderFactory() -> TagReader {
-        tagReaderLock.lock()
-        defer { tagReaderLock.unlock() }
-        if let tagReader = _tagReader {
-            return tagReader
-        }
-        let tagReader = TagReader()
-        _tagReader = tagReader
-        return tagReader
-    }
 }

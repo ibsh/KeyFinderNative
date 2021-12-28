@@ -687,8 +687,7 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
 
 @interface TagLibWrapper ()
 
-@property (nonatomic, assign, readwrite) NSURL *url;
-@property (nonatomic, assign, readwrite) AVFileMetadataFactory *factory;
+@property (nonatomic, assign, readwrite) AVFileMetadata *metadata;
 
 @end
 
@@ -696,14 +695,14 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
 
 - (instancetype)initWithURL:(NSURL *)url {
     if (self = [super init]) {
-        self.url = url;
-        self.factory = new AVFileMetadataFactory();
+        AVFileMetadataFactory *factory = new AVFileMetadataFactory();
+        self.metadata = factory->createAVFileMetadata(url.path);
     }
     return self;
 }
 
 - (void)dealloc {
-    delete self.factory;
+    delete self.metadata;
 }
 
 - (void)writeTagsWithResultString:(NSString *)resultString
@@ -722,84 +721,106 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
                      overwriteKey:(BOOL)overwriteKey
                      tagDelimiter:(NSString *)tagDelimiter {
 
-    AVFileMetadata* metadata = self.factory->createAVFileMetadata(self.url.path);
-
-    NSString *oldTitle = metadata->getTitle();
-    NSString *oldArtist = metadata->getArtist();
-    NSString *oldAlbum = metadata->getAlbum();
-    NSString *oldComment = metadata->getComment();
-    NSString *oldGrouping = metadata->getGrouping();
+    NSString *oldTitle = self.metadata->getTitle();
+    NSString *oldArtist = self.metadata->getArtist();
+    NSString *oldAlbum = self.metadata->getAlbum();
+    NSString *oldComment = self.metadata->getComment();
+    NSString *oldGrouping = self.metadata->getGrouping();
 
     // Title
 
     if (prependToTitle) {
-        NSString *newTitle = [oldTitle stringByAppendingFormat:@"%@%@%@", resultString, tagDelimiter, oldTitle];
-        metadata->setTitle(newTitle);
+        NSString *newTitle = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldTitle];
+        self.metadata->setTitle(newTitle);
     }
     if (appendToTitle) {
-        NSString *newTitle = [oldTitle stringByAppendingFormat:@"%@%@%@", oldTitle, tagDelimiter, resultString];
-        metadata->setTitle(newTitle);
+        NSString *newTitle = [NSString stringWithFormat:@"%@%@%@", oldTitle, tagDelimiter, resultString];
+        self.metadata->setTitle(newTitle);
     }
 
     // Artist
 
     if (prependToArtist) {
-        NSString *newArtist = [oldArtist stringByAppendingFormat:@"%@%@%@", resultString, tagDelimiter, oldArtist];
-        metadata->setArtist(newArtist);
+        NSString *newArtist = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldArtist];
+        self.metadata->setArtist(newArtist);
     }
     if (appendToArtist) {
-        NSString *newArtist = [oldArtist stringByAppendingFormat:@"%@%@%@", oldArtist, tagDelimiter, resultString];
-        metadata->setArtist(newArtist);
+        NSString *newArtist = [NSString stringWithFormat:@"%@%@%@", oldArtist, tagDelimiter, resultString];
+        self.metadata->setArtist(newArtist);
     }
 
     // Album
 
     if (prependToAlbum) {
-        NSString *newAlbum = [oldAlbum stringByAppendingFormat:@"%@%@%@", resultString, tagDelimiter, oldAlbum];
-        metadata->setAlbum(newAlbum);
+        NSString *newAlbum = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldAlbum];
+        self.metadata->setAlbum(newAlbum);
     }
     if (appendToAlbum) {
-        NSString *newAlbum = [oldAlbum stringByAppendingFormat:@"%@%@%@", oldAlbum, tagDelimiter, resultString];
-        metadata->setAlbum(newAlbum);
+        NSString *newAlbum = [NSString stringWithFormat:@"%@%@%@", oldAlbum, tagDelimiter, resultString];
+        self.metadata->setAlbum(newAlbum);
     }
 
     // Comment
 
     if (prependToComment) {
-        NSString *newComment = [oldComment stringByAppendingFormat:@"%@%@%@", resultString, tagDelimiter, oldComment];
-        metadata->setAlbum(newComment);
+        NSString *newComment = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldComment];
+        self.metadata->setComment(newComment);
     }
     if (appendToComment) {
-        NSString *newComment = [oldComment stringByAppendingFormat:@"%@%@%@", oldComment, tagDelimiter, resultString];
-        metadata->setAlbum(newComment);
+        NSString *newComment = [NSString stringWithFormat:@"%@%@%@", oldComment, tagDelimiter, resultString];
+        self.metadata->setComment(newComment);
     }
     if (overwriteComment) {
-        metadata->setComment(resultString);
+        self.metadata->setComment(resultString);
     }
 
     // Grouping
 
     if (prependToGrouping) {
-        NSString *newGrouping = [oldGrouping stringByAppendingFormat:@"%@%@%@", resultString, tagDelimiter, oldGrouping];
-        metadata->setAlbum(newGrouping);
+        NSString *newGrouping = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldGrouping];
+        self.metadata->setGrouping(newGrouping);
     }
     if (appendToGrouping) {
-        NSString *newGrouping = [oldGrouping stringByAppendingFormat:@"%@%@%@", oldGrouping, tagDelimiter, resultString];
-        metadata->setAlbum(newGrouping);
+        NSString *newGrouping = [NSString stringWithFormat:@"%@%@%@", oldGrouping, tagDelimiter, resultString];
+        self.metadata->setGrouping(newGrouping);
     }
     if (overwriteGrouping) {
-        metadata->setGrouping(resultString);
+        self.metadata->setGrouping(resultString);
     }
 
     // Key
 
     if (overwriteKey) {
         if (resultString.length > 3) {
-            metadata->setKey([resultString substringToIndex:3]);
+            self.metadata->setKey([resultString substringToIndex:3]);
         } else {
-            metadata->setKey(resultString);
+            self.metadata->setKey(resultString);
         }
     }
+}
+
+- (NSString *)getTitle {
+    return self.metadata->getTitle();
+}
+
+- (NSString *)getArtist {
+    return self.metadata->getArtist();
+}
+
+- (NSString *)getAlbum {
+    return self.metadata->getAlbum();
+}
+
+- (NSString *)getComment {
+    return self.metadata->getComment();
+}
+
+- (NSString *)getGrouping {
+    return self.metadata->getGrouping();
+}
+
+- (NSString *)getKey {
+    return self.metadata->getKey();
 }
 
 @end

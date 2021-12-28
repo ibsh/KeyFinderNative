@@ -104,26 +104,25 @@ struct ContentViewBody: View {
 
         let totalCount = urls.count
 
-        var tagsToMerge = [String: Tag]()
+        var tagsToMerge = [String: SongTags]()
         var completedCount = 0
 
         for url in urls.sorted(by: { $0.path < $1.path }) {
             processingQueue.async {
                 tagReadingSemaphore.wait()
-                Toolbox.tagReaderFactory().readTag(url: url) { tag in
-                    DispatchQueue.main.async {
-                        tagsToMerge[url.path] = tag
-                        completedCount += 1
-                        if tagsToMerge.count >= 20 {
-                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
-                            tagsToMerge.removeAll()
-                        }
-                        if completedCount >= totalCount {
-                            model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
-                            activity = .waiting
-                        }
-                        tagReadingSemaphore.signal()
+                let songTags = Tagger(url: url).readTags()
+                DispatchQueue.main.async {
+                    tagsToMerge[url.path] = songTags
+                    completedCount += 1
+                    if tagsToMerge.count >= 20 {
+                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                        tagsToMerge.removeAll()
                     }
+                    if completedCount >= totalCount {
+                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                        activity = .waiting
+                    }
+                    tagReadingSemaphore.signal()
                 }
             }
         }
@@ -221,8 +220,8 @@ struct ContentViewBody: View {
                 case .failure:
                     continue
                 case .success(let key):
-                    let writer = TagWriter(url: url, key: key)
-                    writer.writeTags(preferences: preferences)
+                    let tagger = Tagger(url: url)
+                    tagger.writeTags(key: key, preferences: preferences)
                 }
             }
 
@@ -244,8 +243,8 @@ struct ContentViewBody: View {
             return
         case .success(let key):
             processingQueue.async {
-                let writer = TagWriter(url: url, key: key)
-                writer.writeTags(preferences: Preferences())
+                let tagger = Tagger(url: url)
+                tagger.writeTags(key: key, preferences: Preferences())
                 DispatchQueue.main.async {
                     readTags(urls: Set([url]))
                 }
