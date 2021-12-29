@@ -12,7 +12,7 @@ import SwiftUI
 
 struct WrappedTableViewController: NSViewControllerRepresentable {
 
-    @Binding var songs: [SongViewModel]
+    @Binding var songs: Set<SongViewModel>
     let writeToTags: SongHandler
     let showInFinder: SongHandler
 

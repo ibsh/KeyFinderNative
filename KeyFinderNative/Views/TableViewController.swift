@@ -97,7 +97,7 @@ class TableViewController: NSViewController {
 
 extension TableViewController {
 
-    func setSongs(_ songs: [SongViewModel]) {
+    func setSongs(_ songs: Set<SongViewModel>) {
         self.songs = TableViewController.sort(
             songs: songs,
             descriptors: scrollingTableView.tableView.sortDescriptors
@@ -200,7 +200,7 @@ extension TableViewController: NSTableViewDelegate {
 
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
         songs = TableViewController.sort(
-            songs: songs,
+            songs: Set(songs),
             descriptors: scrollingTableView.tableView.sortDescriptors
         )
     }
@@ -214,7 +214,7 @@ extension TableViewController: NSTableViewDelegate {
 
 private extension TableViewController {
 
-    static func sort(songs: [SongViewModel], descriptors: [NSSortDescriptor]) -> [SongViewModel] {
+    static func sort(songs: Set<SongViewModel>, descriptors: [NSSortDescriptor]) -> [SongViewModel] {
         return songs.sorted { s1, s2 in
             for descriptor in descriptors {
                 guard let rawValue = descriptor.key,

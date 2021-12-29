@@ -29,21 +29,23 @@ final class SongListViewModel: ObservableObject {
     }
 
     private func apply() {
-        songs = urls.sorted(by: { $0.path < $1.path}).map {
-            let path = $0.path
-            let songTags: SongTags? = tags[path]
-            return SongViewModel(
-                path: path,
-                filename: $0.lastPathComponent,
-                title: songTags?.title,
-                artist: songTags?.artist,
-                album: songTags?.album,
-                comment: songTags?.comment,
-                grouping: songTags?.grouping,
-                key: songTags?.key,
-                result: result(path: path)
-            )
-        }
+        songs = Set(
+            urls.map {
+                let path = $0.path
+                let songTags: SongTags? = tags[path]
+                return SongViewModel(
+                    path: path,
+                    filename: $0.lastPathComponent,
+                    title: songTags?.title,
+                    artist: songTags?.artist,
+                    album: songTags?.album,
+                    comment: songTags?.comment,
+                    grouping: songTags?.grouping,
+                    key: songTags?.key,
+                    result: result(path: path)
+                )
+            }
+        )
     }
 
     private func result(path: String) -> SongViewModel.Result? {
@@ -58,5 +60,5 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    @Published var songs = [SongViewModel]()
+    @Published var songs = Set<SongViewModel>()
 }
