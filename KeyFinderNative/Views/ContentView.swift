@@ -38,8 +38,11 @@ struct ContentViewBody: View {
         VStack {
             SongListView(
                 model: self.model,
-                writeToTags: self.writeToTags,
-                showInFinder: self.showInFinder
+                songHandlers: SongHandlers(
+                    writeToTags: writeToTags,
+                    showInFinder: showInFinder,
+                    deleteRows: deleteRows
+                )
             )
                 .disabled(activity != .waiting)
                 .drop(if: activity == .waiting, of: [fileURLTypeID]) {
@@ -231,34 +234,35 @@ struct ContentViewBody: View {
         }
     }
 
-    private func writeToTags(_ song: SongViewModel) {
+    private func writeToTags(_ songs: [SongViewModel]) {
 
         activity = .tagging
 
-        let url = URL(fileURLWithPath: song.path)
-        guard let result = model.results[url.path] else { return }
-
-        switch result {
-        case .failure:
-            return
-        case .success(let key):
-            processingQueue.async {
-                let tagger = Tagger(url: url)
-                tagger.writeTags(key: key, preferences: Preferences())
-                DispatchQueue.main.async {
-                    readTags(urls: Set([url]))
+        let urls = songs.map { URL(fileURLWithPath: $0.path) }
+        for url in urls {
+            guard let result = model.results[url.path] else { continue }
+            switch result {
+            case .failure:
+                continue
+            case .success(let key):
+                processingQueue.async {
+                    let tagger = Tagger(url: url)
+                    tagger.writeTags(key: key, preferences: Preferences())
+                    DispatchQueue.main.async {
+                        readTags(urls: Set([url]))
+                    }
                 }
             }
         }
     }
 
-    private func showInFinder(_ song: SongViewModel) {
-        let url = URL(fileURLWithPath: song.path)
-        if url.hasDirectoryPath {
-            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path)
-        } else {
-            NSWorkspace.shared.activateFileViewerSelecting([url])
-        }
+    private func showInFinder(_ songs: [SongViewModel]) {
+        let urls = songs.map { URL(fileURLWithPath: $0.path) }
+        NSWorkspace.shared.activateFileViewerSelecting(urls)
+    }
+
+    private func deleteRows(_ songs: [SongViewModel]) {
+        model.songs.subtract(songs)
     }
 }
 

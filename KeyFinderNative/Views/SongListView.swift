@@ -8,18 +8,24 @@
 
 import SwiftUI
 
+typealias SongHandler = ([SongViewModel]) -> Void
+
+struct SongHandlers {
+    let writeToTags: SongHandler
+    let showInFinder: SongHandler
+    let deleteRows: SongHandler
+}
+
 struct SongListView: View {
 
     @ObservedObject var model: SongListViewModel
-    let writeToTags: SongHandler
-    let showInFinder: SongHandler
+    let songHandlers: SongHandlers
 
     var body: some View {
 
         WrappedTableViewController(
             songs: $model.songs,
-            writeToTags: writeToTags,
-            showInFinder: showInFinder
+            songHandlers: songHandlers
         )
     }
 }

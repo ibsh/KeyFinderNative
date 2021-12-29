@@ -37,5 +37,3 @@ struct SongViewModel: Hashable, Equatable, Identifiable {
 
     var id: String { return path }
 }
-
-typealias SongHandler = (SongViewModel) -> Void

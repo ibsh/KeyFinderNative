@@ -13,15 +13,13 @@ import SwiftUI
 struct WrappedTableViewController: NSViewControllerRepresentable {
 
     @Binding var songs: Set<SongViewModel>
-    let writeToTags: SongHandler
-    let showInFinder: SongHandler
+    let songHandlers: SongHandlers
 
     func makeNSViewController(
         context: NSViewControllerRepresentableContext<WrappedTableViewController>
     ) -> TableViewController {
         return TableViewController(
-            writeToTags: writeToTags,
-            showInFinder: showInFinder
+            songHandlers: songHandlers
         )
     }
 

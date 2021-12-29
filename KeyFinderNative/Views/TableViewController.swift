@@ -10,17 +10,20 @@ import Cocoa
 
 class TableViewController: NSViewController {
 
-    private let writeToTags: SongHandler
-    private let showInFinder: SongHandler
+    private let songHandlers: SongHandlers
 
     private let scrollingTableView = ScrollingTableView()
+
+    private var tableView: NSTableView {
+        return scrollingTableView.tableView
+    }
+
     private let columns: [NSTableColumn]
 
     private let measuringView = NSTextView()
 
     private var songs: [SongViewModel] = [SongViewModel]() {
         didSet {
-            let tableView = scrollingTableView.tableView
             NSLog("reloading table view")
             tableView.reloadData()
         }
@@ -29,11 +32,9 @@ class TableViewController: NSViewController {
     // MARK: - Init
 
     init(
-        writeToTags: @escaping SongHandler,
-        showInFinder: @escaping SongHandler
+        songHandlers: SongHandlers
     ) {
-        self.writeToTags = writeToTags
-        self.showInFinder = showInFinder
+        self.songHandlers = songHandlers
         columns = Constants.ColumnID.allCases.map { columnID in
             let column = NSTableColumn(
                 identifier: NSUserInterfaceItemIdentifier(
@@ -50,10 +51,10 @@ class TableViewController: NSViewController {
         }
         measuringView.textContainer?.maximumNumberOfLines = 1
         super.init(nibName: nil, bundle: nil)
-        scrollingTableView.tableView.dataSource = self
-        scrollingTableView.tableView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
         columns.forEach {
-            scrollingTableView.tableView.addTableColumn($0)
+            tableView.addTableColumn($0)
         }
     }
 
@@ -73,12 +74,41 @@ class TableViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        scrollingTableView.tableView.sortDescriptors = [
+        tableView.sortDescriptors = [
             NSSortDescriptor(
                 key: Constants.ColumnID.path.rawValue,
                 ascending: true
             )
         ]
+        tableView.gridStyleMask = [
+            .solidHorizontalGridLineMask,
+            .solidVerticalGridLineMask,
+        ]
+        tableView.allowsMultipleSelection = true
+
+        let menu = NSMenu()
+        menu.addItem(
+            NSMenuItem(
+                title: "Write detected key to tags",
+                action: #selector(writeToTags(_:)),
+                keyEquivalent: ""
+            )
+        )
+        menu.addItem(
+            NSMenuItem(
+                title: "Show in Finder",
+                action: #selector(showInFinder(_:)),
+                keyEquivalent: ""
+            )
+        )
+        menu.addItem(
+            NSMenuItem(
+                title: "Delete selected rows",
+                action: #selector(deleteSelectedRows(_:)),
+                keyEquivalent: NSString(format: "%c", NSBackspaceCharacter) as String
+            )
+        )
+        tableView.menu = menu
     }
 }
 
@@ -89,7 +119,7 @@ extension TableViewController {
     func setSongs(_ songs: Set<SongViewModel>) {
         self.songs = TableViewController.sort(
             songs: songs,
-            descriptors: scrollingTableView.tableView.sortDescriptors
+            descriptors: tableView.sortDescriptors
         )
     }
 }
@@ -166,8 +196,40 @@ extension TableViewController: NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
         songs = TableViewController.sort(
             songs: Set(songs),
-            descriptors: scrollingTableView.tableView.sortDescriptors
+            descriptors: tableView.sortDescriptors
         )
+    }
+}
+
+// MARK: - Row actions
+
+private extension TableViewController {
+
+    private var selectedIndices: IndexSet {
+        var indices = tableView.selectedRowIndexes
+        if indices.isEmpty {
+            indices = IndexSet(integer: tableView.clickedRow)
+        }
+        return indices
+    }
+
+    private var selectedSongs: [SongViewModel] {
+        var songs = [SongViewModel]()
+        selectedIndices.forEach { songs.append(self.songs[$0]) }
+        return songs
+    }
+
+    @objc func writeToTags(_ sender: AnyObject) {
+        songHandlers.writeToTags(selectedSongs)
+    }
+
+    @objc func showInFinder(_ sender: AnyObject) {
+        songHandlers.showInFinder(selectedSongs)
+    }
+
+    @objc func deleteSelectedRows(_ sender: AnyObject) {
+        songHandlers.deleteRows(selectedSongs)
+        tableView.deselectAll(nil)
     }
 }
 
@@ -205,6 +267,8 @@ private extension TableViewController {
         }
     }
 }
+
+// MARK: - Text value derivation
 
 private extension SongViewModel {
 
