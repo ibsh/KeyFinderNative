@@ -35,8 +35,8 @@ final class SongListViewModel: ObservableObject {
             return SongViewModel(
                 path: path,
                 filename: $0.lastPathComponent,
-                artist: songTags?.artist,
                 title: songTags?.title,
+                artist: songTags?.artist,
                 album: songTags?.album,
                 comment: songTags?.comment,
                 grouping: songTags?.grouping,

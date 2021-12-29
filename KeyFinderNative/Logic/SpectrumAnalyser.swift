@@ -10,10 +10,12 @@ import Foundation
 
 final class SpectrumAnalyser {
 
+    private let wrappedFourierTransform = Toolbox.fourierTransform()
+    private let chromaTransform = Toolbox.chromaTransform()
+    private let blackmanWindow = Toolbox.blackmanWindow()
+
     func chromaVector(samples: [Float]) -> [Float] {
 
-        let chromaTransform = Toolbox.chromaTransformFactory()
-        let blackmanWindow = Toolbox.blackmanWindowFactory()
         let fftFrameSize = Constants.fftFrameSize
         var windowStart = 0
         var chromagram = [[Float]]()
@@ -35,8 +37,7 @@ final class SpectrumAnalyser {
                     return localSamples
                 }
             }()
-            let fourierTransform = FourierTransform()
-            let magnitudes = fourierTransform.fourier(signal: localSamples)
+            let magnitudes = wrappedFourierTransform.wrapped.resource.fourier(signal: localSamples)
             let chromaVector = chromaTransform.chromaVector(magnitudes: magnitudes)
             chromagram.append(chromaVector)
             windowStart += Constants.hopSize

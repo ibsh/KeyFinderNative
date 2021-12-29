@@ -13,16 +13,29 @@ struct SongViewModel: Hashable, Equatable, Identifiable {
     enum Result: Hashable {
         case success(String)
         case failure(String)
+
+        fileprivate var string: String {
+            switch self {
+            case .success(let string): return string
+            case .failure(let string): return string
+            }
+        }
     }
 
     let path: String
+
     let filename: String
-    let artist: String?
     let title: String?
+    let artist: String?
     let album: String?
     let comment: String?
     let grouping: String?
     let key: String?
     let result: Result?
+
+    var resultString: String? { return result?.string }
+
     var id: String { return path }
 }
+
+typealias SongHandler = (SongViewModel) -> Void

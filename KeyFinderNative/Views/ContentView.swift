@@ -45,7 +45,6 @@ struct ContentViewBody: View {
                 .drop(if: activity == .waiting, of: [fileURLTypeID]) {
                     drop(items: $0)
                 }
-            // TODO add onDrag?
             HStack {
                 Text("Progress text")
                 Button("Find keys") {
@@ -169,6 +168,7 @@ struct ContentViewBody: View {
         activity = .processing
 
         let preferences = Preferences()
+        let workingFormat = Toolbox.workingFormat()
 
         processingQueue.async {
 
@@ -176,17 +176,17 @@ struct ContentViewBody: View {
 
                 let url = urlsToProcess[index]
 
-                let decoder = Decoder()
+                let decoder = Decoder(workingFormat: workingFormat)
                 let decodingResult = decoder.decode(url: url)
 
-                var result: Result<Constants.Key, Decoder.DecoderError>
+                let result: Result<Constants.Key, Decoder.DecoderError>
 
                 switch decodingResult {
                 case .failure(let error):
                     result = .failure(error)
                 case .success(let samples):
                     let spectrumAnalyser = SpectrumAnalyser()
-                    let classifier = Toolbox.classifierFactory()
+                    let classifier = Toolbox.classifier()
                     let chromaVector = spectrumAnalyser.chromaVector(samples: samples)
                     let key = classifier.classify(chromaVector: chromaVector)
                     result = .success(key)

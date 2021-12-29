@@ -27,7 +27,7 @@ class FourierTransformTests: XCTestCase {
             original[i] = sample
         }
 
-        let transformer = FourierTransform()
+        let transformer = FourierTransform(frameSize: frameSize)
 
         let transformed = transformer.fourier(signal: original)
 

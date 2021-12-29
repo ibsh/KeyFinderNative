@@ -35,10 +35,6 @@ final class Decoder {
         self.workingFormat = workingFormat
     }
 
-    convenience init() {
-        self.init(workingFormat: Toolbox.workingFormatFactory())
-    }
-
     func decode(url: URL) -> Result<[Float], DecoderError> {
 
         do {

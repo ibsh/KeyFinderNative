@@ -27,11 +27,16 @@
 		614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614B6BBD25C7492B00655B73 /* PreferencesView.swift */; };
 		6185A63A25D9F7C800AC4152 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6185A63925D9F7C800AC4152 /* Preferences.swift */; };
 		61A0244525A17A2E0082C4C3 /* Tagger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A0244425A17A2E0082C4C3 /* Tagger.swift */; };
+		61A21213277B88B100395680 /* ScrollingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21212277B88B100395680 /* ScrollingTableView.swift */; };
+		61A21215277B897D00395680 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21214277B897D00395680 /* TableViewController.swift */; };
+		61A21217277B8D3800395680 /* WrappedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21216277B8D3800395680 /* WrappedTableViewController.swift */; };
+		61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21218277BE42D00395680 /* EnumElementIndex.swift */; };
+		61A2121C277CFCFF00395680 /* ResourcePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2121B277CFCFF00395680 /* ResourcePool.swift */; };
+		61A2121E277CFE5500395680 /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2121D277CFE5500395680 /* Singleton.swift */; };
 		61A6868525A12F7000056181 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868425A12F7000056181 /* Decoder.swift */; };
 		61A6868925A1328E00056181 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868825A1328E00056181 /* Toolbox.swift */; };
 		61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */; };
 		61A6869325A137B300056181 /* Classifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6869225A137B300056181 /* Classifier.swift */; };
-		61DAA14625AA90A200512FE9 /* SongListViewRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAA14525AA90A200512FE9 /* SongListViewRows.swift */; };
 		61DAA14A25AA90F500512FE9 /* Droppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAA14925AA90F500512FE9 /* Droppable.swift */; };
 /* End PBXBuildFile section */
 
@@ -86,11 +91,16 @@
 		6185A63925D9F7C800AC4152 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		619E9B2F2773A9D3004A7233 /* KeyFinderNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KeyFinderNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		61A0244425A17A2E0082C4C3 /* Tagger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagger.swift; sourceTree = "<group>"; };
+		61A21212277B88B100395680 /* ScrollingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingTableView.swift; sourceTree = "<group>"; };
+		61A21214277B897D00395680 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		61A21216277B8D3800395680 /* WrappedTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTableViewController.swift; sourceTree = "<group>"; };
+		61A21218277BE42D00395680 /* EnumElementIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumElementIndex.swift; sourceTree = "<group>"; };
+		61A2121B277CFCFF00395680 /* ResourcePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcePool.swift; sourceTree = "<group>"; };
+		61A2121D277CFE5500395680 /* Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
 		61A6868425A12F7000056181 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		61A6868825A1328E00056181 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 		61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumAnalyser.swift; sourceTree = "<group>"; };
 		61A6869225A137B300056181 /* Classifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classifier.swift; sourceTree = "<group>"; };
-		61DAA14525AA90A200512FE9 /* SongListViewRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListViewRows.swift; sourceTree = "<group>"; };
 		61DAA14925AA90F500512FE9 /* Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droppable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,8 +191,10 @@
 			children = (
 				61157F50259D54FD00D953D9 /* ContentView.swift */,
 				6116B0352773F4250042B65F /* SongListView.swift */,
-				61DAA14525AA90A200512FE9 /* SongListViewRows.swift */,
 				614B6BBD25C7492B00655B73 /* PreferencesView.swift */,
+				61A21212277B88B100395680 /* ScrollingTableView.swift */,
+				61A21214277B897D00395680 /* TableViewController.swift */,
+				61A21216277B8D3800395680 /* WrappedTableViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -191,6 +203,9 @@
 			isa = PBXGroup;
 			children = (
 				61DAA14925AA90F500512FE9 /* Droppable.swift */,
+				61A21218277BE42D00395680 /* EnumElementIndex.swift */,
+				61A2121B277CFCFF00395680 /* ResourcePool.swift */,
+				61A2121D277CFE5500395680 /* Singleton.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -368,23 +383,28 @@
 			buildActionMask = 2147483647;
 			files = (
 				61A6869325A137B300056181 /* Classifier.swift in Sources */,
+				61A21215277B897D00395680 /* TableViewController.swift in Sources */,
+				61A21213277B88B100395680 /* ScrollingTableView.swift in Sources */,
 				61122856259FCEB600681ED5 /* Constants.swift in Sources */,
 				6185A63A25D9F7C800AC4152 /* Preferences.swift in Sources */,
 				61157F51259D54FD00D953D9 /* ContentView.swift in Sources */,
-				61DAA14625AA90A200512FE9 /* SongListViewRows.swift in Sources */,
 				61157F4F259D54FD00D953D9 /* AppDelegate.swift in Sources */,
 				61122852259FCE0100681ED5 /* ChromaTransform.swift in Sources */,
 				6116B0362773F4250042B65F /* SongListView.swift in Sources */,
 				61A6868925A1328E00056181 /* Toolbox.swift in Sources */,
+				61A2121C277CFCFF00395680 /* ResourcePool.swift in Sources */,
 				61A0244525A17A2E0082C4C3 /* Tagger.swift in Sources */,
 				61DAA14A25AA90F500512FE9 /* Droppable.swift in Sources */,
+				61A2121E277CFE5500395680 /* Singleton.swift in Sources */,
 				6109AC562774E6DA0056D433 /* SongViewModel.swift in Sources */,
 				61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */,
 				6112285E259FDF7400681ED5 /* ToneProfile.swift in Sources */,
+				61A21217277B8D3800395680 /* WrappedTableViewController.swift in Sources */,
 				61A6868525A12F7000056181 /* Decoder.swift in Sources */,
 				6109AC572774E6DA0056D433 /* SongListViewModel.swift in Sources */,
 				6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */,
 				6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */,
+				61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */,
 				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

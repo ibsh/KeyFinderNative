@@ -11,7 +11,7 @@ import Accelerate
 
 final class FourierTransform {
 
-    private let frameSize: Int
+    let frameSize: Int
     private let halfN: Int
     private let fftSetup: vDSP.FFT<DSPSplitComplex>
 
@@ -38,10 +38,6 @@ final class FourierTransform {
         forwardOutputReal = [Float](repeating: 0, count: halfN)
         forwardOutputImag = [Float](repeating: 0, count: halfN)
         magnitudes = [Float](repeating: 0, count: halfN)
-    }
-
-    convenience init() {
-        self.init(frameSize: Constants.fftFrameSize)
     }
 
     func fourier(signal: [Float]) -> [Float] {

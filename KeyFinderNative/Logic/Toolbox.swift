@@ -11,69 +11,58 @@ import AVFoundation
 
 enum Toolbox {
 
-    private static var _workingFormat: AVAudioFormat?
-    private static let workingFormatLock = NSRecursiveLock()
-    static func workingFormatFactory() -> AVAudioFormat {
-        workingFormatLock.lock()
-        defer { workingFormatLock.unlock() }
-        if let workingFormat = _workingFormat {
+    private static let workingFormatSingleton = Singleton<AVAudioFormat>(
+        factory: {
+            guard let workingFormat = AVAudioFormat(
+                commonFormat: .pcmFormatFloat32,
+                sampleRate: Double(Constants.downsampledFrameRate),
+                channels: 1,
+                interleaved: false
+            ) else {
+                fatalError("Could not generate working format")
+            }
             return workingFormat
         }
-        guard let workingFormat = AVAudioFormat(
-            commonFormat: .pcmFormatFloat32,
-            sampleRate: Double(Constants.downsampledFrameRate),
-            channels: 1,
-            interleaved: false
-        ) else {
-            fatalError("Could not generate working format")
-        }
-        _workingFormat = workingFormat
-        return workingFormat
+    )
+    static func workingFormat() -> AVAudioFormat {
+        workingFormatSingleton.get()
     }
 
-    private static var _blackmanWindow: [Float]?
-    private static let blackmanWindowLock = NSRecursiveLock()
-    static func blackmanWindowFactory() -> [Float] {
-        blackmanWindowLock.lock()
-        defer { blackmanWindowLock.unlock() }
-        if let blackmanWindow = _blackmanWindow {
-            return blackmanWindow
+    private static let blackmanWindowSingleton = Singleton<[Float]>(
+        factory: {
+            var blackmanWindow = [Float]()
+            let N = Constants.fftFrameSize
+            return (0..<N).map { n in
+                let n = Float(n)
+                let N = Float(N)
+                return 0.42 - (0.5 * cos((2 * .pi * n)/(N-1))) + (0.08 * cos((4 * .pi * n)/(N-1)))
+            }
         }
-        var blackmanWindow = [Float]()
-        let N = Constants.fftFrameSize
-        for n in 0..<N {
-            let n = Float(n)
-            let N = Float(N)
-            let element = 0.42 - (0.5 * cos((2 * .pi * n)/(N-1))) + (0.08 * cos((4 * .pi * n)/(N-1)))
-            blackmanWindow.append(element)
-        }
-        _blackmanWindow = blackmanWindow
-        return blackmanWindow
+    )
+    static func blackmanWindow() -> [Float] {
+        return blackmanWindowSingleton.get()
     }
 
-    private static var _chromaTransform: ChromaTransform?
-    private static let chromaTransformLock = NSRecursiveLock()
-    static func chromaTransformFactory() -> ChromaTransform {
-        chromaTransformLock.lock()
-        defer { chromaTransformLock.unlock() }
-        if let chromaTransform = _chromaTransform {
-            return chromaTransform
-        }
-        let chromaTransform = ChromaTransform(frameRate: Constants.downsampledFrameRate)
-        _chromaTransform = chromaTransform
-        return chromaTransform
+    private static let chromaTransformSingleton = Singleton<ChromaTransform>(
+        factory: { return ChromaTransform(frameRate: Constants.downsampledFrameRate) }
+    )
+    static func chromaTransform() -> ChromaTransform {
+        return chromaTransformSingleton.get()
     }
 
-    private static var _classifier: Classifier?
-    private static let classifierLock = NSRecursiveLock()
-    static func classifierFactory() -> Classifier {
-        classifierLock.lock()
-        defer { classifierLock.unlock() }
-        if let classifier = _classifier {
-            return classifier
+    private static let classifierSingleton = Singleton<Classifier>(
+        factory: { return Classifier() }
+    )
+    static func classifier() -> Classifier {
+        return classifierSingleton.get()
+    }
+
+    private static let fourierTransformPool = ResourcePool<FourierTransform>(
+        factory: {
+            FourierTransform(frameSize: Constants.fftFrameSize)
         }
-        let classifier = Classifier()
-        _classifier = classifier
-        return classifier
+    )
+    static func fourierTransform() -> PooledResourceWrapper<FourierTransform> {
+        return fourierTransformPool.get()
     }
 }
