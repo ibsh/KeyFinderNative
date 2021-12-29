@@ -213,8 +213,8 @@
 		6116B0392773F4AD0042B65F /* Logic */ = {
 			isa = PBXGroup;
 			children = (
-				61A6868825A1328E00056181 /* Toolbox.swift */,
 				61122855259FCEB600681ED5 /* Constants.swift */,
+				61A6868825A1328E00056181 /* Toolbox.swift */,
 				6185A63925D9F7C800AC4152 /* Preferences.swift */,
 				61A6868425A12F7000056181 /* Decoder.swift */,
 				61A6869225A137B300056181 /* Classifier.swift */,
