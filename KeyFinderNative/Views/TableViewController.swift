@@ -17,21 +17,10 @@ class TableViewController: NSViewController {
     private let columns: [NSTableColumn]
 
     private let measuringView = NSTextView()
-    private var cachedStringWidths = [String: CGFloat]()
 
     private var songs: [SongViewModel] = [SongViewModel]() {
         didSet {
             let tableView = scrollingTableView.tableView
-//            for (columnIndex, columnID) in Constants.ColumnID.allCases.enumerated() {
-//                var maxWidth = width(of: columnID.displayName)
-//                for song in songs {
-//                    maxWidth = max(
-//                        maxWidth,
-//                        width(of: song.textValues[columnIndex])
-//                    )
-//                }
-//                columns[columnIndex].width = maxWidth
-//            }
             NSLog("reloading table view")
             tableView.reloadData()
         }
@@ -120,9 +109,9 @@ extension TableViewController: NSTableViewDelegate {
 
     func tableView(
         _ tableView: NSTableView,
-        viewFor tableColumn: NSTableColumn?,
+        objectValueFor tableColumn: NSTableColumn?,
         row: Int
-    ) -> NSView? {
+    ) -> Any? {
         guard let columnIDRawValue = tableColumn?.identifier.rawValue else {
             fatalError("no column identifier")
         }
@@ -132,32 +121,8 @@ extension TableViewController: NSTableViewDelegate {
         guard row >= 0, row < songs.count else {
             fatalError("index out of range")
         }
-        let cell = NSTextView()
-        cell.string = songs[row].textValues[columnID.elementIndex]
-        cell.isEditable = false
-        cell.isSelectable = false
-        cell.textContainerInset = .zero
-        cell.textContainer?.lineFragmentPadding = .zero
-        cell.textContainer?.maximumNumberOfLines = 1
-        return cell
-    }
 
-    func tableView(
-        _ tableView: NSTableView,
-        sizeToFitWidthOfColumn columnIndex: Int
-    ) -> CGFloat {
-        let columnIDRawValue = columns[columnIndex].identifier.rawValue
-        guard let columnID = Constants.ColumnID(rawValue: columnIDRawValue) else {
-            fatalError("Some bad thing")
-        }
-        var maxWidth = width(of: columnID.displayName)
-        for song in songs {
-            maxWidth = max(
-                maxWidth,
-                width(of: song.textValues[columnIndex])
-            )
-        }
-        return maxWidth
+        return songs[row].textValues[columnID.elementIndex]
     }
 
 //    func tableView(
@@ -204,10 +169,6 @@ extension TableViewController: NSTableViewDelegate {
             descriptors: scrollingTableView.tableView.sortDescriptors
         )
     }
-
-    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        return Constants.rowHeight
-    }
 }
 
 // MARK: - Sorting
@@ -242,26 +203,6 @@ private extension TableViewController {
                 return false
             }
         }
-    }
-}
-
-// MARK: - Text measuring
-
-private extension TableViewController {
-
-    func width(of text: String) -> CGFloat {
-        if let cachedWidth = cachedStringWidths[text] {
-            return cachedWidth
-        }
-        guard let tc = measuringView.textContainer,
-              let lm = measuringView.layoutManager else {
-                  fatalError("wat")
-              }
-        measuringView.string = text
-        lm.ensureLayout(for: tc)
-        let width = lm.usedRect(for: tc).width
-        cachedStringWidths[text] = width
-        return width
     }
 }
 
@@ -315,7 +256,5 @@ private extension TableViewController {
                 }
             }
         }
-
-        static let rowHeight: CGFloat = 26
     }
 }
