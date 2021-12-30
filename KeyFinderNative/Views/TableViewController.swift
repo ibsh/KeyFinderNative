@@ -58,7 +58,8 @@ class TableViewController: NSViewController {
     // MARK: - Init
 
     init(
-        songHandlers: SongHandlers
+        songHandlers: SongHandlers,
+        eventHandler: EventHandler
     ) {
         self.songHandlers = songHandlers
         columns = Constants.ColumnID.allCases.map { columnID in
@@ -82,6 +83,7 @@ class TableViewController: NSViewController {
         columns.forEach {
             tableView.addTableColumn($0)
         }
+        eventHandler.delegate = self
     }
 
     // MARK: - Overrides
@@ -116,23 +118,32 @@ class TableViewController: NSViewController {
         let menu = NSMenu()
         menu.addItem(
             NSMenuItem(
-                title: "Write detected key to tags",
-                action: #selector(writeToTags(_:)),
-                keyEquivalent: ""
+                title: "Select All",
+                action: #selector(selectAllMenuItem(_:)),
+                keyEquivalent: "a"
             )
+        )
+        menu.addItem(
+            NSMenuItem(
+                title: "Write key to tags",
+                action: #selector(writeKeyToTagsMenuItem(_:)),
+                keyEquivalent: "t"
+            )
+        )
+        let deleteItem = NSMenuItem(
+            title: "Delete selected rows",
+            action: #selector(deleteMenuItem(_:)),
+            keyEquivalent: NSString(format: "%c", NSDeleteCharacter) as String
+        )
+        deleteItem.keyEquivalentModifierMask = []
+        menu.addItem(
+            deleteItem
         )
         menu.addItem(
             NSMenuItem(
                 title: "Show in Finder",
-                action: #selector(showInFinder(_:)),
+                action: #selector(showInFinderMenuItem(_:)),
                 keyEquivalent: ""
-            )
-        )
-        menu.addItem(
-            NSMenuItem(
-                title: "Delete selected rows",
-                action: #selector(deleteSelectedRows(_:)),
-                keyEquivalent: NSString(format: "%c", NSBackspaceCharacter) as String
             )
         )
         tableView.menu = menu
@@ -235,26 +246,34 @@ private extension TableViewController {
     private var selectedIndices: IndexSet {
         var indices = tableView.selectedRowIndexes
         if indices.isEmpty {
-            indices = IndexSet(integer: tableView.clickedRow)
+            let clickedRow = tableView.clickedRow
+            if clickedRow >= 0 {
+                indices = IndexSet(integer: clickedRow)
+            }
         }
         return indices
     }
 
     private var selectedSongs: [SongViewModel] {
         var songs = [SongViewModel]()
+        let selectedIndices = selectedIndices
         selectedIndices.forEach { songs.append(self.songs[$0]) }
         return songs
     }
 
-    @objc func writeToTags(_ sender: AnyObject) {
+    @objc func selectAllMenuItem(_ sender: AnyObject) {
+        tableView.selectAll(sender)
+    }
+
+    @objc func writeKeyToTagsMenuItem(_ sender: AnyObject) {
         songHandlers.writeToTags(selectedSongs)
     }
 
-    @objc func showInFinder(_ sender: AnyObject) {
+    @objc func showInFinderMenuItem(_ sender: AnyObject) {
         songHandlers.showInFinder(selectedSongs)
     }
 
-    @objc func deleteSelectedRows(_ sender: AnyObject) {
+    @objc func deleteMenuItem(_ sender: AnyObject) {
         songHandlers.deleteRows(selectedSongs)
         tableView.deselectAll(nil)
     }
@@ -292,5 +311,26 @@ private extension TableViewController {
                 return false
             }
         }
+    }
+}
+
+// MARK: - EventHandlerDelegate
+
+extension TableViewController: EventHandlerDelegate {
+
+    func selectAll() {
+        selectAllMenuItem(self)
+    }
+
+    func writeKeyToTags() {
+        writeKeyToTagsMenuItem(self)
+    }
+
+    func delete() {
+        deleteMenuItem(self)
+    }
+
+    func showInFinder() {
+        showInFinderMenuItem(self)
     }
 }

@@ -14,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
     var prefsWindow: NSWindow!
+    var contentView: ContentView!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
@@ -37,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.setFrameAutosaveName("Main Window")
 
-        let contentView = ContentView()
+        contentView = ContentView()
         window.contentView = NSHostingView(rootView: contentView)
         window.makeKeyAndOrderFront(nil)
         window.styleMask.remove(.closable)
@@ -46,12 +47,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
+
 }
+
+// MARK: - Preferences window
 
 extension AppDelegate {
 
     @IBAction func openPrefsWindow(_ sender: NSMenuItem) {
-        prefsWindow = NSWindow(
+        prefsWindow = ModalWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1, height: 1),
             styleMask: [
                 .titled,
@@ -66,6 +70,27 @@ extension AppDelegate {
         prefsWindow.center()
         prefsWindow.setFrameAutosaveName("Preferences Window")
         prefsWindow.contentView = NSHostingView(rootView: prefsView)
-        prefsWindow.makeKeyAndOrderFront(nil)
+        _ = NSApp.runModal(for: prefsWindow)
+    }
+}
+
+// MARK: - Edit menu
+
+extension AppDelegate {
+
+    @IBAction func selectAll(_ sender: NSMenuItem) {
+        contentView.selectAll()
+    }
+
+    @IBAction func writeKeyToTags(_ sender: NSMenuItem) {
+        contentView.writeKeyToTags()
+    }
+
+    @IBAction func delete(_ sender: NSMenuItem) {
+        contentView.delete()
+    }
+
+    @IBAction func showInFinder(_ sender: NSMenuItem) {
+        contentView.showInFinder()
     }
 }

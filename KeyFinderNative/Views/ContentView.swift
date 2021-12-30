@@ -10,9 +10,28 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
+
+    private let eventHandler = EventHandler()
+
     var body: some View {
-        ContentViewBody()
+        ContentViewBody(eventHandler: eventHandler)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    func selectAll() {
+        eventHandler.selectAll()
+    }
+
+    func writeKeyToTags() {
+        eventHandler.writeKeyToTags()
+    }
+
+    func delete() {
+        eventHandler.delete()
+    }
+
+    func showInFinder() {
+        eventHandler.showInFinder()
     }
 }
 
@@ -41,13 +60,15 @@ struct ContentViewBody: View {
         }
     }
 
-    @State private var activity = Activity.waiting
-
     @ObservedObject var model = SongListViewModel()
+
+    @State private var activity = Activity.waiting
 
     private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
+
+    let eventHandler: EventHandler
 
     var body: some View {
         VStack {
@@ -57,7 +78,8 @@ struct ContentViewBody: View {
                     writeToTags: writeToTags,
                     showInFinder: showInFinder,
                     deleteRows: deleteRows
-                )
+                ),
+                eventHandler: eventHandler
             )
                 .disabled(activity != .waiting)
                 .drop(if: activity == .waiting, of: [fileURLTypeID]) {
@@ -73,6 +95,9 @@ struct ContentViewBody: View {
             .padding()
         }
     }
+}
+
+extension ContentViewBody {
 
     private func drop(items: [NSItemProvider]) -> Bool {
         dispatchPrecondition(condition: .onQueue(.main))

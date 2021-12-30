@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -11,11 +11,11 @@
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
-                            <menuItem title="KeyFinderNative" id="1Xt-HY-uBw">
+                            <menuItem title="KeyFinder" id="1Xt-HY-uBw">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="KeyFinderNative" systemMenu="apple" id="uQy-DD-JDr">
+                                <menu key="submenu" title="KeyFinder" systemMenu="apple" id="uQy-DD-JDr">
                                     <items>
-                                        <menuItem title="About KeyFinderNative" id="5kV-Vb-QxS">
+                                        <menuItem title="About KeyFinder" id="5kV-Vb-QxS" userLabel="About KeyFinder">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
@@ -59,13 +59,42 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Edit" id="L9S-Lj-dut">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Edit" id="AIn-8N-UeE">
+                                    <items>
+                                        <menuItem title="Select All" keyEquivalent="a" id="hhC-VU-KbS">
+                                            <connections>
+                                                <action selector="selectAll:" target="Voe-Tx-rLC" id="g4t-oN-dNB"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Write Key to Tags" keyEquivalent="t" id="zT1-1q-SGQ">
+                                            <connections>
+                                                <action selector="writeKeyToTags:" target="Voe-Tx-rLC" id="zqF-cf-naH"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Delete" keyEquivalent="" id="VAw-1y-74E">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="delete:" target="Voe-Tx-rLC" id="SOf-jv-wG3"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show in Finder" id="lqq-Iu-tdl" userLabel="Show in Finder">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showInFinder:" target="Voe-Tx-rLC" id="UxW-mN-onx"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                         </items>
                     </menu>
                     <connections>
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="KeyFinderNative" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="KeyFinder" customModuleProvider="target"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

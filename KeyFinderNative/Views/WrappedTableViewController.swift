@@ -14,13 +14,17 @@ struct WrappedTableViewController: NSViewControllerRepresentable {
 
     @Binding var songs: Set<SongViewModel>
     let songHandlers: SongHandlers
+    let eventHandler: EventHandler
 
     func makeNSViewController(
         context: NSViewControllerRepresentableContext<WrappedTableViewController>
     ) -> TableViewController {
-        return TableViewController(
-            songHandlers: songHandlers
+        let vc = TableViewController(
+            songHandlers: songHandlers,
+            eventHandler: eventHandler
         )
+
+        return vc
     }
 
     func updateNSViewController(
