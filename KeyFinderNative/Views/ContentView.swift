@@ -18,21 +18,36 @@ struct ContentView: View {
 
 struct ContentViewBody: View {
 
-    private enum Activity {
+    private enum Activity: CustomStringConvertible {
         case waiting
         case dropping
         case readingTags
         case processing
         case tagging
+
+        var description: String {
+            switch self {
+            case .waiting:
+                return String()
+            case .dropping:
+                return "Reading file system"
+            case .readingTags:
+                return "Reading tags"
+            case .processing:
+                return "Analysing"
+            case .tagging:
+                return "Writing tags"
+            }
+        }
     }
 
     @State private var activity = Activity.waiting
+
     @ObservedObject var model = SongListViewModel()
 
     private let fileURLTypeID = "public.file-url"
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
-    private let tagReadingSemaphore = DispatchSemaphore(value: Constants.parallelTagReaders)
 
     var body: some View {
         VStack {
@@ -49,7 +64,7 @@ struct ContentViewBody: View {
                     drop(items: $0)
                 }
             HStack {
-                Text("Progress text")
+                Text(activity.description)
                 Button("Find keys") {
                     process()
                 }
@@ -60,6 +75,7 @@ struct ContentViewBody: View {
     }
 
     private func drop(items: [NSItemProvider]) -> Bool {
+        dispatchPrecondition(condition: .onQueue(.main))
 
         guard items.isEmpty == false else { return false }
 
@@ -96,42 +112,10 @@ struct ContentViewBody: View {
         return true
     }
 
-    private func readTags(urls: Set<URL>) {
-        guard urls.isEmpty == false else {
-            activity = .waiting
-            return
-        }
-
-        activity = .readingTags
-
-        let totalCount = urls.count
-
-        var tagsToMerge = [String: SongTags]()
-        var completedCount = 0
-
-        for url in urls.sorted(by: { $0.path < $1.path }) {
-            processingQueue.async {
-                tagReadingSemaphore.wait()
-                let songTags = Tagger(url: url).readTags()
-                DispatchQueue.main.async {
-                    tagsToMerge[url.path] = songTags
-                    completedCount += 1
-                    if tagsToMerge.count >= 20 {
-                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
-                        tagsToMerge.removeAll()
-                    }
-                    if completedCount >= totalCount {
-                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
-                        activity = .waiting
-                    }
-                    tagReadingSemaphore.signal()
-                }
-            }
-        }
-    }
-
     // TODO this is probably crap, I wrote it in no time.
     private func files(inDirectory url: URL) -> [URL] {
+        dispatchPrecondition(condition: .notOnQueue(.main))
+
         let keys: Set<URLResourceKey> = [
             .isRegularFileKey,
             .isDirectoryKey,
@@ -159,7 +143,45 @@ struct ContentViewBody: View {
         return files
     }
 
+    private func readTags(urls: Set<URL>) {
+        dispatchPrecondition(condition: .onQueue(.main))
+
+        guard urls.isEmpty == false else {
+            activity = .waiting
+            return
+        }
+
+        activity = .readingTags
+
+        let urls = urls.sorted(by: { $0.path < $1.path })
+
+        var tagsToMerge = [String: SongTags]()
+
+        processingQueue.async {
+
+            DispatchQueue.concurrentPerform(iterations: urls.count) { index in
+
+                let url = urls[index]
+                let songTags = Tagger(url: url).readTags()
+
+                DispatchQueue.main.async {
+                    tagsToMerge[url.path] = songTags
+                    if tagsToMerge.count >= 20 {
+                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                        tagsToMerge.removeAll()
+                    }
+                }
+            }
+
+            DispatchQueue.main.async {
+                model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                activity = .waiting
+            }
+        }
+    }
+
     private func process() {
+        dispatchPrecondition(condition: .onQueue(.main))
 
         let urlsToProcess = model
             .urls
@@ -211,6 +233,7 @@ struct ContentViewBody: View {
     }
 
     private func writeToTags(_ urls: [URL], preferences: Preferences) {
+        dispatchPrecondition(condition: .onQueue(.main))
 
         guard urls.isEmpty == false else { return }
 
@@ -235,6 +258,7 @@ struct ContentViewBody: View {
     }
 
     private func writeToTags(_ songs: [SongViewModel]) {
+        dispatchPrecondition(condition: .onQueue(.main))
 
         activity = .tagging
 
@@ -257,17 +281,15 @@ struct ContentViewBody: View {
     }
 
     private func showInFinder(_ songs: [SongViewModel]) {
+        dispatchPrecondition(condition: .onQueue(.main))
+
         let urls = songs.map { URL(fileURLWithPath: $0.path) }
         NSWorkspace.shared.activateFileViewerSelecting(urls)
     }
 
     private func deleteRows(_ songs: [SongViewModel]) {
-        model.songs.subtract(songs)
-    }
-}
+        dispatchPrecondition(condition: .onQueue(.main))
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+        model.songs.subtract(songs)
     }
 }

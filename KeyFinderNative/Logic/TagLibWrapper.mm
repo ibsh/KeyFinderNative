@@ -174,6 +174,8 @@ protected:
 
 #pragma mark - Constants
 
+NSString *concatenateFormat = @"%@%@%@";
+
 const char* keyXiphTagComment      = "COMMENT";
 const char* keyId3TagiTunesComment = "COMM";
 const char* lngId3TagiTunesComment = "eng"; // will this mess up localisations?
@@ -750,44 +752,44 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
     // Title
 
     if (prependToTitle) {
-        NSString *newTitle = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldTitle];
+        NSString *newTitle = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldTitle];
         self.metadata->setTitle(newTitle);
     }
     if (appendToTitle) {
-        NSString *newTitle = [NSString stringWithFormat:@"%@%@%@", oldTitle, tagDelimiter, resultString];
+        NSString *newTitle = [NSString stringWithFormat:concatenateFormat, oldTitle, tagDelimiter, resultString];
         self.metadata->setTitle(newTitle);
     }
 
     // Artist
 
     if (prependToArtist) {
-        NSString *newArtist = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldArtist];
+        NSString *newArtist = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldArtist];
         self.metadata->setArtist(newArtist);
     }
     if (appendToArtist) {
-        NSString *newArtist = [NSString stringWithFormat:@"%@%@%@", oldArtist, tagDelimiter, resultString];
+        NSString *newArtist = [NSString stringWithFormat:concatenateFormat, oldArtist, tagDelimiter, resultString];
         self.metadata->setArtist(newArtist);
     }
 
     // Album
 
     if (prependToAlbum) {
-        NSString *newAlbum = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldAlbum];
+        NSString *newAlbum = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldAlbum];
         self.metadata->setAlbum(newAlbum);
     }
     if (appendToAlbum) {
-        NSString *newAlbum = [NSString stringWithFormat:@"%@%@%@", oldAlbum, tagDelimiter, resultString];
+        NSString *newAlbum = [NSString stringWithFormat:concatenateFormat, oldAlbum, tagDelimiter, resultString];
         self.metadata->setAlbum(newAlbum);
     }
 
     // Comment
 
     if (prependToComment) {
-        NSString *newComment = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldComment];
+        NSString *newComment = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldComment];
         self.metadata->setComment(newComment);
     }
     if (appendToComment) {
-        NSString *newComment = [NSString stringWithFormat:@"%@%@%@", oldComment, tagDelimiter, resultString];
+        NSString *newComment = [NSString stringWithFormat:concatenateFormat, oldComment, tagDelimiter, resultString];
         self.metadata->setComment(newComment);
     }
     if (overwriteComment) {
@@ -797,11 +799,11 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
     // Grouping
 
     if (prependToGrouping) {
-        NSString *newGrouping = [NSString stringWithFormat:@"%@%@%@", resultString, tagDelimiter, oldGrouping];
+        NSString *newGrouping = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldGrouping];
         self.metadata->setGrouping(newGrouping);
     }
     if (appendToGrouping) {
-        NSString *newGrouping = [NSString stringWithFormat:@"%@%@%@", oldGrouping, tagDelimiter, resultString];
+        NSString *newGrouping = [NSString stringWithFormat:concatenateFormat, oldGrouping, tagDelimiter, resultString];
         self.metadata->setGrouping(newGrouping);
     }
     if (overwriteGrouping) {

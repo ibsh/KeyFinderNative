@@ -183,31 +183,6 @@ enum Constants {
         }
         return profile
     }()
-
-    enum TagIDs {
-
-        static let urlAssetKey = "availableMetadataFormats"
-
-        enum id3 {
-            static let title = "id3/tit2"
-            static let artist = "id3/tpe1"
-            static let album = "id3/talb"
-            static let comment = "id3/comm"
-            static let grouping = "id3/tit1"
-            static let key = "id3/tkey"
-        }
-
-        enum iTunes {
-            static let title = "itsk/%a9nam"
-            static let artist = "itsk/%a9art"
-            static let album = "itsk/%a9alb"
-            static let comment = "itsk/%a9cmt"
-            static let grouping = "itsk/%a9grp"
-            static let key = "itlk/com.apple.itunes.initialkey"
-        }
-    }
-
-    static let parallelTagReaders = 10
 }
 
 extension Constants.Key {
