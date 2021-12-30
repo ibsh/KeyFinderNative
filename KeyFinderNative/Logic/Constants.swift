@@ -183,6 +183,32 @@ enum Constants {
         }
         return profile
     }()
+
+    enum ColumnID: String, CaseIterable {
+        case path
+        case filename
+        case title
+        case artist
+        case album
+        case comment
+        case grouping
+        case key
+        case resultString
+
+        var displayName: String {
+            switch self {
+            case .path: return "Path"
+            case .filename: return "Filename"
+            case .title: return "Title tag"
+            case .artist: return "Artist tag"
+            case .album: return "Album tag"
+            case .comment: return "Comment tag"
+            case .grouping: return "Grouping tag"
+            case .key: return "Key tag"
+            case .resultString: return "Detected key"
+            }
+        }
+    }
 }
 
 extension Constants.Key {

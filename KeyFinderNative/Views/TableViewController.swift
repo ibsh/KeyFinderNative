@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import DifferenceKit
 
 class TableViewController: NSViewController {
 
@@ -22,10 +23,41 @@ class TableViewController: NSViewController {
 
     private let measuringView = NSTextView()
 
-    private var songs: [SongViewModel] = [SongViewModel]() {
-        didSet {
-            NSLog("reloading table view")
-            tableView.reloadData()
+    /// - Warning: do not access this directly, it is boxed by `songs`.
+    private var _songs = [SongViewModel]()
+    private var songs: [SongViewModel] {
+        get {
+            return _songs
+        }
+        set {
+            let stagedChangeset = StagedChangeset(source: _songs, target: newValue)
+            guard stagedChangeset.isEmpty == false else {
+                print("**** No changes")
+                return
+            }
+            let changesetText: [String] = stagedChangeset.map {
+                let c = $0.changeCount
+                let i = $0.elementInserted.count
+                let d = $0.elementDeleted.count
+                let u = $0.elementUpdated.count
+                let m = $0.elementMoved.count
+                return "c\(c): i\(i) d\(d) u\(u) m\(m)"
+            }
+            let totalChanges = stagedChangeset.reduce(0) { $0 + $1.changeCount }
+            print("**** Changes (\(totalChanges) total): \(changesetText)")
+            if totalChanges > _songs.count / 2 {
+                print("**** Full reload")
+                _songs = newValue
+                tableView.reloadData()
+            } else {
+                print("**** Partial reload")
+                tableView.reload(
+                    using: stagedChangeset,
+                    with: .effectFade,
+                    interrupt: nil,
+                    setData: { _songs = $0 }
+                )
+            }
         }
     }
 
@@ -264,61 +296,6 @@ private extension TableViewController {
                 return true
             case .orderedDescending:
                 return false
-            }
-        }
-    }
-}
-
-// MARK: - Text value derivation
-
-private extension SongViewModel {
-
-    var textValues: [String] {
-        return TableViewController.Constants.ColumnID.allCases.map {
-            switch $0 {
-            case .filename: return filename
-            case .path: return path
-            case .title: return title ?? String()
-            case .artist: return artist ?? String()
-            case .album: return album ?? String()
-            case .comment: return comment ?? String()
-            case .grouping: return grouping ?? String()
-            case .key: return key ?? String()
-            case .resultString: return resultString ?? String()
-            }
-        }
-    }
-}
-
-// MARK: - Constants
-
-private extension TableViewController {
-
-    enum Constants {
-
-        enum ColumnID: String, CaseIterable {
-            case path
-            case filename
-            case title
-            case artist
-            case album
-            case comment
-            case grouping
-            case key
-            case resultString
-
-            var displayName: String {
-                switch self {
-                case .path: return "Path"
-                case .filename: return "Filename"
-                case .title: return "Title tag"
-                case .artist: return "Artist tag"
-                case .album: return "Album tag"
-                case .comment: return "Comment tag"
-                case .grouping: return "Grouping tag"
-                case .key: return "Key tag"
-                case .resultString: return "Detected key"
-                }
             }
         }
     }
