@@ -18,7 +18,6 @@
 		61157F4F259D54FD00D953D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61157F4E259D54FD00D953D9 /* AppDelegate.swift */; };
 		61157F51259D54FD00D953D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61157F50259D54FD00D953D9 /* ContentView.swift */; };
 		61157F53259D54FE00D953D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61157F52259D54FE00D953D9 /* Assets.xcassets */; };
-		61157F56259D54FE00D953D9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61157F55259D54FE00D953D9 /* Preview Assets.xcassets */; };
 		61157F59259D54FE00D953D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61157F57259D54FE00D953D9 /* Main.storyboard */; };
 		61157F65259D54FE00D953D9 /* FourierTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */; };
 		6116B0362773F4250042B65F /* SongListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6116B0352773F4250042B65F /* SongListView.swift */; };
@@ -78,11 +77,10 @@
 		61122851259FCE0100681ED5 /* ChromaTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaTransform.swift; sourceTree = "<group>"; };
 		61122855259FCEB600681ED5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		6112285D259FDF7400681ED5 /* ToneProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToneProfile.swift; sourceTree = "<group>"; };
-		61157F4B259D54FD00D953D9 /* KeyFinderNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyFinderNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61157F4B259D54FD00D953D9 /* KeyFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61157F4E259D54FD00D953D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61157F50259D54FD00D953D9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		61157F52259D54FE00D953D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		61157F55259D54FE00D953D9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		61157F58259D54FE00D953D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		61157F5A259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61157F5B259D54FE00D953D9 /* KeyFinderNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyFinderNative.entitlements; sourceTree = "<group>"; };
@@ -152,7 +150,7 @@
 		61157F4C259D54FD00D953D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				61157F4B259D54FD00D953D9 /* KeyFinderNative.app */,
+				61157F4B259D54FD00D953D9 /* KeyFinder.app */,
 				61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */,
 			);
 			name = Products;
@@ -171,17 +169,8 @@
 				61157F57259D54FE00D953D9 /* Main.storyboard */,
 				61157F5A259D54FE00D953D9 /* Info.plist */,
 				61157F5B259D54FE00D953D9 /* KeyFinderNative.entitlements */,
-				61157F54259D54FE00D953D9 /* Preview Content */,
 			);
 			path = KeyFinderNative;
-			sourceTree = "<group>";
-		};
-		61157F54259D54FE00D953D9 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				61157F55259D54FE00D953D9 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		61157F63259D54FE00D953D9 /* KeyFinderNativeTests */ = {
@@ -250,9 +239,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		61157F4A259D54FD00D953D9 /* KeyFinderNative */ = {
+		61157F4A259D54FD00D953D9 /* KeyFinder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61157F69259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderNative" */;
+			buildConfigurationList = 61157F69259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinder" */;
 			buildPhases = (
 				614590DD259DA36D00D74FB2 /* ShellScript */,
 				61157F47259D54FD00D953D9 /* Sources */,
@@ -265,9 +254,9 @@
 			);
 			dependencies = (
 			);
-			name = KeyFinderNative;
+			name = KeyFinder;
 			productName = KeyFinderNative;
-			productReference = 61157F4B259D54FD00D953D9 /* KeyFinderNative.app */;
+			productReference = 61157F4B259D54FD00D953D9 /* KeyFinder.app */;
 			productType = "com.apple.product-type.application";
 		};
 		61157F5F259D54FE00D953D9 /* KeyFinderNativeTests */ = {
@@ -321,7 +310,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				61157F4A259D54FD00D953D9 /* KeyFinderNative */,
+				61157F4A259D54FD00D953D9 /* KeyFinder */,
 				61157F5F259D54FE00D953D9 /* KeyFinderNativeTests */,
 			);
 		};
@@ -333,7 +322,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				61157F59259D54FE00D953D9 /* Main.storyboard in Resources */,
-				61157F56259D54FE00D953D9 /* Preview Assets.xcassets in Resources */,
 				61157F53259D54FE00D953D9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,7 +421,7 @@
 /* Begin PBXTargetDependency section */
 		61157F62259D54FE00D953D9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 61157F4A259D54FD00D953D9 /* KeyFinderNative */;
+			target = 61157F4A259D54FD00D953D9 /* KeyFinder */;
 			targetProxy = 61157F61259D54FE00D953D9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -574,7 +562,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"KeyFinderNative/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = UUSBU2VG2P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -588,7 +576,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.ibrahimshaath.KeyFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -607,7 +595,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"KeyFinderNative/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = UUSBU2VG2P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -621,7 +609,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.5;
 				PRODUCT_BUNDLE_IDENTIFIER = uk.co.ibrahimshaath.KeyFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -686,7 +674,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61157F69259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderNative" */ = {
+		61157F69259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61157F6A259D54FE00D953D9 /* Debug */,
