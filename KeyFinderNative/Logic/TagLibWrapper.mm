@@ -35,7 +35,8 @@
 #import "TagLib/trueaudiofile.h"
 #import "TagLib/wavpackfile.h"
 
-// for "generic" files without any special treatment
+#pragma mark - AVFileMetadata header
+
 class AVFileMetadata {
 public:
     AVFileMetadata(TagLib::FileRef* fr, TagLib::File* f);
@@ -57,6 +58,8 @@ protected:
     TagLib::File * genericFile;
 };
 
+#pragma mark - NullFileMetadata header
+
 class NullFileMetadata : public AVFileMetadata {
 public:
     NullFileMetadata(TagLib::FileRef* fr, TagLib::File* f);
@@ -71,6 +74,8 @@ public:
     virtual bool setComment(NSString *);
 };
 
+#pragma mark - FlacFileMetadata header
+
 class FlacFileMetadata : public AVFileMetadata {
 public:
     FlacFileMetadata(TagLib::FileRef* fr, TagLib::File* g, TagLib::FLAC::File* s);
@@ -80,6 +85,8 @@ public:
     virtual bool setKey(NSString *);
     TagLib::FLAC::File* flacFile;
 };
+
+#pragma mark - MpegID3FileMetadata header
 
 class MpegID3FileMetadata : public AVFileMetadata {
 public:
@@ -105,6 +112,8 @@ protected:
     bool setKeyId3(TagLib::ID3v2::Tag* tag, NSString *value);
 };
 
+#pragma mark - AiffID3FileMetadata header
+
 class AiffID3FileMetadata : public MpegID3FileMetadata {
 public:
     AiffID3FileMetadata(TagLib::FileRef* fr, TagLib::File* g, TagLib::RIFF::AIFF::File* s);
@@ -119,6 +128,8 @@ public:
 protected:
     TagLib::RIFF::AIFF::File* aiffFile;
 };
+
+#pragma mark - WavID3FileMetadata header
 
 class WavID3FileMetadata : public AiffID3FileMetadata {
 public:
@@ -135,6 +146,8 @@ protected:
     TagLib::RIFF::WAV::File* wavFile;
 };
 
+#pragma mark - Mp4FileMetadata header
+
 class Mp4FileMetadata : public AVFileMetadata {
 public:
     Mp4FileMetadata(TagLib::FileRef* fr, TagLib::File* g, TagLib::MP4::File* s);
@@ -146,6 +159,8 @@ protected:
     TagLib::MP4::File* mp4File;
 };
 
+#pragma mark - AsfFileMetadata header
+
 class AsfFileMetadata : public AVFileMetadata {
 public:
     AsfFileMetadata(TagLib::FileRef* fr, TagLib::File* g, TagLib::ASF::File* s);
@@ -156,6 +171,8 @@ public:
 protected:
     TagLib::ASF::File* asfFile;
 };
+
+#pragma mark - Constants
 
 const char* keyXiphTagComment      = "COMMENT";
 const char* keyId3TagiTunesComment = "COMM";
@@ -169,6 +186,8 @@ const char* keyMp4TagKey           = "----:com.apple.iTunes:initialkey";
 const char* keyXiphTagKey          = "INITIALKEY";
 const char* keyAsfTagKey           = "WM/InitialKey";
 
+#pragma mark - Constructors
+
 AVFileMetadata::AVFileMetadata(TagLib::FileRef* inFr, TagLib::File* f) : fr(inFr), genericFile(f) { }
 
 NullFileMetadata::NullFileMetadata      (TagLib::FileRef* fr, TagLib::File* g)                              : AVFileMetadata     (fr, g)       { }
@@ -179,10 +198,12 @@ WavID3FileMetadata::WavID3FileMetadata  (TagLib::FileRef* fr, TagLib::File* g, T
 Mp4FileMetadata::Mp4FileMetadata        (TagLib::FileRef* fr, TagLib::File* g, TagLib::MP4::File* s)        : AVFileMetadata     (fr, g)       { mp4File = s; }
 AsfFileMetadata::AsfFileMetadata        (TagLib::FileRef* fr, TagLib::File* g, TagLib::ASF::File* s)        : AVFileMetadata     (fr, g)       { asfFile = s; }
 
+#pragma mark - Destructors
+
 AVFileMetadata::~AVFileMetadata() { delete fr; }
 NullFileMetadata::~NullFileMetadata() { }
 
-// ================================= GENERIC ===================================
+#pragma mark - AVFileMetadata implementation
 
 NSString * AVFileMetadata::getTitle() const {
     TagLib::String value = genericFile->tag()->title();
@@ -244,7 +265,7 @@ bool AVFileMetadata::setKey(NSString */*key*/) {
     return false;
 }
 
-// =================================== NULL ====================================
+#pragma mark - NullFileMetadata implementation
 
 NSString * NullFileMetadata::getTitle() const {
     return @"NOT APPLICABLE FIXME";
@@ -278,7 +299,7 @@ bool NullFileMetadata::setComment(NSString */*cmt*/) {
     return false;
 }
 
-// =================================== FLAC ====================================
+#pragma mark - FlacFileMetadata implementation
 
 NSString * FlacFileMetadata::getComment() const {
     // TagLib's default behaviour treats Description as Comment
@@ -315,7 +336,7 @@ bool FlacFileMetadata::setKey(NSString *value) {
     return true;
 }
 
-// =================================== MPEG ====================================
+#pragma mark - MpegID3FileMetadata implementation
 
 bool MpegID3FileMetadata::hasId3v1Tag() const {
     if (mpegFile == NULL) return false; // AIFF or WAV subclasses
@@ -486,7 +507,7 @@ bool MpegID3FileMetadata::setKeyId3(TagLib::ID3v2::Tag* tag, NSString *value) {
     return true;
 }
 
-// =================================== AIFF ====================================
+#pragma mark - AiffID3FileMetadata implementation
 
 NSString * AiffID3FileMetadata::getGrouping() const {
     return getGroupingId3(aiffFile->tag());
@@ -535,8 +556,7 @@ bool AiffID3FileMetadata::setKey(NSString *value) {
     return true;
 }
 
-
-// =================================== WAV =====================================
+#pragma mark - WavID3FileMetadata implementation
 
 NSString * WavID3FileMetadata::getGrouping() const {
     return getGroupingId3(wavFile->tag());
@@ -582,7 +602,7 @@ bool WavID3FileMetadata::setKey(NSString *value) {
     return true;
 }
 
-// =================================== MP4 =====================================
+#pragma mark - Mp4FileMetadata implementation
 
 NSString * Mp4FileMetadata::getGrouping() const {
     if (!mp4File->tag()->itemListMap().contains(keyMp4TagGrouping)) return [NSString string];
@@ -612,7 +632,7 @@ bool Mp4FileMetadata::setKey(NSString *value) {
     return true;
 }
 
-// =================================== ASF =====================================
+#pragma mark - AsfFileMetadata implementation
 
 NSString * AsfFileMetadata::getGrouping() const {
     if (!asfFile->tag()->attributeListMap().contains(keyAsfTagGrouping)) return [NSString string];
