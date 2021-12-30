@@ -45,19 +45,13 @@ class TableViewController: NSViewController {
             }
             let totalChanges = stagedChangeset.reduce(0) { $0 + $1.changeCount }
             print("**** Changes (\(totalChanges) total): \(changesetText)")
-            if totalChanges > _songs.count / 2 {
-                print("**** Full reload")
-                _songs = newValue
-                tableView.reloadData()
-            } else {
-                print("**** Partial reload")
-                tableView.reload(
-                    using: stagedChangeset,
-                    with: .effectFade,
-                    interrupt: nil,
-                    setData: { _songs = $0 }
-                )
-            }
+            let threshold = _songs.count / 2
+            tableView.reload(
+                using: stagedChangeset,
+                with: .effectFade,
+                interrupt: { $0.changeCount > threshold },
+                setData: { _songs = $0 }
+            )
         }
     }
 
