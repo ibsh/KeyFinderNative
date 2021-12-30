@@ -84,6 +84,7 @@ class TableViewController: NSViewController {
             .solidHorizontalGridLineMask,
             .solidVerticalGridLineMask,
         ]
+        tableView.usesAlternatingRowBackgroundColors = true
         tableView.allowsMultipleSelection = true
 
         let menu = NSMenu()
