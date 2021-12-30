@@ -202,7 +202,7 @@ struct ContentViewBody: View {
                 let url = urlsToProcess[index]
 
                 let decoder = Decoder(workingFormat: workingFormat)
-                let decodingResult = decoder.decode(url: url)
+                let decodingResult = decoder.decode(url: url, preferences: preferences)
 
                 let result: Result<Constants.Key, Decoder.DecoderError>
 

@@ -12,6 +12,7 @@ import AVFoundation
 final class Decoder {
 
     enum DecoderError: Error, CustomStringConvertible {
+        case durationExceedsPreference
         case couldNotDeriveReadBuffer
         case couldNotDeriveWorkingBuffer
         case couldNotDeriveConverter
@@ -20,6 +21,7 @@ final class Decoder {
 
         var description: String {
             switch self {
+            case .durationExceedsPreference: return "File too long"
             case .couldNotDeriveReadBuffer: return "Cannot decode this file"
             case .couldNotDeriveWorkingBuffer: return "Internal error deriving working buffer"
             case .couldNotDeriveConverter: return "Internal error deriving converter"
@@ -35,14 +37,25 @@ final class Decoder {
         self.workingFormat = workingFormat
     }
 
-    func decode(url: URL) -> Result<[Float], DecoderError> {
+    func decode(
+        url: URL,
+        preferences: Preferences
+    ) -> Result<[Float], DecoderError> {
 
         do {
 
             let file = try AVAudioFile(forReading: url)
 
+            let processingFormat = file.processingFormat
+
+            let duration = TimeInterval(file.length) / processingFormat.sampleRate
+            let preference = TimeInterval(preferences.skipFilesLongerThanMinutes * 60)
+            if duration > preference {
+                return .failure(.durationExceedsPreference)
+            }
+
             guard let fileBuffer = AVAudioPCMBuffer(
-                pcmFormat: file.processingFormat,
+                pcmFormat: processingFormat,
                 frameCapacity: AVAudioFrameCount(file.length)
             ) else {
                 return .failure(.couldNotDeriveReadBuffer)
