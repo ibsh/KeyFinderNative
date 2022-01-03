@@ -229,11 +229,11 @@ extension ContentViewBody {
                 let decoder = Decoder(workingFormat: workingFormat)
                 let decodingResult = decoder.decode(url: url, preferences: preferences)
 
-                let result: Result<Constants.Key, Decoder.DecoderError>
+                let result: Result<Constants.Key, SongProcessingError>
 
                 switch decodingResult {
                 case .failure(let error):
-                    result = .failure(error)
+                    result = .failure(.decoder(error))
                 case .success(let samples):
                     let spectrumAnalyser = SpectrumAnalyser()
                     let classifier = Toolbox.classifier()

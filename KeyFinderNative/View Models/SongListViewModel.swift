@@ -22,7 +22,7 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    var results = [String: Result<Constants.Key, Decoder.DecoderError>]() {
+    var results = [String: Result<Constants.Key, SongProcessingError>]() {
         didSet {
             apply()
         }
