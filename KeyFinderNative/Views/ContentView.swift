@@ -222,7 +222,24 @@ extension ContentViewBody {
 
         processingQueue.async {
 
-            DispatchQueue.concurrentPerform(iterations: urlsToProcess.count) { index in
+            let urlsAndTagsWithExistingMetadata = urlsToProcess
+                .map { ($0, model.tags[$0.path]) }
+                .filter { $0.1?.hasExistingMetadata(preferences: preferences) ?? false }
+
+            let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
+
+            var resultsWithExistingMetadata = [String: Result<Constants.Key, SongProcessingError>]()
+            for url in urlsWithExistingMetadata {
+                resultsWithExistingMetadata[url.path] = .failure(.existingMetadata)
+            }
+
+            DispatchQueue.main.async {
+                model.results.merge(resultsWithExistingMetadata, uniquingKeysWith: { $1 })
+            }
+
+            let urlsToDecode = urlsToProcess.filter { !urlsWithExistingMetadata.contains($0) }
+
+            DispatchQueue.concurrentPerform(iterations: urlsToDecode.count) { index in
 
                 let url = urlsToProcess[index]
 
@@ -251,7 +268,7 @@ extension ContentViewBody {
                 activity = .waiting
 
                 if preferences.writeAutomatically {
-                    writeToTags(urlsToProcess, preferences: preferences)
+                    writeToTags(urlsToDecode, preferences: preferences)
                 }
             }
         }
