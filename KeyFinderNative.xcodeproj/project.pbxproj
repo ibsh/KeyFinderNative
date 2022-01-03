@@ -41,6 +41,7 @@
 		61A6868925A1328E00056181 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868825A1328E00056181 /* Toolbox.swift */; };
 		61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */; };
 		61A6869325A137B300056181 /* Classifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A6869225A137B300056181 /* Classifier.swift */; };
+		61A90AB827839EC900F6F0A7 /* SongTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A90AB727839EC900F6F0A7 /* SongTags.swift */; };
 		61A90ABA27839FB800F6F0A7 /* SongProcessingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A90AB927839FB800F6F0A7 /* SongProcessingError.swift */; };
 		61DAA14A25AA90F500512FE9 /* Droppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAA14925AA90F500512FE9 /* Droppable.swift */; };
 /* End PBXBuildFile section */
@@ -110,6 +111,7 @@
 		61A6868825A1328E00056181 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 		61A6868E25A1369F00056181 /* SpectrumAnalyser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpectrumAnalyser.swift; sourceTree = "<group>"; };
 		61A6869225A137B300056181 /* Classifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classifier.swift; sourceTree = "<group>"; };
+		61A90AB727839EC900F6F0A7 /* SongTags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTags.swift; sourceTree = "<group>"; };
 		61A90AB927839FB800F6F0A7 /* SongProcessingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongProcessingError.swift; sourceTree = "<group>"; };
 		61DAA14925AA90F500512FE9 /* Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droppable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -240,6 +242,7 @@
 				6109AC552774E6DA0056D433 /* SongListViewModel.swift */,
 				6109AC542774E6DA0056D433 /* SongViewModel.swift */,
 				61909579277E46B10035B05C /* SongViewModel+Differentiable.swift */,
+				61A90AB727839EC900F6F0A7 /* SongTags.swift */,
 				61A90AB927839FB800F6F0A7 /* SongProcessingError.swift */,
 			);
 			path = "View Models";
@@ -416,6 +419,7 @@
 				6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */,
 				61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */,
 				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
+				61A90AB827839EC900F6F0A7 /* SongTags.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

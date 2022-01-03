@@ -9,15 +9,6 @@
 import Foundation
 import AVFoundation
 
-struct SongTags {
-    let title: String?
-    let artist: String?
-    let album: String?
-    let comment: String?
-    let grouping: String?
-    let key: String?
-}
-
 final class Tagger {
 
     private let url: URL
