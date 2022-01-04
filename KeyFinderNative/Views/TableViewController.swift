@@ -62,7 +62,7 @@ class TableViewController: NSViewController {
         eventHandler: EventHandler
     ) {
         self.songHandlers = songHandlers
-        columns = Constants.ColumnID.allCases.map { columnID in
+        columns = Constants.View.ColumnID.allCases.map { columnID in
             let column = NSTableColumn(
                 identifier: NSUserInterfaceItemIdentifier(
                     rawValue: columnID.rawValue
@@ -104,7 +104,7 @@ class TableViewController: NSViewController {
         super.viewDidLoad()
         tableView.sortDescriptors = [
             NSSortDescriptor(
-                key: Constants.ColumnID.path.rawValue,
+                key: Constants.View.ColumnID.path.rawValue,
                 ascending: true
             )
         ]
@@ -183,7 +183,7 @@ extension TableViewController: NSTableViewDelegate {
         guard let columnIDRawValue = tableColumn?.identifier.rawValue else {
             fatalError("no column identifier")
         }
-        guard let columnID = Constants.ColumnID(rawValue: columnIDRawValue) else {
+        guard let columnID = Constants.View.ColumnID(rawValue: columnIDRawValue) else {
             fatalError("invalid column identifier \(columnIDRawValue)")
         }
         guard row >= 0, row < songs.count else {
@@ -241,7 +241,7 @@ extension TableViewController: NSTableViewDelegate {
 
 // MARK: - Row actions
 
-private extension TableViewController {
+extension TableViewController {
 
     private var selectedIndices: IndexSet {
         var indices = tableView.selectedRowIndexes
@@ -261,19 +261,19 @@ private extension TableViewController {
         return songs
     }
 
-    @objc func selectAllMenuItem(_ sender: AnyObject) {
+    @objc private func selectAllMenuItem(_ sender: AnyObject) {
         tableView.selectAll(sender)
     }
 
-    @objc func writeKeyToTagsMenuItem(_ sender: AnyObject) {
+    @objc private func writeKeyToTagsMenuItem(_ sender: AnyObject) {
         songHandlers.writeToTags(selectedSongs)
     }
 
-    @objc func showInFinderMenuItem(_ sender: AnyObject) {
+    @objc private func showInFinderMenuItem(_ sender: AnyObject) {
         songHandlers.showInFinder(selectedSongs)
     }
 
-    @objc func deleteMenuItem(_ sender: AnyObject) {
+    @objc private func deleteMenuItem(_ sender: AnyObject) {
         songHandlers.deleteRows(selectedSongs)
         tableView.deselectAll(nil)
     }
@@ -281,25 +281,34 @@ private extension TableViewController {
 
 // MARK: - Sorting
 
-private extension TableViewController {
+extension TableViewController {
 
-    static func sort(songs: Set<SongViewModel>, descriptors: [NSSortDescriptor]) -> [SongViewModel] {
+    private static func sort(songs: Set<SongViewModel>, descriptors: [NSSortDescriptor]) -> [SongViewModel] {
         return songs.sorted { s1, s2 in
             for descriptor in descriptors {
                 guard let rawValue = descriptor.key,
-                      let columnID = Constants.ColumnID(rawValue: rawValue)
+                      let columnID = Constants.View.ColumnID(rawValue: rawValue)
                 else {
                     fatalError("something bad")
                 }
                 let val1 = s1.textValues[columnID.elementIndex]
                 let val2 = s2.textValues[columnID.elementIndex]
-                switch val1.localizedStandardCompare(val2) {
-                case .orderedSame:
-                    continue
-                case .orderedAscending:
+                switch (val1, val2) {
+                case (.none, .none):
+                    return true
+                case (.none, .some):
                     return descriptor.ascending
-                case .orderedDescending:
+                case (.some, .none):
                     return !descriptor.ascending
+                case (.some(let val1), .some(let val2)):
+                    switch val1.localizedStandardCompare(val2) {
+                    case .orderedSame:
+                        continue
+                    case .orderedAscending:
+                        return descriptor.ascending
+                    case .orderedDescending:
+                        return !descriptor.ascending
+                    }
                 }
             }
             switch s1.path.localizedStandardCompare(s2.path) {

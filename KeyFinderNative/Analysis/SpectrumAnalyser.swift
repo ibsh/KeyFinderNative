@@ -16,7 +16,7 @@ final class SpectrumAnalyser {
 
     func chromaVector(samples: [Float]) -> [Float] {
 
-        let fftFrameSize = Constants.fftFrameSize
+        let fftFrameSize = Constants.Analysis.fftFrameSize
         var windowStart = 0
         var chromagram = [[Float]]()
 
@@ -40,13 +40,13 @@ final class SpectrumAnalyser {
             let magnitudes = wrappedFourierTransform.wrapped.resource.fourier(signal: localSamples)
             let chromaVector = chromaTransform.chromaVector(magnitudes: magnitudes)
             chromagram.append(chromaVector)
-            windowStart += Constants.hopSize
+            windowStart += Constants.Analysis.hopSize
         }
 
-        var chromaVector = [Float](repeating: 0, count: Constants.bands)
+        var chromaVector = [Float](repeating: 0, count: Constants.Analysis.bands)
         let hops = Float(chromagram.count)
         for hop in chromagram {
-            for band in 0..<Constants.bands {
+            for band in 0..<Constants.Analysis.bands {
                 chromaVector[band] += hop[band] / hops
             }
         }

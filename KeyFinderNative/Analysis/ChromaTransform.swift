@@ -17,24 +17,24 @@ final class ChromaTransform {
 
         let frameRate = Float(frameRate)
 
-        if Constants.frequencies.last! > frameRate / 2.0 {
+        if Constants.Analysis.frequencies.last! > frameRate / 2.0 {
             fatalError("Analysis frequencies over Nyquist")
         }
 
-        let fftFrameSize = Float(Constants.fftFrameSize)
+        let fftFrameSize = Float(Constants.Analysis.fftFrameSize)
 
-        if frameRate / fftFrameSize > (Constants.frequencies[1] - Constants.frequencies[0]) {
+        if frameRate / fftFrameSize > (Constants.Analysis.frequencies[1] - Constants.Analysis.frequencies[0]) {
             fatalError("Insufficient low-end resolution")
         }
 
         var chromaBandFftBinIndices = [Int]()
         var kernel = [[Float]]()
 
-        let myQFactor = Constants.directSKStretch * (pow(2, (1.0 / Float(Constants.semitones))) - 1)
+        let myQFactor = Constants.Analysis.directSKStretch * (pow(2, (1.0 / Float(Constants.Analysis.semitones))) - 1)
 
-        for i in (0..<Constants.bands) {
+        for i in (0..<Constants.Analysis.bands) {
 
-            let centreOfWindow = Constants.frequencies[i] * fftFrameSize / frameRate
+            let centreOfWindow = Constants.Analysis.frequencies[i] * fftFrameSize / frameRate
             let widthOfWindow = centreOfWindow * myQFactor
             let beginningOfWindow = centreOfWindow - (widthOfWindow / 2)
             let endOfWindow = beginningOfWindow + widthOfWindow
@@ -52,7 +52,7 @@ final class ChromaTransform {
 
             // normalisation by sum of coefficients and frequency of bin; models CQT very closely
             for j in 0..<kernelEntry.count {
-                kernelEntry[j] = kernelEntry[j] / sumOfCoefficients * Constants.frequencies[i]
+                kernelEntry[j] = kernelEntry[j] / sumOfCoefficients * Constants.Analysis.frequencies[i]
             }
             kernel.append(kernelEntry)
         }
@@ -68,7 +68,7 @@ final class ChromaTransform {
 
     func chromaVector(magnitudes: [Float]) -> [Float] {
         var chromaVector = [Float]()
-        for i in 0..<Constants.bands {
+        for i in 0..<Constants.Analysis.bands {
             var sum: Float = 0.0
             for j in 0..<kernel[i].count {
                 let magnitude = magnitudes[chromaBandFftBinIndices[i] + j]

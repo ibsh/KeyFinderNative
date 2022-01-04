@@ -21,14 +21,14 @@ NS_ASSUME_NONNULL_BEGIN
                      album:(NSString * _Nullable)album
                    comment:(NSString * _Nullable)comment
                   grouping:(NSString * _Nullable)grouping
-                       key:(NSString * _Nullable)key;
+                       key:(NSString * _Nullable)key NS_SWIFT_NAME(writeTags(title:artist:album:comment:grouping:key:));
 
-- (NSString *)getTitle;
-- (NSString *)getArtist;
-- (NSString *)getAlbum;
-- (NSString *)getComment;
-- (NSString *)getGrouping;
-- (NSString *)getKey;
+- (NSString * _Nullable)getTitle;
+- (NSString * _Nullable)getArtist;
+- (NSString * _Nullable)getAlbum;
+- (NSString * _Nullable)getComment;
+- (NSString * _Nullable)getGrouping;
+- (NSString * _Nullable)getKey;
 
 @end
 

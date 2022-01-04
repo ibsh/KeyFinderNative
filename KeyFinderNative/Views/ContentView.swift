@@ -106,6 +106,7 @@ extension ContentViewBody {
 
         activity = .dropping
 
+        let preferences = Preferences()
         let itemDispatchGroup = DispatchGroup()
 
         var urls = Set<URL>()
@@ -131,7 +132,7 @@ extension ContentViewBody {
             let oldModelURLs = model.urls
             let newModelURLs = oldModelURLs.union(urls)
             model.urls = newModelURLs
-            readTags(urls: newModelURLs.subtracting(oldModelURLs))
+            readTags(urls: newModelURLs.subtracting(oldModelURLs), preferences: preferences)
         }
 
         return true
@@ -168,7 +169,7 @@ extension ContentViewBody {
         return files
     }
 
-    private func readTags(urls: Set<URL>) {
+    private func readTags(urls: Set<URL>, preferences: Preferences) {
         dispatchPrecondition(condition: .onQueue(.main))
 
         guard urls.isEmpty == false else {
@@ -187,7 +188,7 @@ extension ContentViewBody {
             DispatchQueue.concurrentPerform(iterations: urls.count) { index in
 
                 let url = urls[index]
-                let songTags = Tagger(url: url).readTags()
+                let songTags = Tagger(url: url, preferences: preferences).readTags()
 
                 DispatchQueue.main.async {
                     tagsToMerge[url.path] = songTags
@@ -228,7 +229,7 @@ extension ContentViewBody {
 
             let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
 
-            var resultsWithExistingMetadata = [String: Result<Constants.Key, SongProcessingError>]()
+            var resultsWithExistingMetadata = [String: Result<Key, SongProcessingError>]()
             for url in urlsWithExistingMetadata {
                 resultsWithExistingMetadata[url.path] = .failure(.existingMetadata)
             }
@@ -246,7 +247,7 @@ extension ContentViewBody {
                 let decoder = Decoder(workingFormat: workingFormat)
                 let decodingResult = decoder.decode(url: url, preferences: preferences)
 
-                let result: Result<Constants.Key, SongProcessingError>
+                let result: Result<Key, SongProcessingError>
 
                 switch decodingResult {
                 case .failure(let error):
@@ -288,13 +289,13 @@ extension ContentViewBody {
                 case .failure:
                     continue
                 case .success(let key):
-                    let tagger = Tagger(url: url)
-                    tagger.writeTags(key: key, preferences: preferences)
+                    let tagger = Tagger(url: url, preferences: preferences)
+                    tagger.writeTags(key: key)
                 }
             }
 
             DispatchQueue.main.async {
-                readTags(urls: Set(urls))
+                readTags(urls: Set(urls), preferences: preferences)
             }
         }
     }
@@ -302,24 +303,10 @@ extension ContentViewBody {
     private func writeToTags(_ songs: [SongViewModel]) {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        activity = .tagging
-
-        let urls = songs.map { URL(fileURLWithPath: $0.path) }
-        for url in urls {
-            guard let result = model.results[url.path] else { continue }
-            switch result {
-            case .failure:
-                continue
-            case .success(let key):
-                processingQueue.async {
-                    let tagger = Tagger(url: url)
-                    tagger.writeTags(key: key, preferences: Preferences())
-                    DispatchQueue.main.async {
-                        readTags(urls: Set([url]))
-                    }
-                }
-            }
-        }
+        writeToTags(
+            songs.map { URL(fileURLWithPath: $0.path) },
+            preferences: Preferences()
+        )
     }
 
     private func showInFinder(_ songs: [SongViewModel]) {

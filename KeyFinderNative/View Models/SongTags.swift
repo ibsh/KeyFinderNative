@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SongTags {
+struct SongTags: Hashable, Equatable {
     let title: String?
     let artist: String?
     let album: String?
@@ -27,36 +27,9 @@ extension SongTags {
         case grouping
         case key
     }
+}
 
-    enum FieldState {
-        case noExistingData
-        case existingData
-        case irrelevant
-    }
-
-    func titleFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.title, preferences)
-    }
-
-    func artistFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.artist, preferences)
-    }
-
-    func albumFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.album, preferences)
-    }
-
-    func commentFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.comment, preferences)
-    }
-
-    func groupingFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.grouping, preferences)
-    }
-
-    func keyFieldContainsExistingMetadata(_ preferences: Preferences) -> FieldState {
-        return fieldContainsExistingMetadata(.key, preferences)
-    }
+extension SongTags {
 
     func allRelevantFieldsContainExistingMetadata(preferences: Preferences) -> Bool {
         return Field.allCases.map {
@@ -72,35 +45,69 @@ extension SongTags {
         .allSatisfy { $0 }
     }
 
-    func value(of field: Field) -> String? {
-        switch field {
-        case .title:    return title
-        case .artist:   return artist
-        case .album:    return album
-        case .comment:  return comment
-        case .grouping: return grouping
-        case .key:      return key
+    func stringToWrite(field: SongTags.Field, key: Key, with preferences: Preferences) -> String? {
+        let resultString = field.resultString(for: key, with: preferences)
+        let delim = preferences.fieldDelimiter
+        switch fieldContainsExistingMetadata(field, preferences) {
+        case .noExistingData:
+            break
+        case .existingData,
+                .irrelevant:
+            return nil
+        }
+        switch preferences.howToWrite(to: field) {
+        case .no:
+            return nil
+        case .prepend:
+            if let title = title {
+                return "\(resultString)\(delim)\(title)"
+            } else {
+                return resultString
+            }
+        case .append:
+            if let title = title {
+                return "\(title)\(delim)\(resultString)"
+            } else {
+                return resultString
+            }
+        case .overwrite:
+            return resultString
         }
     }
 }
 
-private extension SongTags {
+extension SongTags {
 
-    func fieldContainsExistingMetadata(_ field: Field, _ preferences: Preferences) -> FieldState {
+    private enum FieldState {
+        case noExistingData
+        case existingData
+        case irrelevant
+    }
+
+    private func fieldContainsExistingMetadata(_ field: Field, _ preferences: Preferences) -> FieldState {
         let howToWrite = preferences.howToWrite(to: field)
-        let value = value(of: field)
-        let valuesToCheck = valuesToCheck(for: field, with: preferences)
-        switch (howToWrite, value) {
+        let actualValue: String? = {
+            switch field {
+            case .title:    return title
+            case .artist:   return artist
+            case .album:    return album
+            case .comment:  return comment
+            case .grouping: return grouping
+            case .key:      return key
+            }
+        }()
+        let possibleValues = possibleValues(for: field, with: preferences)
+        switch (howToWrite, actualValue) {
         case (.no, _):
             return .irrelevant
         case (.prepend, .some(let value)):
-            let result = valuesToCheck.first(where: { value.hasPrefix($0) })
+            let result = possibleValues.first(where: { value.hasPrefix($0) })
             return result == nil ? .noExistingData : .existingData
         case (.append, .some(let value)):
-            let result = valuesToCheck.first(where: { value.hasSuffix($0) })
+            let result = possibleValues.first(where: { value.hasSuffix($0) })
             return result == nil ? .noExistingData : .existingData
         case (.overwrite, .some(let value)):
-            let result = valuesToCheck
+            let result = possibleValues
                 .map { field == .key ? String($0.prefix(3)) : $0 }
                 .first(where: { value == $0 })
             return result == nil ? .noExistingData : .existingData
@@ -109,10 +116,29 @@ private extension SongTags {
         }
     }
 
-    func valuesToCheck(for field: Field, with preferences: Preferences) -> [String] {
-        return Constants.Key.allCases.compactMap { key in
+    private func possibleValues(for field: Field, with preferences: Preferences) -> [String] {
+        return Key.allCases.compactMap { key in
             if key == .silence { return nil }
-            return key.resultString(for: field, with: preferences)
+            return field.resultString(for: key, with: preferences)
         }
+    }
+}
+
+extension SongTags.Field {
+
+    fileprivate func resultString(for key: Key, with preferences: Preferences) -> String {
+        let shortField: Bool = {
+            switch self {
+            case .title,
+                    .artist,
+                    .album,
+                    .comment,
+                    .grouping:
+                return false
+            case .key:
+                return true
+            }
+        }()
+        return key.resultString(shortField: shortField, with: preferences)
     }
 }

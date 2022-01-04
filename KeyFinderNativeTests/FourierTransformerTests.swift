@@ -7,7 +7,16 @@
 //
 
 import XCTest
-@testable import KeyFinderNative
+@testable import KeyFinder
+
+private func sine(
+    index: Int,
+    frequency: Float,
+    sampleRate: Int,
+    magnitude: Int
+) -> Float {
+    return Float(magnitude) * sin(Float(index) * frequency / Float(sampleRate) * 2 * Float.pi)
+}
 
 class FourierTransformTests: XCTestCase {
 

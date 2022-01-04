@@ -207,21 +207,25 @@ NullFileMetadata::~NullFileMetadata() { }
 
 NSString * AVFileMetadata::getTitle() const {
     TagLib::String value = genericFile->tag()->title();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * AVFileMetadata::getArtist() const {
     TagLib::String value = genericFile->tag()->artist();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * AVFileMetadata::getAlbum() const {
     TagLib::String value = genericFile->tag()->album();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * AVFileMetadata::getComment() const {
     TagLib::String value = genericFile->tag()->comment();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -303,23 +307,17 @@ bool NullFileMetadata::setComment(NSString */*cmt*/) {
 
 NSString * FlacFileMetadata::getComment() const {
     // TagLib's default behaviour treats Description as Comment
-    if (flacFile->xiphComment()->contains(keyXiphTagComment)) {
-
-        TagLib::String value = flacFile->xiphComment()->fieldListMap()[keyXiphTagComment].toString();
-        return [NSString stringWithUTF8String:value.toCString(true)];
-
-    } else {
-
-        return [NSString string];
-    }
+    if (!flacFile->xiphComment()->contains(keyXiphTagComment)) return NULL;
+    TagLib::String value = flacFile->xiphComment()->fieldListMap()[keyXiphTagComment].toString();
+    if (value == TagLib::String::null) return NULL;
+    return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * FlacFileMetadata::getKey() const {
     TagLib::Ogg::XiphComment* c = flacFile->xiphComment();
-    if (!c->fieldListMap().contains(keyXiphTagKey)) {
-        return [NSString string];
-    }
+    if (!c->fieldListMap().contains(keyXiphTagKey)) return NULL;
     TagLib::String value = c->fieldListMap()[keyXiphTagKey].toString();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -368,9 +366,10 @@ NSString * MpegID3FileMetadata::getGrouping() const {
 }
 
 NSString * MpegID3FileMetadata::getGroupingId3(const TagLib::ID3v2::Tag* tag) const {
-    if (!tag->frameListMap().contains(keyId3TagGrouping)) return [NSString string];
+    if (!tag->frameListMap().contains(keyId3TagGrouping)) return NULL;
     TagLib::ID3v2::FrameList l = tag->frameListMap()[keyId3TagGrouping];
     TagLib::String value = l.front()->toString();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -380,9 +379,10 @@ NSString * MpegID3FileMetadata::getKey() const {
 }
 
 NSString * MpegID3FileMetadata::getKeyId3(const TagLib::ID3v2::Tag* tag) const {
-    if (!tag->frameListMap().contains(keyId3TagKey)) return [NSString string];
+    if (!tag->frameListMap().contains(keyId3TagKey)) return NULL;
     TagLib::ID3v2::FrameList l = tag->frameListMap()[keyId3TagKey];
     TagLib::String value = l.front()->toString();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -605,16 +605,18 @@ bool WavID3FileMetadata::setKey(NSString *value) {
 #pragma mark - Mp4FileMetadata implementation
 
 NSString * Mp4FileMetadata::getGrouping() const {
-    if (!mp4File->tag()->itemListMap().contains(keyMp4TagGrouping)) return [NSString string];
+    if (!mp4File->tag()->itemListMap().contains(keyMp4TagGrouping)) return NULL;
     TagLib::MP4::Item m = mp4File->tag()->itemListMap()[keyMp4TagGrouping];
     TagLib::String value = m.toStringList().front();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * Mp4FileMetadata::getKey() const {
-    if (!mp4File->tag()->itemListMap().contains(keyMp4TagKey)) return [NSString string];
+    if (!mp4File->tag()->itemListMap().contains(keyMp4TagKey)) return NULL;
     TagLib::MP4::Item m = mp4File->tag()->itemListMap()[keyMp4TagKey];
     TagLib::String value = m.toStringList().front();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -635,16 +637,18 @@ bool Mp4FileMetadata::setKey(NSString *value) {
 #pragma mark - AsfFileMetadata implementation
 
 NSString * AsfFileMetadata::getGrouping() const {
-    if (!asfFile->tag()->attributeListMap().contains(keyAsfTagGrouping)) return [NSString string];
+    if (!asfFile->tag()->attributeListMap().contains(keyAsfTagGrouping)) return NULL;
     TagLib::ASF::AttributeList l = asfFile->tag()->attributeListMap()[keyAsfTagGrouping];
     TagLib::String value = l.front().toString();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
 NSString * AsfFileMetadata::getKey() const {
-    if (!asfFile->tag()->attributeListMap().contains(keyAsfTagKey)) return [NSString string];
+    if (!asfFile->tag()->attributeListMap().contains(keyAsfTagKey)) return NULL;
     TagLib::ASF::AttributeList l = asfFile->tag()->attributeListMap()[keyAsfTagKey];
     TagLib::String value = l.front().toString();
+    if (value == TagLib::String::null) return NULL;
     return [NSString stringWithUTF8String:value.toCString(true)];
 }
 
@@ -757,27 +761,27 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
     }
 }
 
-- (NSString *)getTitle {
+- (NSString * _Nullable)getTitle {
     return self.metadata->getTitle();
 }
 
-- (NSString *)getArtist {
+- (NSString * _Nullable)getArtist {
     return self.metadata->getArtist();
 }
 
-- (NSString *)getAlbum {
+- (NSString * _Nullable)getAlbum {
     return self.metadata->getAlbum();
 }
 
-- (NSString *)getComment {
+- (NSString * _Nullable)getComment {
     return self.metadata->getComment();
 }
 
-- (NSString *)getGrouping {
+- (NSString * _Nullable)getGrouping {
     return self.metadata->getGrouping();
 }
 
-- (NSString *)getKey {
+- (NSString * _Nullable)getKey {
     return self.metadata->getKey();
 }
 

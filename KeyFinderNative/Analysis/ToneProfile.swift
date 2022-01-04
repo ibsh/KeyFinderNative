@@ -24,17 +24,17 @@ final class ToneProfile {
 
     init(profile: [Float]) {
 
-        guard profile.count == Constants.bands else {
+        guard profile.count == Constants.Analysis.bands else {
             fatalError("Tone profile must have 72 elements")
         }
 
         var tonics = [Binode<Float>]()
 
-        for o in 0..<Constants.octaves {
-            var tonic = Binode<Float>(value: profile[o * Constants.semitones])
+        for o in 0..<Constants.Analysis.octaves {
+            var tonic = Binode<Float>(value: profile[o * Constants.Analysis.semitones])
             var q = tonic
-            for s in 1..<Constants.semitones {
-                let new = Binode<Float>(value: profile[o * Constants.semitones + s])
+            for s in 1..<Constants.Analysis.semitones {
+                let new = Binode<Float>(value: profile[o * Constants.Analysis.semitones + s])
                 q.r = new
                 new.l = q
                 q = new
@@ -54,7 +54,7 @@ final class ToneProfile {
     }
 
     deinit {
-        for o in 0..<Constants.octaves {
+        for o in 0..<Constants.Analysis.octaves {
             var p = tonics[o]
             repeat {
                 let zap = p
@@ -67,17 +67,17 @@ final class ToneProfile {
 
     func cosineSimilarity(input: [Float], offset: Int) -> Float {
 
-        guard input.count == Constants.bands else {
+        guard input.count == Constants.Analysis.bands else {
             fatalError("Chroma data must have 72 elements")
         }
 
-        let semitones = Constants.semitones
+        let semitones = Constants.Analysis.semitones
 
         var intersection: Float = 0.0
         var profileNorm: Float = 0.0
         var inputNorm: Float = 0.0
 
-        for o in 0..<Constants.octaves {
+        for o in 0..<Constants.Analysis.octaves {
             // Rotate starting pointer left for offset. Each step shifts the position
             // of the tonic one step further right of the starting pointer (or one semitone up).
             var p = tonics[o]

@@ -22,7 +22,7 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    var results = [String: Result<Constants.Key, SongProcessingError>]() {
+    var results = [String: Result<Key, SongProcessingError>]() {
         didSet {
             apply()
         }
@@ -32,16 +32,11 @@ final class SongListViewModel: ObservableObject {
         songs = Set(
             urls.map {
                 let path = $0.path
-                let songTags: SongTags? = tags[path]
+                let tags: SongTags? = tags[path]
                 return SongViewModel(
                     path: path,
                     filename: $0.lastPathComponent,
-                    title: songTags?.title,
-                    artist: songTags?.artist,
-                    album: songTags?.album,
-                    comment: songTags?.comment,
-                    grouping: songTags?.grouping,
-                    key: songTags?.key,
+                    tags: tags,
                     result: result(path: path)
                 )
             }
@@ -54,8 +49,7 @@ final class SongListViewModel: ObservableObject {
         }
         switch result {
         case .success(let key):
-            // TODO this `.title` is a bit arbitrary but anything except `.key` will work.
-            return .success(key.resultString(for: .title, with: Preferences()))
+            return .success(key.resultString(shortField: false, with: Preferences()))
         case .failure(let error):
             return .failure(error.localizedDescription)
         }

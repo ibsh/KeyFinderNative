@@ -15,7 +15,7 @@ enum Toolbox {
         factory: {
             guard let workingFormat = AVAudioFormat(
                 commonFormat: .pcmFormatFloat32,
-                sampleRate: Double(Constants.downsampledFrameRate),
+                sampleRate: Double(Constants.Analysis.downsampledFrameRate),
                 channels: 1,
                 interleaved: false
             ) else {
@@ -31,7 +31,7 @@ enum Toolbox {
     private static let blackmanWindowSingleton = Singleton<[Float]>(
         factory: {
             var blackmanWindow = [Float]()
-            let N = Constants.fftFrameSize
+            let N = Constants.Analysis.fftFrameSize
             return (0..<N).map { n in
                 let n = Float(n)
                 let N = Float(N)
@@ -44,7 +44,7 @@ enum Toolbox {
     }
 
     private static let chromaTransformSingleton = Singleton<ChromaTransform>(
-        factory: { return ChromaTransform(frameRate: Constants.downsampledFrameRate) }
+        factory: { return ChromaTransform(frameRate: Constants.Analysis.downsampledFrameRate) }
     )
     static func chromaTransform() -> ChromaTransform {
         return chromaTransformSingleton.get()
@@ -59,7 +59,7 @@ enum Toolbox {
 
     private static let fourierTransformPool = ResourcePool<FourierTransform>(
         factory: {
-            FourierTransform(frameSize: Constants.fftFrameSize)
+            FourierTransform(frameSize: Constants.Analysis.fftFrameSize)
         }
     )
     static func fourierTransform() -> PooledResourceWrapper<FourierTransform> {

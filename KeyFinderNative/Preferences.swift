@@ -135,9 +135,9 @@ extension Preferences {
     }
 }
 
-private extension Preferences {
+extension Preferences {
 
-    enum Constants {
+    private enum Constants {
 
         enum UserDefaultsKeys {
             private static let prefix = "uk.co.ibrahimshaath.keyfinder."
