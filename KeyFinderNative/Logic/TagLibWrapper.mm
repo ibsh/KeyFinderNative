@@ -174,11 +174,9 @@ protected:
 
 #pragma mark - Constants
 
-NSString *concatenateFormat = @"%@%@%@";
-
 const char* keyXiphTagComment      = "COMMENT";
 const char* keyId3TagiTunesComment = "COMM";
-const char* lngId3TagiTunesComment = "eng"; // will this mess up localisations?
+const char* lngId3TagiTunesComment = "eng"; // TODO will this mess up localisations?
 const char* keyMp4TagGrouping      = "\251grp";
 const char* keyAsfTagGrouping      = "WM/ContentGroupDescription";
 const char* keyApeTagGrouping      = "Grouping";
@@ -727,97 +725,35 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
     delete self.metadata;
 }
 
-- (void)writeTagsWithResultString:(NSString *)resultString
-                   prependToTitle:(BOOL)prependToTitle
-                    appendToTitle:(BOOL)appendToTitle
-                  prependToArtist:(BOOL)prependToArtist
-                   appendToArtist:(BOOL)appendToArtist
-                   prependToAlbum:(BOOL)prependToAlbum
-                    appendToAlbum:(BOOL)appendToAlbum
-                 prependToComment:(BOOL)prependToComment
-                  appendToComment:(BOOL)appendToComment
-                 overwriteComment:(BOOL)overwriteComment
-                prependToGrouping:(BOOL)prependToGrouping
-                 appendToGrouping:(BOOL)appendToGrouping
-                overwriteGrouping:(BOOL)overwriteGrouping
-                     overwriteKey:(BOOL)overwriteKey
-                     tagDelimiter:(NSString *)tagDelimiter {
+- (void)writeTagsWithTitle:(NSString * _Nullable)title
+                    artist:(NSString * _Nullable)artist
+                     album:(NSString * _Nullable)album
+                   comment:(NSString * _Nullable)comment
+                  grouping:(NSString * _Nullable)grouping
+                       key:(NSString * _Nullable)key {
 
-    NSString *oldTitle = self.metadata->getTitle();
-    NSString *oldArtist = self.metadata->getArtist();
-    NSString *oldAlbum = self.metadata->getAlbum();
-    NSString *oldComment = self.metadata->getComment();
-    NSString *oldGrouping = self.metadata->getGrouping();
-
-    // Title
-
-    if (prependToTitle) {
-        NSString *newTitle = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldTitle];
-        self.metadata->setTitle(newTitle);
-    }
-    if (appendToTitle) {
-        NSString *newTitle = [NSString stringWithFormat:concatenateFormat, oldTitle, tagDelimiter, resultString];
-        self.metadata->setTitle(newTitle);
+    if (title != NULL) {
+        self.metadata->setTitle(title);
     }
 
-    // Artist
-
-    if (prependToArtist) {
-        NSString *newArtist = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldArtist];
-        self.metadata->setArtist(newArtist);
-    }
-    if (appendToArtist) {
-        NSString *newArtist = [NSString stringWithFormat:concatenateFormat, oldArtist, tagDelimiter, resultString];
-        self.metadata->setArtist(newArtist);
+    if (artist != NULL) {
+        self.metadata->setArtist(artist);
     }
 
-    // Album
-
-    if (prependToAlbum) {
-        NSString *newAlbum = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldAlbum];
-        self.metadata->setAlbum(newAlbum);
-    }
-    if (appendToAlbum) {
-        NSString *newAlbum = [NSString stringWithFormat:concatenateFormat, oldAlbum, tagDelimiter, resultString];
-        self.metadata->setAlbum(newAlbum);
+    if (album != NULL) {
+        self.metadata->setAlbum(album);
     }
 
-    // Comment
-
-    if (prependToComment) {
-        NSString *newComment = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldComment];
-        self.metadata->setComment(newComment);
-    }
-    if (appendToComment) {
-        NSString *newComment = [NSString stringWithFormat:concatenateFormat, oldComment, tagDelimiter, resultString];
-        self.metadata->setComment(newComment);
-    }
-    if (overwriteComment) {
-        self.metadata->setComment(resultString);
+    if (comment != NULL) {
+        self.metadata->setComment(comment);
     }
 
-    // Grouping
-
-    if (prependToGrouping) {
-        NSString *newGrouping = [NSString stringWithFormat:concatenateFormat, resultString, tagDelimiter, oldGrouping];
-        self.metadata->setGrouping(newGrouping);
-    }
-    if (appendToGrouping) {
-        NSString *newGrouping = [NSString stringWithFormat:concatenateFormat, oldGrouping, tagDelimiter, resultString];
-        self.metadata->setGrouping(newGrouping);
-    }
-    if (overwriteGrouping) {
-        self.metadata->setGrouping(resultString);
+    if (grouping != NULL) {
+        self.metadata->setGrouping(grouping);
     }
 
-    // Key
-
-    if (overwriteKey) {
-        if (resultString.length > 3) {
-            self.metadata->setKey([resultString substringToIndex:3]);
-        } else {
-            self.metadata->setKey(resultString);
-        }
+    if (key != NULL) {
+        self.metadata->setKey(key);
     }
 }
 

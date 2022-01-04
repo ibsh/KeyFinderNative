@@ -273,14 +273,26 @@ extension Constants.Key {
         }
     }
 
-    func resultString(preferences: Preferences) -> String {
-        switch preferences.whatToWrite {
-        case .keys:
-            return defaultString
-        case .customCodes:
-            return customCode(preferences: preferences)
-        case .both:
-            return "\(customCode(preferences: preferences)) \(defaultString)"
+    func resultString(for field: SongTags.Field, with preferences: Preferences) -> String {
+        let resultString: String = {
+            switch preferences.whatToWrite {
+            case .keys:
+                return defaultString
+            case .customCodes:
+                return customCode(preferences: preferences)
+            case .both:
+                return "\(customCode(preferences: preferences)) \(defaultString)"
+            }
+        }()
+        switch field {
+        case .title,
+             .artist,
+             .album,
+             .comment,
+             .grouping:
+            return resultString
+        case .key:
+            return String(resultString.prefix(3))
         }
     }
 }

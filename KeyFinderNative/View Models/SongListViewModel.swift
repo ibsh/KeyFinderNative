@@ -54,7 +54,8 @@ final class SongListViewModel: ObservableObject {
         }
         switch result {
         case .success(let key):
-            return .success(key.resultString(preferences: Preferences()))
+            // TODO this `.title` is a bit arbitrary but anything except `.key` will work.
+            return .success(key.resultString(for: .title, with: Preferences()))
         case .failure(let error):
             return .failure(error.localizedDescription)
         }

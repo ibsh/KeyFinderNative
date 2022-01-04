@@ -39,33 +39,33 @@ struct PreferencesView: View {
                         }
                     }
                     Text("Where to write")
-                    Picker(selection: $preferences.howToWriteToTitleTag, label: Text("Title tag")) {
-                        ForEach(Preferences.HowToWrite.titleTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToTitleField, label: Text("Title tag")) {
+                        ForEach(Preferences.HowToWrite.titleFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
-                    Picker(selection: $preferences.howToWriteToArtistTag, label: Text("Artist tag")) {
-                        ForEach(Preferences.HowToWrite.artistTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToArtistField, label: Text("Artist tag")) {
+                        ForEach(Preferences.HowToWrite.artistFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
-                    Picker(selection: $preferences.howToWriteToAlbumTag, label: Text("Album tag")) {
-                        ForEach(Preferences.HowToWrite.albumTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToAlbumField, label: Text("Album tag")) {
+                        ForEach(Preferences.HowToWrite.albumFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
-                    Picker(selection: $preferences.howToWriteToCommentTag, label: Text("Comment tag")) {
-                        ForEach(Preferences.HowToWrite.commentTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToCommentField, label: Text("Comment tag")) {
+                        ForEach(Preferences.HowToWrite.commentFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
-                    Picker(selection: $preferences.howToWriteToGroupingTag, label: Text("Grouping tag")) {
-                        ForEach(Preferences.HowToWrite.groupingTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToGroupingField, label: Text("Grouping tag")) {
+                        ForEach(Preferences.HowToWrite.groupingFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
-                    Picker(selection: $preferences.howToWriteToKeyTag, label: Text("Key tag")) {
-                        ForEach(Preferences.HowToWrite.keyTagOptions) { value in
+                    Picker(selection: $preferences.howToWriteToKeyField, label: Text("Key tag")) {
+                        ForEach(Preferences.HowToWrite.keyFieldOptions) { value in
                             Text(value.description).tag(value)
                         }
                     }
@@ -73,22 +73,22 @@ struct PreferencesView: View {
                         Text("Delimiter for prepend/append")
                         TextField(
                             String(),
-                            text: $preferences.tagDelimiter
+                            text: $preferences.fieldDelimiter
                         )
                         .disableAutocorrection(true)
                         .frame(width: 48, height: nil, alignment: .trailing)
                     }
                     .disabled(
-                        preferences.howToWriteToTitleTag != .prepend
-                            && preferences.howToWriteToArtistTag != .prepend
-                            && preferences.howToWriteToAlbumTag != .prepend
-                            && preferences.howToWriteToCommentTag != .prepend
-                            && preferences.howToWriteToGroupingTag != .prepend
-                            && preferences.howToWriteToTitleTag != .append
-                            && preferences.howToWriteToArtistTag != .append
-                            && preferences.howToWriteToAlbumTag != .append
-                            && preferences.howToWriteToCommentTag != .append
-                            && preferences.howToWriteToGroupingTag != .append
+                        preferences.howToWriteToTitleField != .prepend
+                            && preferences.howToWriteToArtistField != .prepend
+                            && preferences.howToWriteToAlbumField != .prepend
+                            && preferences.howToWriteToCommentField != .prepend
+                            && preferences.howToWriteToGroupingField != .prepend
+                            && preferences.howToWriteToTitleField != .append
+                            && preferences.howToWriteToArtistField != .append
+                            && preferences.howToWriteToAlbumField != .append
+                            && preferences.howToWriteToCommentField != .append
+                            && preferences.howToWriteToGroupingField != .append
                     )
                 }
                 Divider()

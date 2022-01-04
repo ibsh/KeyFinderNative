@@ -11,14 +11,32 @@ import AVFoundation
 
 final class Tagger {
 
-    private let url: URL
+    private let wrapper: TagLibWrapper
 
     init(url: URL) {
-        self.url = url
+        wrapper = TagLibWrapper(url: url)
     }
 
     func readTags() -> SongTags? {
-        let wrapper = TagLibWrapper(url: url)
+        return tags
+    }
+
+    func writeTags(key: Constants.Key, preferences: Preferences) {
+        guard let tags = tags else {
+            print("Nope")
+            return
+        }
+        wrapper.writeTags(
+            withTitle: preferences.writeTo(field: .title, key: key, tags: tags),
+            artist: preferences.writeTo(field: .artist, key: key, tags: tags),
+            album: preferences.writeTo(field: .album, key: key, tags: tags),
+            comment: preferences.writeTo(field: .comment, key: key, tags: tags),
+            grouping: preferences.writeTo(field: .grouping, key: key, tags: tags),
+            key: preferences.writeTo(field: .key, key: key, tags: tags)
+        )
+    }
+
+    private var tags: SongTags? {
         return SongTags(
             title: wrapper.getTitle(),
             artist: wrapper.getArtist(),
@@ -28,93 +46,37 @@ final class Tagger {
             key: wrapper.getKey()
         )
     }
-
-    func writeTags(key: Constants.Key, preferences: Preferences) {
-        let wrapper = TagLibWrapper(url: url)
-        wrapper.writeTags(
-            withResultString: key.resultString(preferences: preferences),
-            prependToTitle: preferences.prependToTitle,
-            appendToTitle: preferences.appendToTitle,
-            prependToArtist: preferences.prependToArtist,
-            appendToArtist: preferences.appendToArtist,
-            prependToAlbum: preferences.prependToAlbum,
-            appendToAlbum: preferences.appendToAlbum,
-            prependToComment: preferences.prependToComment,
-            appendToComment: preferences.appendToComment,
-            overwriteComment: preferences.overwriteComment,
-            prependToGrouping: preferences.prependToGrouping,
-            appendToGrouping: preferences.appendToGrouping,
-            overwriteGrouping: preferences.overwriteGrouping,
-            overwriteKey: preferences.overwriteKey,
-            tagDelimiter: preferences.tagDelimiter
-        )
-    }
 }
 
 private extension Preferences {
 
-    // MARK: - Title
-
-    var prependToTitle: Bool {
-        return howToWriteToTitleTag.isPrepend
-    }
-
-    var appendToTitle: Bool {
-        return howToWriteToTitleTag.isAppend
-    }
-
-    // MARK: - Artist
-
-    var prependToArtist: Bool {
-        return howToWriteToArtistTag.isPrepend
-    }
-
-    var appendToArtist: Bool {
-        return howToWriteToArtistTag.isAppend
-    }
-
-    // MARK: - Album
-
-    var prependToAlbum: Bool {
-        return howToWriteToAlbumTag.isPrepend
-    }
-
-    var appendToAlbum: Bool {
-        return howToWriteToAlbumTag.isAppend
-    }
-
-    // MARK: - Comment
-
-    var prependToComment: Bool {
-        return howToWriteToCommentTag.isPrepend
-    }
-
-    var appendToComment: Bool {
-        return howToWriteToCommentTag.isAppend
-    }
-
-    var overwriteComment: Bool {
-        return howToWriteToCommentTag.isOverwrite
-    }
-
-    // MARK: - Grouping
-
-    var prependToGrouping: Bool {
-        return howToWriteToGroupingTag.isPrepend
-    }
-
-    var appendToGrouping: Bool {
-        return howToWriteToGroupingTag.isAppend
-    }
-
-    var overwriteGrouping: Bool {
-        return howToWriteToGroupingTag.isOverwrite
-    }
-
-    // MARK: - Key
-
-    var overwriteKey: Bool {
-        return howToWriteToKeyTag.isOverwrite
+    func writeTo(field: SongTags.Field, key: Constants.Key, tags: SongTags) -> String? {
+        let resultString = key.resultString(for: field, with: self)
+        switch tags.titleFieldContainsExistingMetadata(self) {
+        case .noExistingData:
+            break
+        case .existingData,
+                .irrelevant:
+            return nil
+        }
+        switch howToWrite(to: field) {
+        case .no:
+            return nil
+        case .prepend:
+            if let title = tags.title {
+                return "\(resultString)\(fieldDelimiter)\(title)"
+            } else {
+                return resultString
+            }
+        case .append:
+            if let title = tags.title {
+                return "\(title)\(fieldDelimiter)\(resultString)"
+            } else {
+                return resultString
+            }
+        case .overwrite:
+            return resultString
+        }
     }
 }
 

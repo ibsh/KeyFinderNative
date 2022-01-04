@@ -224,7 +224,7 @@ extension ContentViewBody {
 
             let urlsAndTagsWithExistingMetadata = urlsToProcess
                 .map { ($0, model.tags[$0.path]) }
-                .filter { $0.1?.hasExistingMetadata(preferences: preferences) ?? false }
+                .filter { $0.1?.allRelevantFieldsContainExistingMetadata(preferences: preferences) ?? false }
 
             let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
 

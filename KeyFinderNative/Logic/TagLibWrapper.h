@@ -16,21 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithURL:(NSURL *)url;
 
-- (void)writeTagsWithResultString:(NSString *)resultString
-                   prependToTitle:(BOOL)prependToTitle
-                    appendToTitle:(BOOL)appendToTitle
-                  prependToArtist:(BOOL)prependToArtist
-                   appendToArtist:(BOOL)appendToArtist
-                   prependToAlbum:(BOOL)prependToAlbum
-                    appendToAlbum:(BOOL)appendToAlbum
-                 prependToComment:(BOOL)prependToComment
-                  appendToComment:(BOOL)appendToComment
-                 overwriteComment:(BOOL)overwriteComment
-                prependToGrouping:(BOOL)prependToGrouping
-                 appendToGrouping:(BOOL)appendToGrouping
-                overwriteGrouping:(BOOL)overwriteGrouping
-                     overwriteKey:(BOOL)overwriteKey
-                     tagDelimiter:(NSString *)tagDelimiter;
+- (void)writeTagsWithTitle:(NSString * _Nullable)title
+                    artist:(NSString * _Nullable)artist
+                     album:(NSString * _Nullable)album
+                   comment:(NSString * _Nullable)comment
+                  grouping:(NSString * _Nullable)grouping
+                       key:(NSString * _Nullable)key;
 
 - (NSString *)getTitle;
 - (NSString *)getArtist;
