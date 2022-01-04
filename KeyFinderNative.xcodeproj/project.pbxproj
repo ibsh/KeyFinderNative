@@ -30,6 +30,7 @@
 		61909586277E49370035B05C /* TagLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 61909582277E491D0035B05C /* TagLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		61909588277E5B430035B05C /* ModalWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61909587277E5B430035B05C /* ModalWindow.swift */; };
 		6190958A277E5DEC0035B05C /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61909589277E5DEC0035B05C /* EventHandler.swift */; };
+		6192F35D2783E86500A1D3C3 /* InitializableWithOptional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192F35C2783E86500A1D3C3 /* InitializableWithOptional.swift */; };
 		61A0244525A17A2E0082C4C3 /* Tagger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A0244425A17A2E0082C4C3 /* Tagger.swift */; };
 		61A21213277B88B100395680 /* ScrollingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21212277B88B100395680 /* ScrollingTableView.swift */; };
 		61A21215277B897D00395680 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21214277B897D00395680 /* TableViewController.swift */; };
@@ -99,6 +100,7 @@
 		61909582277E491D0035B05C /* TagLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TagLib.framework; path = Carthage/Build/Mac/TagLib.framework; sourceTree = "<group>"; };
 		61909587277E5B430035B05C /* ModalWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalWindow.swift; sourceTree = "<group>"; };
 		61909589277E5DEC0035B05C /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
+		6192F35C2783E86500A1D3C3 /* InitializableWithOptional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitializableWithOptional.swift; sourceTree = "<group>"; };
 		619E9B2F2773A9D3004A7233 /* KeyFinderNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KeyFinderNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		61A0244425A17A2E0082C4C3 /* Tagger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagger.swift; sourceTree = "<group>"; };
 		61A21212277B88B100395680 /* ScrollingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingTableView.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				61A21218277BE42D00395680 /* EnumElementIndex.swift */,
 				61A2121B277CFCFF00395680 /* ResourcePool.swift */,
 				61A2121D277CFE5500395680 /* Singleton.swift */,
+				6192F35C2783E86500A1D3C3 /* InitializableWithOptional.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */,
 				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
 				61A90AB827839EC900F6F0A7 /* SongTags.swift in Sources */,
+				6192F35D2783E86500A1D3C3 /* InitializableWithOptional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

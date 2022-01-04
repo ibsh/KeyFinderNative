@@ -13,7 +13,6 @@ enum Constants {
     static let semitones = 12 // per octave, obviously
     static let octaves = octaveWeights.count
     static let bands = semitones * octaves
-    static let toneProfileSize = bands * 2
 
     static let fftFrameSize = 16384
     static let hopSize = fftFrameSize / 4

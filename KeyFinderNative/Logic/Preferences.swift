@@ -8,18 +8,6 @@
 
 import Foundation
 
-protocol InitializableWithOptional {
-    associatedtype T
-    init?(maybeRawValue: T?)
-}
-
-extension InitializableWithOptional where Self: RawRepresentable {
-    init?(maybeRawValue: RawValue?) {
-        guard let rawValue = maybeRawValue else { return nil }
-        self.init(rawValue: rawValue)
-    }
-}
-
 struct Preferences {
 
     var skipFilesWithExistingMetadata: Bool
@@ -78,13 +66,13 @@ extension Preferences {
         skipFilesWithExistingMetadata = (ud.value(forKey: k.skipFilesWithExistingMetadata) as? Bool) ?? d.skipFilesWithExistingMetadata
         skipFilesLongerThanMinutes = (ud.value(forKey: k.skipFilesLongerThanMinutes) as? Int) ?? d.skipFilesLongerThanMinutes
         writeAutomatically = (ud.value(forKey: k.writeAutomatically) as? Bool) ?? d.writeAutomatically
-        whatToWrite = WhatToWrite(maybeRawValue: ud.value(forKey: k.whatToWrite) as? Int) ?? d.whatToWrite
-        howToWriteToTitleField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToTitleField) as? Int) ?? d.howToWriteToTitleField
-        howToWriteToArtistField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToArtistField) as? Int) ?? d.howToWriteToArtistField
-        howToWriteToAlbumField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToAlbumField) as? Int) ?? d.howToWriteToAlbumField
-        howToWriteToCommentField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToCommentField) as? Int) ?? d.howToWriteToCommentField
-        howToWriteToGroupingField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToGroupingField) as? Int) ?? d.howToWriteToGroupingField
-        howToWriteToKeyField = HowToWrite(maybeRawValue: ud.value(forKey: k.howToWriteToKeyField) as? Int) ?? d.howToWriteToKeyField
+        whatToWrite = WhatToWrite(optionalRawValue: ud.value(forKey: k.whatToWrite) as? Int) ?? d.whatToWrite
+        howToWriteToTitleField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToTitleField) as? Int) ?? d.howToWriteToTitleField
+        howToWriteToArtistField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToArtistField) as? Int) ?? d.howToWriteToArtistField
+        howToWriteToAlbumField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToAlbumField) as? Int) ?? d.howToWriteToAlbumField
+        howToWriteToCommentField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToCommentField) as? Int) ?? d.howToWriteToCommentField
+        howToWriteToGroupingField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToGroupingField) as? Int) ?? d.howToWriteToGroupingField
+        howToWriteToKeyField = HowToWrite(optionalRawValue: ud.value(forKey: k.howToWriteToKeyField) as? Int) ?? d.howToWriteToKeyField
         fieldDelimiter = (ud.value(forKey: k.fieldDelimiter) as? String) ?? d.fieldDelimiter
         customCodesMajor = (ud.value(forKey: k.customCodesMajor) as? [String]) ?? d.customCodesMajor
         customCodesMinor = (ud.value(forKey: k.customCodesMinor) as? [String]) ?? d.customCodesMinor
