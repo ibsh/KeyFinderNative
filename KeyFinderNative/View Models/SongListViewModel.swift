@@ -16,7 +16,7 @@ final class SongListViewModel: ObservableObject {
         }
     }
 
-    var tags = [String: SongTags]() {
+    var tagStores = [String: SongTagStore]() {
         didSet {
             apply()
         }
@@ -32,11 +32,10 @@ final class SongListViewModel: ObservableObject {
         songs = Set(
             urls.map {
                 let path = $0.path
-                let tags: SongTags? = tags[path]
                 return SongViewModel(
                     path: path,
                     filename: $0.lastPathComponent,
-                    tags: tags,
+                    tagStore: tagStores[path],
                     result: result(path: path)
                 )
             }

@@ -12,41 +12,42 @@ import AVFoundation
 final class Tagger {
 
     private let wrapper: TagIOWrapping
+    private let tagInterpreterFactory: SongTagInterpreterFactory
     private let preferences: Preferences
 
     init(
         url: URL,
-        wrapperFactory: TagIOWrappingFactory = { TagLibWrapper(url: $0) },
+        wrapperFactory: TagIOWrappingFactory = Constants.defaultTagIOWrappingFactory,
+        tagInterpreterFactory: @escaping SongTagInterpreterFactory = Constants.defaultTagInterpreterFactory,
         preferences: Preferences
     ) {
         wrapper = wrapperFactory(url)
+        self.tagInterpreterFactory = tagInterpreterFactory
         self.preferences = preferences
     }
 
-    func readTags() -> SongTags? {
-        return tags
+    func readTags() -> SongTagStore {
+        return tagStore
     }
 
     func writeTags(key: Key) {
-        guard let tags = tags else {
-            print("Nope")
-            return
-        }
+        let tagStore = self.tagStore
+        let tagInterpreter = tagInterpreterFactory(preferences)
         wrapper.writeTags(
-            title: tags.stringToWrite(field: .title, key: key, with: preferences),
-            artist: tags.stringToWrite(field: .artist, key: key, with: preferences),
-            album: tags.stringToWrite(field: .album, key: key, with: preferences),
-            comment: tags.stringToWrite(field: .comment, key: key, with: preferences),
-            grouping: tags.stringToWrite(field: .grouping, key: key, with: preferences),
-            key: tags.stringToWrite(field: .key, key: key, with: preferences)
+            title: tagInterpreter.stringToWrite(field: .title, key: key, tagStore: tagStore),
+            artist: tagInterpreter.stringToWrite(field: .artist, key: key, tagStore: tagStore),
+            album: tagInterpreter.stringToWrite(field: .album, key: key, tagStore: tagStore),
+            comment: tagInterpreter.stringToWrite(field: .comment, key: key, tagStore: tagStore),
+            grouping: tagInterpreter.stringToWrite(field: .grouping, key: key, tagStore: tagStore),
+            key: tagInterpreter.stringToWrite(field: .key, key: key, tagStore: tagStore)
         )
     }
 }
 
 extension Tagger {
 
-    private var tags: SongTags? {
-        return SongTags(
+    private var tagStore: SongTagStore {
+        return SongTagStore(
             title: wrapper.getTitle(),
             artist: wrapper.getArtist(),
             album: wrapper.getAlbum(),
@@ -54,5 +55,21 @@ extension Tagger {
             grouping: wrapper.getGrouping(),
             key: wrapper.getKey()
         )
+    }
+}
+
+extension Tagger {
+
+    private enum Constants {
+
+        static let defaultTagIOWrappingFactory: TagIOWrappingFactory = {
+            TagLibWrapper(url: $0)
+        }
+
+        static let defaultTagInterpreterFactory: SongTagInterpreterFactory = {
+            SongTagInterpreter(
+                preferences: $0
+            )
+        }
     }
 }

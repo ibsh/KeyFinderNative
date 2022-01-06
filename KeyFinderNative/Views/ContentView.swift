@@ -181,7 +181,7 @@ extension ContentViewBody {
 
         let urls = urls.sorted(by: { $0.path < $1.path })
 
-        var tagsToMerge = [String: SongTags]()
+        var tagStoresToMerge = [String: SongTagStore]()
 
         processingQueue.async {
 
@@ -191,16 +191,16 @@ extension ContentViewBody {
                 let songTags = Tagger(url: url, preferences: preferences).readTags()
 
                 DispatchQueue.main.async {
-                    tagsToMerge[url.path] = songTags
-                    if tagsToMerge.count >= 20 {
-                        model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
-                        tagsToMerge.removeAll()
+                    tagStoresToMerge[url.path] = songTags
+                    if tagStoresToMerge.count >= 20 {
+                        model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                        tagStoresToMerge.removeAll()
                     }
                 }
             }
 
             DispatchQueue.main.async {
-                model.tags.merge(tagsToMerge, uniquingKeysWith: { $1 })
+                model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
                 activity = .waiting
             }
         }
@@ -219,13 +219,17 @@ extension ContentViewBody {
         activity = .processing
 
         let preferences = Preferences()
+        let tagInterpreter = SongTagInterpreter(preferences: preferences)
         let workingFormat = Toolbox.workingFormat()
 
         processingQueue.async {
 
             let urlsAndTagsWithExistingMetadata = urlsToProcess
-                .map { ($0, model.tags[$0.path]) }
-                .filter { $0.1?.allRelevantFieldsContainExistingMetadata(preferences: preferences) ?? false }
+                .map { ($0, model.tagStores[$0.path]) }
+                .filter {
+                    guard let tagStore = $0.1 else { return false }
+                    return tagInterpreter.allRelevantFieldsContainExistingMetadata(tagStore: tagStore)
+                }
 
             let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
 

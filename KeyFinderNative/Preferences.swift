@@ -123,7 +123,7 @@ extension Preferences.HowToWrite: CustomStringConvertible {
 
 extension Preferences {
 
-    func howToWrite(to field: SongTags.Field) -> Preferences.HowToWrite {
+    func howToWrite(to field: SongTagField) -> Preferences.HowToWrite {
         switch field {
         case .title:    return howToWriteToTitleField
         case .artist:   return howToWriteToArtistField

@@ -25,7 +25,7 @@ struct SongViewModel: Hashable, Equatable, Identifiable {
     let path: String
 
     let filename: String
-    let tags: SongTags?
+    let tagStore: SongTagStore?
     let result: Result?
 
     var resultString: String? { return result?.string }

@@ -9,7 +9,7 @@
 import Foundation
 @testable import KeyFinder
 
-private final class FakeTagIOWrapper: TagIOWrapping {
+final class FakeTagIOWrapper: TagIOWrapping {
 
     var titleValue: String?
     var artistValue: String?

@@ -41,12 +41,12 @@ extension SongViewModel {
             switch $0 {
             case .filename: return filename
             case .path: return path
-            case .title: return tags?.title
-            case .artist: return tags?.artist
-            case .album: return tags?.album
-            case .comment: return tags?.comment
-            case .grouping: return tags?.grouping
-            case .key: return tags?.key
+            case .title: return tagStore?.title
+            case .artist: return tagStore?.artist
+            case .album: return tagStore?.album
+            case .comment: return tagStore?.comment
+            case .grouping: return tagStore?.grouping
+            case .key: return tagStore?.key
             case .resultString: return resultString
             }
         }
