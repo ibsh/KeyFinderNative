@@ -38,21 +38,22 @@ enum Key: CaseIterable {
 
 extension Key {
 
-    func resultString(shortField: Bool, with preferences: Preferences) -> String {
+    func displayString(shortField: Bool, with preferences: Preferences) -> String {
         let resultString: String = {
             switch preferences.whatToWrite {
             case .keys:
-                return defaultName
+                return keyString
             case .customCodes:
                 return customCode(preferences: preferences)
             case .both:
-                return "\(customCode(preferences: preferences)) \(defaultName)"
+                return "\(customCode(preferences: preferences)) \(keyString)"
             }
         }()
-        return shortField ? String(resultString.prefix(3)) : resultString
+        let output = shortField ? String(resultString.prefix(3)) : resultString
+        return output.trimmingCharacters(in: .whitespaces)
     }
 
-    private var defaultName: String {
+    private var keyString: String {
         switch self {
         case .AMajor:     return "A"
         case .AMinor:     return "Am"

@@ -146,6 +146,6 @@ extension SongTagField {
                 return true
             }
         }()
-        return key.resultString(shortField: shortField, with: preferences)
+        return key.displayString(shortField: shortField, with: preferences)
     }
 }
