@@ -32,16 +32,26 @@ struct Preferences {
 
         var id: HowToWrite { self }
 
-        private static let unusualTags: [HowToWrite] = [.no, .prepend, .append]
-        static let titleFieldOptions = unusualTags
-        static let artistFieldOptions = unusualTags
-        static let albumFieldOptions = unusualTags
+        private static let unusualFields: [HowToWrite] = [.no, .prepend, .append]
+        private static let usualFields: [HowToWrite] = [.no, .prepend, .append, .overwrite]
+        private static let keyField: [HowToWrite] = [.no, .overwrite]
+        private static let titleFieldOptions = unusualFields
+        private static let artistFieldOptions = unusualFields
+        private static let albumFieldOptions = unusualFields
+        private static let commentFieldOptions = usualFields
+        private static let groupingFieldOptions = usualFields
+        private static let keyFieldOptions = keyField
 
-        private static let usualTags: [HowToWrite] = [.no, .prepend, .append, .overwrite]
-        static let commentFieldOptions = usualTags
-        static let groupingFieldOptions = usualTags
-
-        static let keyFieldOptions: [HowToWrite] = [.no, .overwrite]
+        static func options(for field: SongTagField) -> [Preferences.HowToWrite] {
+            switch field {
+            case .title: return titleFieldOptions
+            case .artist: return artistFieldOptions
+            case .album: return albumFieldOptions
+            case .comment: return commentFieldOptions
+            case .grouping: return groupingFieldOptions
+            case .key: return keyFieldOptions
+            }
+        }
     }
 
     private var _howToWriteToTitleField: HowToWrite = Constants.Defaults.howToWriteToTitleField
@@ -50,7 +60,7 @@ struct Preferences {
             return _howToWriteToTitleField
         }
         set {
-            guard HowToWrite.titleFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .title).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToTitleField = newValue
@@ -63,7 +73,7 @@ struct Preferences {
             return _howToWriteToArtistField
         }
         set {
-            guard HowToWrite.artistFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .artist).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToArtistField = newValue
@@ -76,7 +86,7 @@ struct Preferences {
             return _howToWriteToAlbumField
         }
         set {
-            guard HowToWrite.albumFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .album).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToAlbumField = newValue
@@ -89,7 +99,7 @@ struct Preferences {
             return _howToWriteToCommentField
         }
         set {
-            guard HowToWrite.commentFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .comment).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToCommentField = newValue
@@ -102,7 +112,7 @@ struct Preferences {
             return _howToWriteToGroupingField
         }
         set {
-            guard HowToWrite.groupingFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .grouping).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToGroupingField = newValue
@@ -115,7 +125,7 @@ struct Preferences {
             return _howToWriteToKeyField
         }
         set {
-            guard HowToWrite.keyFieldOptions.contains(newValue) else {
+            guard HowToWrite.options(for: .key).contains(newValue) else {
                 fatalError("bad option")
             }
             _howToWriteToKeyField = newValue
@@ -203,6 +213,17 @@ extension Preferences {
         case .comment:  return howToWriteToCommentField
         case .grouping: return howToWriteToGroupingField
         case .key:      return howToWriteToKeyField
+        }
+    }
+
+    mutating func setHowToWrite(to field: SongTagField, _ value: HowToWrite) {
+        switch field {
+        case .title:    howToWriteToTitleField = value
+        case .artist:   howToWriteToArtistField = value
+        case .album:    howToWriteToAlbumField = value
+        case .comment:  howToWriteToCommentField = value
+        case .grouping: howToWriteToGroupingField = value
+        case .key:      howToWriteToKeyField = value
         }
     }
 }

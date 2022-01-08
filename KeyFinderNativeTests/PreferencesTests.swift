@@ -12,12 +12,12 @@ import XCTest
 final class PreferencesTests: XCTestCase {
 
     func testThatTheHowToWriteOptionsForEachTagFieldDontChange() {
-        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.titleFieldOptions)
-        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.artistFieldOptions)
-        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.albumFieldOptions)
-        XCTAssertEqual([.no, .prepend, .append, .overwrite], Preferences.HowToWrite.commentFieldOptions)
-        XCTAssertEqual([.no, .prepend, .append, .overwrite], Preferences.HowToWrite.groupingFieldOptions)
-        XCTAssertEqual([.no, .overwrite], Preferences.HowToWrite.keyFieldOptions)
+        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.options(for: .title))
+        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.options(for: .artist))
+        XCTAssertEqual([.no, .prepend, .append], Preferences.HowToWrite.options(for: .album))
+        XCTAssertEqual([.no, .prepend, .append, .overwrite], Preferences.HowToWrite.options(for: .comment))
+        XCTAssertEqual([.no, .prepend, .append, .overwrite], Preferences.HowToWrite.options(for: .grouping))
+        XCTAssertEqual([.no, .overwrite], Preferences.HowToWrite.options(for: .key))
     }
 
     func testThatHowToWriteToFieldReturnsTheAppropriateData() {

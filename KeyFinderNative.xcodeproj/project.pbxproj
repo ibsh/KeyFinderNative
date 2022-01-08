@@ -53,6 +53,8 @@
 		61C1E48A2787F3C000B2D930 /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C1E4892787F3C000B2D930 /* PreferencesTests.swift */; };
 		61C1E48E2787FA9E00B2D930 /* FakePreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C1E48D2787FA9E00B2D930 /* FakePreferencesStorage.swift */; };
 		61C1E48F2787FAF400B2D930 /* PreferencesStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C1E48B2787FA6200B2D930 /* PreferencesStoring.swift */; };
+		61C1E4912787FD4500B2D930 /* SongTagInterpreterStringToWriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C1E4902787FD4500B2D930 /* SongTagInterpreterStringToWriteTests.swift */; };
+		61C1E49327891DCB00B2D930 /* SongTagInterpreterExistingMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C1E49227891DCB00B2D930 /* SongTagInterpreterExistingMetadataTests.swift */; };
 		61DAA14A25AA90F500512FE9 /* Droppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAA14925AA90F500512FE9 /* Droppable.swift */; };
 		61F8F3D72786A9F80023EB25 /* SongTagInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F8F3D52786A8250023EB25 /* SongTagInterpreter.swift */; };
 		61F8F3D92786AB560023EB25 /* SongTagInterpreterSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F8F3D82786AB560023EB25 /* SongTagInterpreterSpy.swift */; };
@@ -135,6 +137,8 @@
 		61C1E4892787F3C000B2D930 /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
 		61C1E48B2787FA6200B2D930 /* PreferencesStoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStoring.swift; sourceTree = "<group>"; };
 		61C1E48D2787FA9E00B2D930 /* FakePreferencesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePreferencesStorage.swift; sourceTree = "<group>"; };
+		61C1E4902787FD4500B2D930 /* SongTagInterpreterStringToWriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreterStringToWriteTests.swift; sourceTree = "<group>"; };
+		61C1E49227891DCB00B2D930 /* SongTagInterpreterExistingMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreterExistingMetadataTests.swift; sourceTree = "<group>"; };
 		61DAA14925AA90F500512FE9 /* Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Droppable.swift; sourceTree = "<group>"; };
 		61F8F3D52786A8250023EB25 /* SongTagInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreter.swift; sourceTree = "<group>"; };
 		61F8F3D82786AB560023EB25 /* SongTagInterpreterSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreterSpy.swift; sourceTree = "<group>"; };
@@ -287,6 +291,8 @@
 		6171270F2787F0A80098DD5A /* Tagging */ = {
 			isa = PBXGroup;
 			children = (
+				61C1E4902787FD4500B2D930 /* SongTagInterpreterStringToWriteTests.swift */,
+				61C1E49227891DCB00B2D930 /* SongTagInterpreterExistingMetadataTests.swift */,
 				6192F3602783FDBF00A1D3C3 /* TaggerTests.swift */,
 			);
 			path = Tagging;
@@ -504,8 +510,10 @@
 				61C1E48E2787FA9E00B2D930 /* FakePreferencesStorage.swift in Sources */,
 				6192F3612783FDBF00A1D3C3 /* TaggerTests.swift in Sources */,
 				6171270D2787F0530098DD5A /* ConstantsTests.swift in Sources */,
+				61C1E4912787FD4500B2D930 /* SongTagInterpreterStringToWriteTests.swift in Sources */,
 				6171270B2787AA490098DD5A /* KeyTests.swift in Sources */,
 				61F8F3D92786AB560023EB25 /* SongTagInterpreterSpy.swift in Sources */,
+				61C1E49327891DCB00B2D930 /* SongTagInterpreterExistingMetadataTests.swift in Sources */,
 				6192F3632784000000A1D3C3 /* FakeTagIOWrapper.swift in Sources */,
 				61157F65259D54FE00D953D9 /* FourierTransformerTests.swift in Sources */,
 				61C1E48A2787F3C000B2D930 /* PreferencesTests.swift in Sources */,

@@ -40,32 +40,32 @@ struct PreferencesView: View {
                     }
                     Text("Where to write")
                     Picker(selection: $preferences.howToWriteToTitleField, label: Text("Title tag")) {
-                        ForEach(Preferences.HowToWrite.titleFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .title)) { value in
                             Text(value.description).tag(value)
                         }
                     }
                     Picker(selection: $preferences.howToWriteToArtistField, label: Text("Artist tag")) {
-                        ForEach(Preferences.HowToWrite.artistFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .artist)) { value in
                             Text(value.description).tag(value)
                         }
                     }
                     Picker(selection: $preferences.howToWriteToAlbumField, label: Text("Album tag")) {
-                        ForEach(Preferences.HowToWrite.albumFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .album)) { value in
                             Text(value.description).tag(value)
                         }
                     }
                     Picker(selection: $preferences.howToWriteToCommentField, label: Text("Comment tag")) {
-                        ForEach(Preferences.HowToWrite.commentFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .comment)) { value in
                             Text(value.description).tag(value)
                         }
                     }
                     Picker(selection: $preferences.howToWriteToGroupingField, label: Text("Grouping tag")) {
-                        ForEach(Preferences.HowToWrite.groupingFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .grouping)) { value in
                             Text(value.description).tag(value)
                         }
                     }
                     Picker(selection: $preferences.howToWriteToKeyField, label: Text("Key tag")) {
-                        ForEach(Preferences.HowToWrite.keyFieldOptions) { value in
+                        ForEach(Preferences.HowToWrite.options(for: .key)) { value in
                             Text(value.description).tag(value)
                         }
                     }
