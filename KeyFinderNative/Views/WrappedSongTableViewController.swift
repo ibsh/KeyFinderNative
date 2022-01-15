@@ -10,26 +10,24 @@ import Foundation
 import AppKit
 import SwiftUI
 
-struct WrappedTableViewController: NSViewControllerRepresentable {
+struct WrappedSongTableViewController: NSViewControllerRepresentable {
 
     @Binding var songs: Set<SongViewModel>
     let songHandlers: SongHandlers
-    let eventHandler: EventHandler
+    let eventHandler: SongListEventHandler
 
     func makeNSViewController(
-        context: NSViewControllerRepresentableContext<WrappedTableViewController>
-    ) -> TableViewController {
-        let vc = TableViewController(
+        context: NSViewControllerRepresentableContext<WrappedSongTableViewController>
+    ) -> SongTableViewController {
+        return SongTableViewController(
             songHandlers: songHandlers,
             eventHandler: eventHandler
         )
-
-        return vc
     }
 
     func updateNSViewController(
-        _ nsViewController: TableViewController,
-        context: NSViewControllerRepresentableContext<WrappedTableViewController>
+        _ nsViewController: SongTableViewController,
+        context: NSViewControllerRepresentableContext<WrappedSongTableViewController>
     ) {
         nsViewController.setSongs(songs)
     }

@@ -11,7 +11,7 @@ import Combine
 
 struct ContentView: View {
 
-    private let eventHandler = EventHandler()
+    private let eventHandler = SongListEventHandler()
 
     var body: some View {
         ContentViewBody(eventHandler: eventHandler)
@@ -60,7 +60,7 @@ struct ContentViewBody: View {
         }
     }
 
-    @ObservedObject var model = SongListViewModel()
+    @ObservedObject var songsModel = SongListViewModel()
 
     @State private var activity = Activity.waiting
 
@@ -68,12 +68,12 @@ struct ContentViewBody: View {
 
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
 
-    let eventHandler: EventHandler
+    let eventHandler: SongListEventHandler
 
     var body: some View {
         VStack {
             SongListView(
-                model: self.model,
+                model: self.songsModel,
                 songHandlers: SongHandlers(
                     writeToTags: writeToTags,
                     showInFinder: showInFinder,
@@ -129,9 +129,9 @@ extension ContentViewBody {
         }
 
         itemDispatchGroup.notify(queue: .main) {
-            let oldModelURLs = model.urls
+            let oldModelURLs = songsModel.urls
             let newModelURLs = oldModelURLs.union(urls)
-            model.urls = newModelURLs
+            songsModel.urls = newModelURLs
             readTags(urls: newModelURLs.subtracting(oldModelURLs), preferences: preferences)
         }
 
@@ -193,14 +193,14 @@ extension ContentViewBody {
                 DispatchQueue.main.async {
                     tagStoresToMerge[url.path] = songTags
                     if tagStoresToMerge.count >= 20 {
-                        model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                        songsModel.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
                         tagStoresToMerge.removeAll()
                     }
                 }
             }
 
             DispatchQueue.main.async {
-                model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                songsModel.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
                 activity = .waiting
             }
         }
@@ -209,9 +209,9 @@ extension ContentViewBody {
     private func process() {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        let urlsToProcess = model
+        let urlsToProcess = songsModel
             .urls
-            .filter { model.results[$0.path] == nil }
+            .filter { songsModel.results[$0.path] == nil }
             .sorted(by: { $0.path < $1.path })
 
         guard urlsToProcess.isEmpty == false else { return }
@@ -225,7 +225,7 @@ extension ContentViewBody {
         processingQueue.async {
 
             let urlsAndTagsWithExistingMetadata = urlsToProcess
-                .map { ($0, model.tagStores[$0.path]) }
+                .map { ($0, songsModel.tagStores[$0.path]) }
                 .filter {
                     guard let tagStore = $0.1 else { return false }
                     return tagInterpreter.allRelevantFieldsContainExistingMetadata(tagStore: tagStore)
@@ -239,7 +239,7 @@ extension ContentViewBody {
             }
 
             DispatchQueue.main.async {
-                model.results.merge(resultsWithExistingMetadata, uniquingKeysWith: { $1 })
+                songsModel.results.merge(resultsWithExistingMetadata, uniquingKeysWith: { $1 })
             }
 
             let urlsToDecode = urlsToProcess.filter { !urlsWithExistingMetadata.contains($0) }
@@ -265,7 +265,7 @@ extension ContentViewBody {
                 }
 
                 DispatchQueue.main.async {
-                    model.results[url.path] = result
+                    songsModel.results[url.path] = result
                 }
             }
 
@@ -288,7 +288,7 @@ extension ContentViewBody {
 
         processingQueue.async {
             for url in urls {
-                guard let result = model.results[url.path] else { continue }
+                guard let result = songsModel.results[url.path] else { continue }
                 switch result {
                 case .failure:
                     continue
@@ -323,6 +323,6 @@ extension ContentViewBody {
     private func deleteRows(_ songs: [SongViewModel]) {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        model.songs.subtract(songs)
+        songsModel.songs.subtract(songs)
     }
 }

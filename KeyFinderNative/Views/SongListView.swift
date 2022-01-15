@@ -20,11 +20,11 @@ struct SongListView: View {
 
     @ObservedObject var model: SongListViewModel
     let songHandlers: SongHandlers
-    let eventHandler: EventHandler
+    let eventHandler: SongListEventHandler
 
     var body: some View {
 
-        WrappedTableViewController(
+        WrappedSongTableViewController(
             songs: $model.songs,
             songHandlers: songHandlers,
             eventHandler: eventHandler
@@ -37,7 +37,7 @@ struct SongListView: View {
 extension SongViewModel {
 
     var textValues: [String?] {
-        return Constants.View.ColumnID.allCases.map {
+        return Constants.SongList.ColumnID.allCases.map {
             switch $0 {
             case .filename: return filename
             case .path: return path

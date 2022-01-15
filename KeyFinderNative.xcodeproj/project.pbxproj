@@ -31,7 +31,7 @@
 		61909585277E49370035B05C /* DifferenceKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 61909581277E491C0035B05C /* DifferenceKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		61909586277E49370035B05C /* TagLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 61909582277E491D0035B05C /* TagLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		61909588277E5B430035B05C /* ModalWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61909587277E5B430035B05C /* ModalWindow.swift */; };
-		6190958A277E5DEC0035B05C /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61909589277E5DEC0035B05C /* EventHandler.swift */; };
+		6190958A277E5DEC0035B05C /* SongListEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61909589277E5DEC0035B05C /* SongListEventHandler.swift */; };
 		6192F35D2783E86500A1D3C3 /* InitializableWithOptional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192F35C2783E86500A1D3C3 /* InitializableWithOptional.swift */; };
 		6192F35F2783F03900A1D3C3 /* TagIOWrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192F35E2783F03900A1D3C3 /* TagIOWrapping.swift */; };
 		6192F3612783FDBF00A1D3C3 /* TaggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192F3602783FDBF00A1D3C3 /* TaggerTests.swift */; };
@@ -39,8 +39,8 @@
 		6192F367278403AF00A1D3C3 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192F3652784038C00A1D3C3 /* Key.swift */; };
 		61A0244525A17A2E0082C4C3 /* Tagger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A0244425A17A2E0082C4C3 /* Tagger.swift */; };
 		61A21213277B88B100395680 /* ScrollingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21212277B88B100395680 /* ScrollingTableView.swift */; };
-		61A21215277B897D00395680 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21214277B897D00395680 /* TableViewController.swift */; };
-		61A21217277B8D3800395680 /* WrappedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21216277B8D3800395680 /* WrappedTableViewController.swift */; };
+		61A21215277B897D00395680 /* SongTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21214277B897D00395680 /* SongTableViewController.swift */; };
+		61A21217277B8D3800395680 /* WrappedSongTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21216277B8D3800395680 /* WrappedSongTableViewController.swift */; };
 		61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A21218277BE42D00395680 /* EnumElementIndex.swift */; };
 		61A2121C277CFCFF00395680 /* ResourcePool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2121B277CFCFF00395680 /* ResourcePool.swift */; };
 		61A2121E277CFE5500395680 /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2121D277CFE5500395680 /* Singleton.swift */; };
@@ -114,7 +114,7 @@
 		61909581277E491C0035B05C /* DifferenceKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DifferenceKit.framework; path = Carthage/Build/Mac/DifferenceKit.framework; sourceTree = "<group>"; };
 		61909582277E491D0035B05C /* TagLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TagLib.framework; path = Carthage/Build/Mac/TagLib.framework; sourceTree = "<group>"; };
 		61909587277E5B430035B05C /* ModalWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalWindow.swift; sourceTree = "<group>"; };
-		61909589277E5DEC0035B05C /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
+		61909589277E5DEC0035B05C /* SongListEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListEventHandler.swift; sourceTree = "<group>"; };
 		6192F35C2783E86500A1D3C3 /* InitializableWithOptional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitializableWithOptional.swift; sourceTree = "<group>"; };
 		6192F35E2783F03900A1D3C3 /* TagIOWrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagIOWrapping.swift; sourceTree = "<group>"; };
 		6192F3602783FDBF00A1D3C3 /* TaggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggerTests.swift; sourceTree = "<group>"; };
@@ -123,8 +123,8 @@
 		619E9B2F2773A9D3004A7233 /* KeyFinderNative-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KeyFinderNative-Bridging-Header.h"; sourceTree = "<group>"; };
 		61A0244425A17A2E0082C4C3 /* Tagger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tagger.swift; sourceTree = "<group>"; };
 		61A21212277B88B100395680 /* ScrollingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingTableView.swift; sourceTree = "<group>"; };
-		61A21214277B897D00395680 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
-		61A21216277B8D3800395680 /* WrappedTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedTableViewController.swift; sourceTree = "<group>"; };
+		61A21214277B897D00395680 /* SongTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTableViewController.swift; sourceTree = "<group>"; };
+		61A21216277B8D3800395680 /* WrappedSongTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedSongTableViewController.swift; sourceTree = "<group>"; };
 		61A21218277BE42D00395680 /* EnumElementIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumElementIndex.swift; sourceTree = "<group>"; };
 		61A2121B277CFCFF00395680 /* ResourcePool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcePool.swift; sourceTree = "<group>"; };
 		61A2121D277CFE5500395680 /* Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
@@ -235,10 +235,10 @@
 				6116B0352773F4250042B65F /* SongListView.swift */,
 				614B6BBD25C7492B00655B73 /* PreferencesView.swift */,
 				61A21212277B88B100395680 /* ScrollingTableView.swift */,
-				61A21214277B897D00395680 /* TableViewController.swift */,
-				61A21216277B8D3800395680 /* WrappedTableViewController.swift */,
+				61A21214277B897D00395680 /* SongTableViewController.swift */,
+				61A21216277B8D3800395680 /* WrappedSongTableViewController.swift */,
 				61909587277E5B430035B05C /* ModalWindow.swift */,
-				61909589277E5DEC0035B05C /* EventHandler.swift */,
+				61909589277E5DEC0035B05C /* SongListEventHandler.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -466,7 +466,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61A6869325A137B300056181 /* Classifier.swift in Sources */,
-				61A21215277B897D00395680 /* TableViewController.swift in Sources */,
+				61A21215277B897D00395680 /* SongTableViewController.swift in Sources */,
 				617127092786B0B90098DD5A /* SongTagField.swift in Sources */,
 				61C1E48F2787FAF400B2D930 /* PreferencesStoring.swift in Sources */,
 				61A90ABA27839FB800F6F0A7 /* SongProcessingError.swift in Sources */,
@@ -489,11 +489,11 @@
 				6109AC562774E6DA0056D433 /* SongViewModel.swift in Sources */,
 				61A6868F25A1369F00056181 /* SpectrumAnalyser.swift in Sources */,
 				6112285E259FDF7400681ED5 /* ToneProfile.swift in Sources */,
-				61A21217277B8D3800395680 /* WrappedTableViewController.swift in Sources */,
+				61A21217277B8D3800395680 /* WrappedSongTableViewController.swift in Sources */,
 				61A6868525A12F7000056181 /* Decoder.swift in Sources */,
 				6190957A277E46B10035B05C /* SongViewModel+Differentiable.swift in Sources */,
 				6109AC572774E6DA0056D433 /* SongListViewModel.swift in Sources */,
-				6190958A277E5DEC0035B05C /* EventHandler.swift in Sources */,
+				6190958A277E5DEC0035B05C /* SongListEventHandler.swift in Sources */,
 				6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */,
 				6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */,
 				61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */,

@@ -158,7 +158,7 @@ enum Constants {
         }()
     }
 
-    enum View {
+    enum SongList {
 
         enum ColumnID: String, CaseIterable {
             case path

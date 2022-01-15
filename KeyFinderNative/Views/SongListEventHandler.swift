@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol EventHandlerDelegate: AnyObject {
+protocol SongListEventHandlerDelegate: AnyObject {
 
     func selectAll()
     func writeKeyToTags()
@@ -16,9 +16,9 @@ protocol EventHandlerDelegate: AnyObject {
     func showInFinder()
 }
 
-final class EventHandler {
+final class SongListEventHandler {
 
-    weak var delegate: EventHandlerDelegate?
+    weak var delegate: SongListEventHandlerDelegate?
 
     func selectAll() {
         delegate?.selectAll()

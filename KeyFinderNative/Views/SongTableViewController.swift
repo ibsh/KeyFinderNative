@@ -9,7 +9,7 @@
 import Cocoa
 import DifferenceKit
 
-class TableViewController: NSViewController {
+class SongTableViewController: NSViewController {
 
     private let songHandlers: SongHandlers
 
@@ -59,10 +59,10 @@ class TableViewController: NSViewController {
 
     init(
         songHandlers: SongHandlers,
-        eventHandler: EventHandler
+        eventHandler: SongListEventHandler
     ) {
         self.songHandlers = songHandlers
-        columns = Constants.View.ColumnID.allCases.map { columnID in
+        columns = Constants.SongList.ColumnID.allCases.map { columnID in
             let column = NSTableColumn(
                 identifier: NSUserInterfaceItemIdentifier(
                     rawValue: columnID.rawValue
@@ -104,7 +104,7 @@ class TableViewController: NSViewController {
         super.viewDidLoad()
         tableView.sortDescriptors = [
             NSSortDescriptor(
-                key: Constants.View.ColumnID.path.rawValue,
+                key: Constants.SongList.ColumnID.path.rawValue,
                 ascending: true
             )
         ]
@@ -152,10 +152,10 @@ class TableViewController: NSViewController {
 
 // MARK: - Interface
 
-extension TableViewController {
+extension SongTableViewController {
 
     func setSongs(_ songs: Set<SongViewModel>) {
-        self.songs = TableViewController.sort(
+        self.songs = SongTableViewController.sort(
             songs: songs,
             descriptors: tableView.sortDescriptors
         )
@@ -164,7 +164,7 @@ extension TableViewController {
 
 // MARK: - NSTableViewDataSource
 
-extension TableViewController: NSTableViewDataSource {
+extension SongTableViewController: NSTableViewDataSource {
 
     func numberOfRows(in tableView: NSTableView) -> Int {
         return songs.count
@@ -173,7 +173,7 @@ extension TableViewController: NSTableViewDataSource {
 
 // MARK: - NSTableViewDelegate
 
-extension TableViewController: NSTableViewDelegate {
+extension SongTableViewController: NSTableViewDelegate {
 
     func tableView(
         _ tableView: NSTableView,
@@ -183,7 +183,7 @@ extension TableViewController: NSTableViewDelegate {
         guard let columnIDRawValue = tableColumn?.identifier.rawValue else {
             fatalError("no column identifier")
         }
-        guard let columnID = Constants.View.ColumnID(rawValue: columnIDRawValue) else {
+        guard let columnID = Constants.SongList.ColumnID(rawValue: columnIDRawValue) else {
             fatalError("invalid column identifier \(columnIDRawValue)")
         }
         guard row >= 0, row < songs.count else {
@@ -232,7 +232,7 @@ extension TableViewController: NSTableViewDelegate {
 //    }
 
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
-        songs = TableViewController.sort(
+        songs = SongTableViewController.sort(
             songs: Set(songs),
             descriptors: tableView.sortDescriptors
         )
@@ -241,7 +241,7 @@ extension TableViewController: NSTableViewDelegate {
 
 // MARK: - Row actions
 
-extension TableViewController {
+extension SongTableViewController {
 
     private var selectedIndices: IndexSet {
         var indices = tableView.selectedRowIndexes
@@ -281,13 +281,13 @@ extension TableViewController {
 
 // MARK: - Sorting
 
-extension TableViewController {
+extension SongTableViewController {
 
     private static func sort(songs: Set<SongViewModel>, descriptors: [NSSortDescriptor]) -> [SongViewModel] {
         return songs.sorted { s1, s2 in
             for descriptor in descriptors {
                 guard let rawValue = descriptor.key,
-                      let columnID = Constants.View.ColumnID(rawValue: rawValue)
+                      let columnID = Constants.SongList.ColumnID(rawValue: rawValue)
                 else {
                     fatalError("something bad")
                 }
@@ -325,7 +325,7 @@ extension TableViewController {
 
 // MARK: - EventHandlerDelegate
 
-extension TableViewController: EventHandlerDelegate {
+extension SongTableViewController: SongListEventHandlerDelegate {
 
     func selectAll() {
         selectAllMenuItem(self)
