@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Combine
+import iTunesLibrary
 
 struct ContentView: View {
 
@@ -60,6 +61,7 @@ struct ContentViewBody: View {
         }
     }
 
+    @ObservedObject var playlistsModel = PlaylistListViewModel()
     @ObservedObject var songsModel = SongListViewModel()
 
     @State private var activity = Activity.waiting
@@ -72,19 +74,28 @@ struct ContentViewBody: View {
 
     var body: some View {
         VStack {
-            SongListView(
-                model: self.songsModel,
-                songHandlers: SongHandlers(
-                    writeToTags: writeToTags,
-                    showInFinder: showInFinder,
-                    deleteRows: deleteRows
-                ),
-                eventHandler: eventHandler
-            )
-                .disabled(activity != .waiting)
-                .drop(if: activity == .waiting, of: [fileURLTypeID]) {
-                    drop(items: $0)
-                }
+            HStack {
+                PlaylistListView(
+                    model: self.playlistsModel,
+                    playlistHandlers: PlaylistHandlers(
+                        selected: selectPlaylist
+                    )
+                )
+                    .disabled(activity != .waiting)
+                SongListView(
+                    model: self.songsModel,
+                    songHandlers: SongHandlers(
+                        writeToTags: writeToTags,
+                        showInFinder: showInFinder,
+                        deleteRows: deleteRows
+                    ),
+                    eventHandler: eventHandler
+                )
+                    .disabled(activity != .waiting)
+                    .drop(if: activity == .waiting, of: [fileURLTypeID]) {
+                        drop(items: $0)
+                    }
+            }
             HStack {
                 Text(activity.description)
                 Button("Find keys") {
@@ -93,6 +104,57 @@ struct ContentViewBody: View {
                 .disabled(activity != .waiting)
             }
             .padding()
+        }.onAppear {
+            // TODO constants
+            var playlists = [
+                PlaylistViewModel(
+                    kind: .keyFinder,
+                    name: "KeyFinder drag and drop"
+                )
+            ]
+            if let iTunesLibrary = try? ITLibrary(apiVersion: "1.0") {
+                iTunesLibrary
+                    .allPlaylists
+                    .filter {
+                        switch $0.distinguishedKind {
+                        case .kindNone,
+                             .kindMusic:
+                            return true
+                        case .kindMovies,
+                            .kindTVShows,
+                            .kindAudiobooks,
+                            .kindBooks,
+                            .kindRingtones,
+                            .kindPodcasts,
+                            .kindVoiceMemos,
+                            .kindPurchases,
+                            .kindiTunesU,
+                            .kind90sMusic,
+                            .kindMyTopRated,
+                            .kindTop25MostPlayed,
+                            .kindRecentlyPlayed,
+                            .kindRecentlyAdded,
+                            .kindMusicVideos,
+                            .kindClassicalMusic,
+                            .kindLibraryMusicVideos,
+                            .kindHomeVideos,
+                            .kindApplications,
+                            .kindLovedSongs,
+                            .kindMusicShowsAndMovies:
+                            return false
+                        @unknown default:
+                            return false
+                        }
+                    }
+                    .map {
+                        PlaylistViewModel(
+                            kind: .iTunes(id: $0.persistentID.intValue),
+                            name: $0.name
+                        )
+                    }
+                    .forEach { playlists.append($0) }
+            }
+            playlistsModel.playlists = playlists
         }
     }
 }
@@ -324,5 +386,9 @@ extension ContentViewBody {
         dispatchPrecondition(condition: .onQueue(.main))
 
         songsModel.songs.subtract(songs)
+    }
+
+    private func selectPlaylist(_ playlist: PlaylistViewModel) {
+        // TODO implement
     }
 }
