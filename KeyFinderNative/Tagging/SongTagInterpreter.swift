@@ -30,7 +30,7 @@ final class SongTagInterpreter: SongTagInterpreting {
     }
 
     func stringToWrite(field: SongTagField, key: Key, tagStore: SongTagStore) -> String? {
-        let resultString = field.resultString(for: key, with: preferences)
+        let resultString = key.displayString(field: field, with: preferences)
         let delimiter = preferences.fieldDelimiter
         switch preferences.howToWrite(to: field) {
         case .no:
@@ -80,9 +80,7 @@ final class SongTagInterpreter: SongTagInterpreting {
                 let result = possibleValues.first(where: { value == $0 || value.hasSuffix(delimiter + $0) })
                 return result != nil
             case (.overwrite, .some(let value)):
-                let result = possibleValues
-                    .map { field == .key ? String($0.prefix(3)) : $0 }
-                    .first(where: { value == $0 })
+                let result = possibleValues.first(where: { value == $0 })
                 return result != nil
             case (_, .none):
                 return false
@@ -97,26 +95,7 @@ extension SongTagInterpreter {
     private func possibleValues(for field: SongTagField) -> [String] {
         return Key.allCases.compactMap { key in
             if key == .silence { return nil }
-            return field.resultString(for: key, with: preferences)
+            return key.displayString(field: field, with: preferences)
         }
-    }
-}
-
-extension SongTagField {
-
-    fileprivate func resultString(for key: Key, with preferences: Preferences) -> String {
-        let shortField: Bool = {
-            switch self {
-            case .title,
-                 .artist,
-                 .album,
-                 .comment,
-                 .grouping:
-                return false
-            case .key:
-                return true
-            }
-        }()
-        return key.displayString(shortField: shortField, with: preferences)
     }
 }

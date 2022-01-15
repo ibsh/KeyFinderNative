@@ -38,6 +38,10 @@ enum Key: CaseIterable {
 
 extension Key {
 
+    func displayString(field: SongTagField, with preferences: Preferences) -> String {
+        return displayString(shortField: field.isShort, with: preferences)
+    }
+
     func displayString(shortField: Bool, with preferences: Preferences) -> String {
         let resultString: String = {
             switch preferences.whatToWrite {

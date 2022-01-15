@@ -16,3 +16,19 @@ enum SongTagField: CaseIterable {
     case grouping
     case key
 }
+
+extension SongTagField {
+
+    var isShort: Bool {
+        switch self {
+        case .title,
+                .artist,
+                .album,
+                .comment,
+                .grouping:
+            return false
+        case .key:
+            return true
+        }
+    }
+}
