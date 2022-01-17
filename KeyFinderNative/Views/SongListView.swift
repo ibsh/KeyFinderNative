@@ -31,24 +31,3 @@ struct SongListView: View {
         )
     }
 }
-
-// MARK: - Text value derivation
-
-extension SongViewModel {
-
-    var textValues: [String?] {
-        return Constants.SongList.ColumnID.allCases.map {
-            switch $0 {
-            case .filename: return filename
-            case .path: return path
-            case .title: return tagStore?.title
-            case .artist: return tagStore?.artist
-            case .album: return tagStore?.album
-            case .comment: return tagStore?.comment
-            case .grouping: return tagStore?.grouping
-            case .key: return tagStore?.key
-            case .resultString: return resultString
-            }
-        }
-    }
-}

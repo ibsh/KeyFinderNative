@@ -31,20 +31,7 @@ class SongTableViewController: NSViewController {
         }
         set {
             let stagedChangeset = StagedChangeset(source: _songs, target: newValue)
-            guard stagedChangeset.isEmpty == false else {
-                print("**** No changes")
-                return
-            }
-            let changesetText: [String] = stagedChangeset.map {
-                let c = $0.changeCount
-                let i = $0.elementInserted.count
-                let d = $0.elementDeleted.count
-                let u = $0.elementUpdated.count
-                let m = $0.elementMoved.count
-                return "c\(c): i\(i) d\(d) u\(u) m\(m)"
-            }
-            let totalChanges = stagedChangeset.reduce(0) { $0 + $1.changeCount }
-            print("**** Changes (\(totalChanges) total): \(changesetText)")
+            guard stagedChangeset.isEmpty == false else { return }
             let threshold = _songs.count / 2
             tableView.reload(
                 using: stagedChangeset,
@@ -169,11 +156,6 @@ extension SongTableViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         return songs.count
     }
-}
-
-// MARK: - NSTableViewDelegate
-
-extension SongTableViewController: NSTableViewDelegate {
 
     func tableView(
         _ tableView: NSTableView,
@@ -186,50 +168,114 @@ extension SongTableViewController: NSTableViewDelegate {
         guard let columnID = Constants.SongList.ColumnID(rawValue: columnIDRawValue) else {
             fatalError("invalid column identifier \(columnIDRawValue)")
         }
-        guard row >= 0, row < songs.count else {
+        guard (0..<songs.count).contains(row) else {
             fatalError("index out of range")
         }
 
         return songs[row].textValues[columnID.elementIndex]
     }
+}
 
-//    func tableView(
-//        _ tableView: NSTableView,
-//        shouldReorderColumn columnIndex: Int,
-//        toColumn newColumnIndex: Int
-//    ) -> Bool {
-//        NSLog("**** shouldReorderColumn")
-//        return true
-//    }
+// MARK: - NSTableViewDelegate
 
-//    func tableView(
-//        _ tableView: NSTableView,
-//        rowActionsForRow row: Int,
-//        edge: NSTableView.RowActionEdge
-//    ) -> [NSTableViewRowAction] {
-//        NSLog("**** rowActionsForRow")
-//        return []
-//    }
+extension SongTableViewController: NSTableViewDelegate {
+
+    func tableView(
+        _ tableView: NSTableView,
+        viewFor tableColumn: NSTableColumn?,
+        row: Int
+    ) -> NSView? {
+        guard let columnIDRawValue = tableColumn?.identifier.rawValue else {
+            fatalError("no column identifier")
+        }
+        guard let columnID = Constants.SongList.ColumnID(rawValue: columnIDRawValue) else {
+            fatalError("invalid column identifier \(columnIDRawValue)")
+        }
+        guard (0..<songs.count).contains(row) else {
+            fatalError("index out of range")
+        }
+
+        let song = songs[row]
+
+        // TODO choose colours for accessibility and theming etc
+        let (extendedColumnIDRaw, textColor): (String, NSColor) = {
+            switch columnID {
+            case .path,
+                 .filename:
+                return ("FILE", .secondaryLabelColor)
+            case .title,
+                 .artist,
+                 .album,
+                 .comment,
+                 .grouping,
+                 .key:
+                return ("TAG", .labelColor)
+            case .resultString:
+                switch song.result {
+                case .none:
+                    return ("RESULT_EMPTY", .clear)
+                case .success:
+                    return ("RESULT_SUCCESS", .green)
+                case .failure(let error):
+                    switch error {
+                    case .existingMetadata:
+                        return ("RESULT_SKIPPED", .secondaryLabelColor)
+                    case .decoder:
+                        return ("RESULT_ERROR", .red)
+                    }
+                }
+            }
+        }()
+
+        let identifier = NSUserInterfaceItemIdentifier(extendedColumnIDRaw)
+
+        if let existingView = tableView.makeView(withIdentifier: identifier, owner: self) as? NSTableCellView {
+            // TODO necessary?
+            if let value = self.tableView(tableView, objectValueFor: tableColumn, row: row) as? String {
+                existingView.textField?.stringValue = value
+            }
+            return existingView
+        }
+
+        // Create a text field for the cell
+        let textField = NSTextField()
+        textField.backgroundColor = .clear
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.isBordered = false
+        textField.controlSize = .small
+        textField.isEditable = false
+        textField.font = .systemFont(ofSize: 12)
+
+        textField.stringValue = song.textValues[columnID.elementIndex] ?? String()
+        textField.textColor = textColor
+
+        // Create a cell
+        let view = NSTableCellView()
+        view.identifier = identifier
+        view.addSubview(textField)
+        view.textField = textField
+
+        // Constrain the text field within the cell
+        view.addConstraints([
+            textField.topAnchor.constraint(equalTo: view.topAnchor),
+            textField.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+
+        textField.bind(
+            .value,
+            to: view,
+            withKeyPath: "objectValue",
+            options: nil
+        )
+
+        return view
+    }
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return true
     }
-
-//    func tableViewSelectionIsChanging(_ notification: Notification) {
-//        NSLog("**** tableViewSelectionIsChanging \(notification)")
-//    }
-
-//    func tableViewSelectionDidChange(_ notification: Notification) {
-//        NSLog("**** tableViewSelectionDidChange \(notification)")
-//    }
-
-//    func tableViewColumnDidMove(_ notification: Notification) {
-//        NSLog("**** tableViewColumnDidMove \(notification)")
-//    }
-//
-//    func tableViewColumnDidResize(_ notification: Notification) {
-//        NSLog("**** tableViewColumnDidResize \(notification)")
-//    }
 
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
         songs = SongTableViewController.sort(

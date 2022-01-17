@@ -36,28 +36,9 @@ enum Key: CaseIterable {
     case silence
 }
 
-extension Key {
+extension Key: CustomStringConvertible {
 
-    func displayString(field: SongTagField, with preferences: Preferences) -> String {
-        return displayString(shortField: field.isShort, with: preferences)
-    }
-
-    func displayString(shortField: Bool, with preferences: Preferences) -> String {
-        let resultString: String = {
-            switch preferences.whatToWrite {
-            case .keys:
-                return keyString
-            case .customCodes:
-                return customCode(preferences: preferences)
-            case .both:
-                return "\(customCode(preferences: preferences)) \(keyString)"
-            }
-        }()
-        let output = shortField ? String(resultString.prefix(3)) : resultString
-        return output.trimmingCharacters(in: .whitespaces)
-    }
-
-    private var keyString: String {
+    var description: String {
         switch self {
         case .AMajor:     return "A"
         case .AMinor:     return "Am"
@@ -85,6 +66,28 @@ extension Key {
         case .AFlatMinor: return "Abm"
         case .silence:    return String()
         }
+    }
+}
+
+extension Key {
+
+    func displayString(field: SongTagField, with preferences: Preferences) -> String {
+        return displayString(shortField: field.isShort, with: preferences)
+    }
+
+    func displayString(shortField: Bool, with preferences: Preferences) -> String {
+        let resultString: String = {
+            switch preferences.whatToWrite {
+            case .keys:
+                return description
+            case .customCodes:
+                return customCode(preferences: preferences)
+            case .both:
+                return "\(customCode(preferences: preferences)) \(description)"
+            }
+        }()
+        let output = shortField ? String(resultString.prefix(3)) : resultString
+        return output.trimmingCharacters(in: .whitespaces)
     }
 
     private func customCode(preferences: Preferences) -> String {

@@ -8,18 +8,38 @@
 
 import Foundation
 
-struct PlaylistViewModel: Hashable, Equatable, Identifiable {
+final class PlaylistViewModel {
 
-    enum Kind: Hashable {
+    enum Identifier: Hashable {
         case keyFinder
         case iTunes(id: Int)
     }
 
-    let kind: Kind
+    let identifier: Identifier
     let name: String
+    var urls: Set<URL>
+
+    init(
+        identifier: Identifier,
+        name: String,
+        urls: Set<URL>
+    ) {
+        self.identifier = identifier
+        self.name = name
+        self.urls = urls
+    }
+}
+//
+//extension PlaylistViewModel: Equatable {
+//    static func == (lhs: PlaylistViewModel, rhs: PlaylistViewModel) -> Bool {
+//        return lhs.identifier == rhs.identifier
+//    }
+//}
+
+extension PlaylistViewModel: Identifiable {
 
     var id: String {
-        switch kind {
+        switch identifier {
         case .keyFinder:
             return "KEYFINDER"
         case .iTunes(let id):

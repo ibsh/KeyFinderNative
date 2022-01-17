@@ -683,27 +683,46 @@ AVFileMetadata* AVFileMetadataFactory::createAVFileMetadata(NSString *filePath) 
     }
 
     if (f == NULL || !f->isValid()) {
+        NSLog(@"Could not acquire file metadata at %@", filePath);
         delete fr;
         return new NullFileMetadata(NULL, NULL);
     }
 
     TagLib::FLAC::File* fileTestFlac = dynamic_cast<TagLib::FLAC::File*>(f);
-    if (fileTestFlac != NULL) return new FlacFileMetadata(fr, f, fileTestFlac);
+    if (fileTestFlac != NULL) {
+        NSLog(@"Acquired FLAC file metadata at %@", filePath);
+        return new FlacFileMetadata(fr, f, fileTestFlac);
+    }
 
     TagLib::MPEG::File* fileTestMpeg = dynamic_cast<TagLib::MPEG::File*>(f);
-    if (fileTestMpeg != NULL) return new MpegID3FileMetadata(fr, f, fileTestMpeg);
+    if (fileTestMpeg != NULL) {
+        NSLog(@"Acquired MPEG file metadata at %@", filePath);
+        return new MpegID3FileMetadata(fr, f, fileTestMpeg);
+    }
 
     TagLib::RIFF::AIFF::File* fileTestAiff = dynamic_cast<TagLib::RIFF::AIFF::File*>(f);
-    if (fileTestAiff != NULL) return new AiffID3FileMetadata(fr, f, fileTestAiff);
+    if (fileTestAiff != NULL) {
+        NSLog(@"Acquired AIFF file metadata at %@", filePath);
+        return new AiffID3FileMetadata(fr, f, fileTestAiff);
+    }
 
     TagLib::RIFF::WAV::File* fileTestWav = dynamic_cast<TagLib::RIFF::WAV::File*>(f);
-    if (fileTestWav != NULL) return new WavID3FileMetadata(fr, f, fileTestWav);
+    if (fileTestWav != NULL) {
+        NSLog(@"Acquired WAV file metadata at %@", filePath);
+        return new WavID3FileMetadata(fr, f, fileTestWav);
+    }
 
     TagLib::MP4::File* fileTestMp4 = dynamic_cast<TagLib::MP4::File*>(f);
-    if (fileTestMp4 != NULL) return new Mp4FileMetadata(fr, f, fileTestMp4);
+    if (fileTestMp4 != NULL) {
+        NSLog(@"Acquired MP4 file metadata at %@", filePath);
+        return new Mp4FileMetadata(fr, f, fileTestMp4);
+    }
 
     TagLib::ASF::File* fileTestAsf = dynamic_cast<TagLib::ASF::File*>(f);
-    if (fileTestAsf != NULL) return new AsfFileMetadata(fr, f, fileTestAsf);
+    if (fileTestAsf != NULL) {
+        NSLog(@"Acquired ASF file metadata at %@", filePath);
+        return new AsfFileMetadata(fr, f, fileTestAsf);
+    }
 
     return new AVFileMetadata(fr, f);
 }

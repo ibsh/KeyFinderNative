@@ -8,7 +8,19 @@
 
 import Foundation
 
-enum SongProcessingError: Error {
+enum SongProcessingError: Error, Equatable, Hashable {
     case existingMetadata
     case decoder(_: Decoder.DecoderError)
+}
+
+extension SongProcessingError: CustomStringConvertible {
+
+    var description: String {
+        switch self {
+        case .existingMetadata:
+            return "Skipped file with existing metadata"
+        case .decoder(let decoderError):
+            return decoderError.description
+        }
+    }
 }

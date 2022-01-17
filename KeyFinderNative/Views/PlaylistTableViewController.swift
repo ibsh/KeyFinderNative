@@ -29,27 +29,16 @@ class PlaylistTableViewController: NSViewController {
         }
         set {
             let stagedChangeset = StagedChangeset(source: _playlists, target: newValue)
-            guard stagedChangeset.isEmpty == false else {
-                print("**** No changes")
-                return
-            }
-            let changesetText: [String] = stagedChangeset.map {
-                let c = $0.changeCount
-                let i = $0.elementInserted.count
-                let d = $0.elementDeleted.count
-                let u = $0.elementUpdated.count
-                let m = $0.elementMoved.count
-                return "c\(c): i\(i) d\(d) u\(u) m\(m)"
-            }
-            let totalChanges = stagedChangeset.reduce(0) { $0 + $1.changeCount }
-            print("**** Changes (\(totalChanges) total): \(changesetText)")
-            let threshold = _playlists.count / 2
+            guard stagedChangeset.isEmpty == false else { return }
+            let selectFirstPlaylist = _playlists.isEmpty && !newValue.isEmpty
             tableView.reload(
                 using: stagedChangeset,
                 with: .effectFade,
-                interrupt: { $0.changeCount > threshold },
                 setData: { _playlists = $0 }
             )
+            if selectFirstPlaylist {
+                tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+            }
         }
     }
 
@@ -132,6 +121,8 @@ extension PlaylistTableViewController: NSTableViewDelegate {
     }
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        guard (0..<playlists.count).contains(row) else { return false }
+        playlistHandlers.selected(playlists[row])
         return true
     }
 }

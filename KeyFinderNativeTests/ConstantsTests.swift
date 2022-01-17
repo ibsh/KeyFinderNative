@@ -9,6 +9,7 @@
 import XCTest
 @testable import KeyFinder
 
+// swiftlint:disable type_body_length
 final class ConstantsTests: XCTestCase {
 
     func testPrimitiveConstantsDontChange() {

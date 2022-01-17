@@ -10,5 +10,9 @@ import Foundation
 
 final class PlaylistListViewModel: ObservableObject {
 
-    @Published var playlists = [PlaylistViewModel]()
+    @Published var playlists: [PlaylistViewModel]
+
+    init(playlists: [PlaylistViewModel] = []) {
+        self.playlists = playlists
+    }
 }

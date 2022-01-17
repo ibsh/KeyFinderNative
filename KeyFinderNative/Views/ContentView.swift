@@ -40,7 +40,7 @@ struct ContentViewBody: View {
 
     private enum Activity: CustomStringConvertible {
         case waiting
-        case dropping
+        case loading
         case readingTags
         case processing
         case tagging
@@ -49,7 +49,7 @@ struct ContentViewBody: View {
             switch self {
             case .waiting:
                 return String()
-            case .dropping:
+            case .loading:
                 return "Reading file system"
             case .readingTags:
                 return "Reading tags"
@@ -61,8 +61,7 @@ struct ContentViewBody: View {
         }
     }
 
-    @ObservedObject var playlistsModel = PlaylistListViewModel()
-    @ObservedObject var songsModel = SongListViewModel()
+    @ObservedObject private var model = ContentViewModel()
 
     @State private var activity = Activity.waiting
 
@@ -76,14 +75,15 @@ struct ContentViewBody: View {
         VStack {
             HStack {
                 PlaylistListView(
-                    model: self.playlistsModel,
+                    model: self.model.playlistList,
                     playlistHandlers: PlaylistHandlers(
                         selected: selectPlaylist
                     )
                 )
+                    .frame(maxWidth: 200)
                     .disabled(activity != .waiting)
                 SongListView(
-                    model: self.songsModel,
+                    model: self.model.songList,
                     songHandlers: SongHandlers(
                         writeToTags: writeToTags,
                         showInFinder: showInFinder,
@@ -92,7 +92,10 @@ struct ContentViewBody: View {
                     eventHandler: eventHandler
                 )
                     .disabled(activity != .waiting)
-                    .drop(if: activity == .waiting, of: [fileURLTypeID]) {
+                    .drop(
+                        if: activity == .waiting && model.currentPlaylistIdentifier == .keyFinder,
+                        of: [fileURLTypeID]
+                    ) {
                         drop(items: $0)
                     }
             }
@@ -105,56 +108,7 @@ struct ContentViewBody: View {
             }
             .padding()
         }.onAppear {
-            // TODO constants
-            var playlists = [
-                PlaylistViewModel(
-                    kind: .keyFinder,
-                    name: "KeyFinder drag and drop"
-                )
-            ]
-            if let iTunesLibrary = try? ITLibrary(apiVersion: "1.0") {
-                iTunesLibrary
-                    .allPlaylists
-                    .filter {
-                        switch $0.distinguishedKind {
-                        case .kindNone,
-                             .kindMusic:
-                            return true
-                        case .kindMovies,
-                            .kindTVShows,
-                            .kindAudiobooks,
-                            .kindBooks,
-                            .kindRingtones,
-                            .kindPodcasts,
-                            .kindVoiceMemos,
-                            .kindPurchases,
-                            .kindiTunesU,
-                            .kind90sMusic,
-                            .kindMyTopRated,
-                            .kindTop25MostPlayed,
-                            .kindRecentlyPlayed,
-                            .kindRecentlyAdded,
-                            .kindMusicVideos,
-                            .kindClassicalMusic,
-                            .kindLibraryMusicVideos,
-                            .kindHomeVideos,
-                            .kindApplications,
-                            .kindLovedSongs,
-                            .kindMusicShowsAndMovies:
-                            return false
-                        @unknown default:
-                            return false
-                        }
-                    }
-                    .map {
-                        PlaylistViewModel(
-                            kind: .iTunes(id: $0.persistentID.intValue),
-                            name: $0.name
-                        )
-                    }
-                    .forEach { playlists.append($0) }
-            }
-            playlistsModel.playlists = playlists
+            loadiTunesPlaylists()
         }
     }
 }
@@ -164,9 +118,13 @@ extension ContentViewBody {
     private func drop(items: [NSItemProvider]) -> Bool {
         dispatchPrecondition(condition: .onQueue(.main))
 
+        guard model.currentPlaylistIdentifier == .keyFinder else {
+            fatalError("Nooope")
+        }
+
         guard items.isEmpty == false else { return false }
 
-        activity = .dropping
+        activity = .loading
 
         let preferences = Preferences()
         let itemDispatchGroup = DispatchGroup()
@@ -191,10 +149,9 @@ extension ContentViewBody {
         }
 
         itemDispatchGroup.notify(queue: .main) {
-            let oldModelURLs = songsModel.urls
-            let newModelURLs = oldModelURLs.union(urls)
-            songsModel.urls = newModelURLs
-            readTags(urls: newModelURLs.subtracting(oldModelURLs), preferences: preferences)
+            let playlist = model.playlist(identifier: .keyFinder)
+            playlist.urls.formUnion(urls)
+            readTags(preferences: preferences)
         }
 
         return true
@@ -231,8 +188,19 @@ extension ContentViewBody {
         return files
     }
 
-    private func readTags(urls: Set<URL>, preferences: Preferences) {
+    private func readTags(
+        preferences: Preferences
+    ) {
         dispatchPrecondition(condition: .onQueue(.main))
+
+        let playlistURLs = model.currentPlaylist.urls
+        let tagStoreURLs = Set(model.tagStores.keys.map { URL(fileURLWithPath: $0) })
+        let dirtyTagStoreURLs = Set(model.dirtyTagPaths.map { URL(fileURLWithPath: $0) })
+        let cleanTagStoreURLs = tagStoreURLs.subtracting(dirtyTagStoreURLs)
+
+        let urls = playlistURLs
+            .subtracting(cleanTagStoreURLs)
+            .sorted(by: { $0.path < $1.path })
 
         guard urls.isEmpty == false else {
             activity = .waiting
@@ -240,8 +208,6 @@ extension ContentViewBody {
         }
 
         activity = .readingTags
-
-        let urls = urls.sorted(by: { $0.path < $1.path })
 
         var tagStoresToMerge = [String: SongTagStore]()
 
@@ -255,14 +221,16 @@ extension ContentViewBody {
                 DispatchQueue.main.async {
                     tagStoresToMerge[url.path] = songTags
                     if tagStoresToMerge.count >= 20 {
-                        songsModel.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                        model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                        model.dirtyTagPaths.formIntersection(Set(tagStoresToMerge.keys))
                         tagStoresToMerge.removeAll()
                     }
                 }
             }
 
             DispatchQueue.main.async {
-                songsModel.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
+                model.dirtyTagPaths.formIntersection(Set(tagStoresToMerge.keys))
                 activity = .waiting
             }
         }
@@ -271,12 +239,30 @@ extension ContentViewBody {
     private func process() {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        let urlsToProcess = songsModel
+        let urlsToProcess = model
+            .currentPlaylist
             .urls
-            .filter { songsModel.results[$0.path] == nil }
+            .filter {
+                switch model.results[$0.path] {
+                case .none:
+                    return true
+                case .success:
+                    return false
+                case .failure(let error):
+                    switch error {
+                    case .existingMetadata:
+                        return true
+                    case .decoder:
+                        return false
+                    }
+                }
+            }
             .sorted(by: { $0.path < $1.path })
 
-        guard urlsToProcess.isEmpty == false else { return }
+        guard urlsToProcess.isEmpty == false else {
+            print("Nothing to process")
+            return
+        }
 
         activity = .processing
 
@@ -286,25 +272,34 @@ extension ContentViewBody {
 
         processingQueue.async {
 
-            let urlsAndTagsWithExistingMetadata = urlsToProcess
-                .map { ($0, songsModel.tagStores[$0.path]) }
-                .filter {
-                    guard let tagStore = $0.1 else { return false }
-                    return tagInterpreter.allRelevantFieldsContainExistingMetadata(tagStore: tagStore)
+            let urlsToDecode: [URL]
+
+            if preferences.skipFilesWithExistingMetadata {
+
+                let urlsAndTagsWithExistingMetadata = urlsToProcess
+                    .map { ($0, model.tagStores[$0.path]) }
+                    .filter {
+                        guard let tagStore = $0.1 else { return false }
+                        return tagInterpreter.allRelevantFieldsContainExistingMetadata(tagStore: tagStore)
+                    }
+
+                let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
+
+                var resultsWithExistingMetadata = [String: Result<Key, SongProcessingError>]()
+                for url in urlsWithExistingMetadata {
+                    resultsWithExistingMetadata[url.path] = .failure(.existingMetadata)
                 }
 
-            let urlsWithExistingMetadata = urlsAndTagsWithExistingMetadata.map { $0.0 }
+                DispatchQueue.main.async {
+                    model.results.merge(resultsWithExistingMetadata, uniquingKeysWith: { $1 })
+                }
+                urlsToDecode = urlsToProcess.filter { !urlsWithExistingMetadata.contains($0) }
 
-            var resultsWithExistingMetadata = [String: Result<Key, SongProcessingError>]()
-            for url in urlsWithExistingMetadata {
-                resultsWithExistingMetadata[url.path] = .failure(.existingMetadata)
+            } else {
+                urlsToDecode = urlsToProcess
             }
 
-            DispatchQueue.main.async {
-                songsModel.results.merge(resultsWithExistingMetadata, uniquingKeysWith: { $1 })
-            }
-
-            let urlsToDecode = urlsToProcess.filter { !urlsWithExistingMetadata.contains($0) }
+            print("Processing \(urlsToDecode.count) files")
 
             DispatchQueue.concurrentPerform(iterations: urlsToDecode.count) { index in
 
@@ -319,15 +314,17 @@ extension ContentViewBody {
                 case .failure(let error):
                     result = .failure(.decoder(error))
                 case .success(let samples):
+                    print("Analysing \(url.path)")
                     let spectrumAnalyser = SpectrumAnalyser()
                     let classifier = Toolbox.classifier()
                     let chromaVector = spectrumAnalyser.chromaVector(samples: samples)
                     let key = classifier.classify(chromaVector: chromaVector)
+                    print("Classified \(url.path): \(key)")
                     result = .success(key)
                 }
 
                 DispatchQueue.main.async {
-                    songsModel.results[url.path] = result
+                    model.results[url.path] = result
                 }
             }
 
@@ -336,6 +333,8 @@ extension ContentViewBody {
 
                 if preferences.writeAutomatically {
                     writeToTags(urlsToDecode, preferences: preferences)
+                } else {
+                    print("Finished processing \(urlsToDecode.count) files")
                 }
             }
         }
@@ -344,24 +343,35 @@ extension ContentViewBody {
     private func writeToTags(_ urls: [URL], preferences: Preferences) {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        guard urls.isEmpty == false else { return }
+        guard urls.isEmpty == false else {
+            print("Nothing to tag")
+            return
+        }
+
+        print("Tagging \(urls.count) files")
 
         activity = .tagging
 
         processingQueue.async {
+
+            var dirtyTagPaths = Set<String>()
             for url in urls {
-                guard let result = songsModel.results[url.path] else { continue }
+                guard let result = model.results[url.path] else { continue }
                 switch result {
                 case .failure:
                     continue
                 case .success(let key):
+                    dirtyTagPaths.insert(url.path)
                     let tagger = Tagger(url: url, preferences: preferences)
                     tagger.writeTags(key: key)
                 }
             }
 
+            print("Wrote to \(dirtyTagPaths.count) files")
+
             DispatchQueue.main.async {
-                readTags(urls: Set(urls), preferences: preferences)
+                model.dirtyTagPaths.formUnion(dirtyTagPaths)
+                readTags(preferences: preferences)
             }
         }
     }
@@ -384,11 +394,72 @@ extension ContentViewBody {
 
     private func deleteRows(_ songs: [SongViewModel]) {
         dispatchPrecondition(condition: .onQueue(.main))
-
-        songsModel.songs.subtract(songs)
+        guard model.currentPlaylistIdentifier == .keyFinder,
+        let playlist = model.playlists.first(where: { $0.identifier == .keyFinder }) else { return }
+        playlist.urls.subtract(songs.map { URL(fileURLWithPath: $0.path) })
     }
 
     private func selectPlaylist(_ playlist: PlaylistViewModel) {
-        // TODO implement
+        model.currentPlaylistIdentifier = playlist.identifier
+        readTags(preferences: Preferences())
+    }
+
+    private func loadiTunesPlaylists() {
+        processingQueue.async {
+            guard let iTunesLibrary = try? ITLibrary(apiVersion: "1.0") else { return }
+            let iTunesPlaylists = iTunesLibrary
+                .allPlaylists
+                .filter {
+                    if #available(macOS 12.0, *) {
+                        // TODO I'm guessing that this is the Library, but god knows
+                        if $0.isPrimary {
+                            return false
+                        }
+                    } else {
+                        if $0.isMaster {
+                            return false
+                        }
+                    }
+                    switch $0.distinguishedKind {
+                    case .kindNone:
+                        return true
+                    case .kindMusic,
+                         .kindMovies,
+                         .kindTVShows,
+                         .kindAudiobooks,
+                         .kindBooks,
+                         .kindRingtones,
+                         .kindPodcasts,
+                         .kindVoiceMemos,
+                         .kindPurchases,
+                         .kindiTunesU,
+                         .kind90sMusic,
+                         .kindMyTopRated,
+                         .kindTop25MostPlayed,
+                         .kindRecentlyPlayed,
+                         .kindRecentlyAdded,
+                         .kindMusicVideos,
+                         .kindClassicalMusic,
+                         .kindLibraryMusicVideos,
+                         .kindHomeVideos,
+                         .kindApplications,
+                         .kindLovedSongs,
+                         .kindMusicShowsAndMovies:
+                        return false
+                    @unknown default:
+                        return false
+                    }
+                }
+                .map {
+                    PlaylistViewModel(
+                        identifier: .iTunes(id: $0.persistentID.intValue),
+                        name: $0.name,
+                        urls: Set($0.items.compactMap { $0.location })
+                    )
+                }
+            DispatchQueue.main.async {
+                model.playlists.append(contentsOf: iTunesPlaylists)
+            }
+        }
     }
 }

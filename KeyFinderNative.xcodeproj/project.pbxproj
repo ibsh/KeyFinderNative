@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6105BB422794BEFC0050AA94 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6105BB412794BEFC0050AA94 /* ContentViewModel.swift */; };
+		6105BB442794D26A0050AA94 /* StagedChangeSet+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6105BB432794D26A0050AA94 /* StagedChangeSet+CustomStringConvertible.swift */; };
 		6109AC562774E6DA0056D433 /* SongViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC542774E6DA0056D433 /* SongViewModel.swift */; };
 		6109AC572774E6DA0056D433 /* SongListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC552774E6DA0056D433 /* SongListViewModel.swift */; };
 		6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6109AC5E2774E7D10056D433 /* TagLibWrapper.mm */; };
@@ -92,6 +94,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6105BB412794BEFC0050AA94 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		6105BB432794D26A0050AA94 /* StagedChangeSet+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StagedChangeSet+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		6109AC542774E6DA0056D433 /* SongViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongViewModel.swift; sourceTree = "<group>"; };
 		6109AC552774E6DA0056D433 /* SongListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongListViewModel.swift; sourceTree = "<group>"; };
 		6109AC5D2774E7D10056D433 /* TagLibWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibWrapper.h; sourceTree = "<group>"; };
@@ -262,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				61DAA14925AA90F500512FE9 /* Droppable.swift */,
+				6105BB432794D26A0050AA94 /* StagedChangeSet+CustomStringConvertible.swift */,
 				61A21218277BE42D00395680 /* EnumElementIndex.swift */,
 				61A2121B277CFCFF00395680 /* ResourcePool.swift */,
 				61A2121D277CFE5500395680 /* Singleton.swift */,
@@ -287,6 +292,7 @@
 		6116B03A2773F57A0042B65F /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				6105BB412794BEFC0050AA94 /* ContentViewModel.swift */,
 				61C1E49A2793721A00B2D930 /* PlaylistViewModel.swift */,
 				6109AC542774E6DA0056D433 /* SongViewModel.swift */,
 				61C1E49C279372BE00B2D930 /* PlaylistViewModel+Differentiable.swift */,
@@ -489,6 +495,7 @@
 				61C1E4952793715F00B2D930 /* WrappedPlaylistTableViewController.swift in Sources */,
 				61C1E48F2787FAF400B2D930 /* PreferencesStoring.swift in Sources */,
 				61A90ABA27839FB800F6F0A7 /* SongProcessingError.swift in Sources */,
+				6105BB442794D26A0050AA94 /* StagedChangeSet+CustomStringConvertible.swift in Sources */,
 				61C1E499279371D800B2D930 /* PlaylistListView.swift in Sources */,
 				61A21213277B88B100395680 /* ScrollingTableView.swift in Sources */,
 				61122856259FCEB600681ED5 /* Constants.swift in Sources */,
@@ -521,6 +528,7 @@
 				6112284A259ECFAB00681ED5 /* FourierTransform.swift in Sources */,
 				6109AC602774E7D10056D433 /* TagLibWrapper.mm in Sources */,
 				61A21219277BE42D00395680 /* EnumElementIndex.swift in Sources */,
+				6105BB422794BEFC0050AA94 /* ContentViewModel.swift in Sources */,
 				614B6BBE25C7492B00655B73 /* PreferencesView.swift in Sources */,
 				61A90AB827839EC900F6F0A7 /* SongTagStore.swift in Sources */,
 				6192F35D2783E86500A1D3C3 /* InitializableWithOptional.swift in Sources */,

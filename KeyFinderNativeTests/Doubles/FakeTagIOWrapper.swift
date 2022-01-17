@@ -42,6 +42,7 @@ final class FakeTagIOWrapper: TagIOWrapping {
         return keyValue
     }
 
+    // swiftlint:disable function_parameter_count
     func writeTags(
         title: String?,
         artist: String?,

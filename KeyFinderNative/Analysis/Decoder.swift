@@ -11,13 +11,13 @@ import AVFoundation
 
 final class Decoder {
 
-    enum DecoderError: Error, CustomStringConvertible {
+    enum DecoderError: Error, Equatable, Hashable, CustomStringConvertible {
         case durationExceedsPreference
         case couldNotDeriveReadBuffer
         case couldNotDeriveWorkingBuffer
         case couldNotDeriveConverter
         case couldNotDeriveChannelData
-        case other(Error)
+        case other(String)
 
         var description: String {
             switch self {
@@ -26,7 +26,7 @@ final class Decoder {
             case .couldNotDeriveWorkingBuffer: return "Internal error deriving working buffer"
             case .couldNotDeriveConverter: return "Internal error deriving converter"
             case .couldNotDeriveChannelData: return "Internal error decoding channel data"
-            case .other(let error): return error.localizedDescription
+            case .other(let error): return error
             }
         }
     }
@@ -42,6 +42,8 @@ final class Decoder {
         preferences: Preferences
     ) -> Result<[Float], DecoderError> {
 
+        print("Decoding \(url.path)")
+
         do {
 
             let file = try AVAudioFile(forReading: url)
@@ -51,13 +53,16 @@ final class Decoder {
             let duration = TimeInterval(file.length) / processingFormat.sampleRate
             let preference = TimeInterval(preferences.skipFilesLongerThanMinutes * 60)
             if duration > preference {
+                print("Duration (\(duration)) exceeds preference (\(preference)) for \(url.path)")
                 return .failure(.durationExceedsPreference)
             }
 
+            let frameCapacity = AVAudioFrameCount(file.length)
             guard let fileBuffer = AVAudioPCMBuffer(
                 pcmFormat: processingFormat,
-                frameCapacity: AVAudioFrameCount(file.length)
+                frameCapacity: frameCapacity
             ) else {
+                print("Could not derive read buffer of capacity \(frameCapacity) for \(url.path)")
                 return .failure(.couldNotDeriveReadBuffer)
             }
 
@@ -67,6 +72,7 @@ final class Decoder {
                 pcmFormat: workingFormat,
                 frameCapacity: fileBuffer.frameCapacity
             ) else {
+                print("Could not derive working buffer of capacity \(frameCapacity) for \(url.path)")
                 return .failure(.couldNotDeriveWorkingBuffer)
             }
 
@@ -74,6 +80,7 @@ final class Decoder {
                 from: fileBuffer.format,
                 to: workingFormat
             ) else {
+                print("Could not derive working converter of format \(fileBuffer.format) for \(url.path)")
                 return .failure(.couldNotDeriveConverter)
             }
 
@@ -91,10 +98,13 @@ final class Decoder {
             )
 
             if let conversionError = conversionError {
-                return .failure(.other(conversionError))
+                let errorDescription = conversionError.localizedDescription
+                print("Encountered conversion error for \(url.path): \(errorDescription)")
+                return .failure(.other(errorDescription))
             }
 
             guard let channelData = workingBuffer.floatChannelData else {
+                print("Could not derive channel data for \(url.path)")
                 return .failure(.couldNotDeriveChannelData)
             }
 
@@ -103,11 +113,14 @@ final class Decoder {
                 count: Int(workingBuffer.frameLength)
             )
 
+            print("Successfully decoded \(url.path)")
             return .success(Array(bufferPointer))
 
         } catch {
 
-            return .failure(.other(error))
+            let errorDescription = error.localizedDescription
+            print("Encountered unexpected error for \(url.path): \(errorDescription)")
+            return .failure(.other(errorDescription))
         }
     }
 }

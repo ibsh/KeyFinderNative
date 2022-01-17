@@ -17,6 +17,7 @@ protocol TagIOWrapping {
     func getGrouping() -> String?
     func getKey() -> String?
 
+    // swiftlint:disable function_parameter_count
     func writeTags(
         title: String?,
         artist: String?,
