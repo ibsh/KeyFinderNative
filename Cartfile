@@ -1,2 +1,2 @@
 github "Phisto/TagLib" ~> 1.0
-github "ra1028/DifferenceKit" ~> 1.2
+github "ibsh/DifferenceKit" "master"

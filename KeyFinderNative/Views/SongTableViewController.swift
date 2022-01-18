@@ -230,10 +230,6 @@ extension SongTableViewController: NSTableViewDelegate {
         let identifier = NSUserInterfaceItemIdentifier(extendedColumnIDRaw)
 
         if let existingView = tableView.makeView(withIdentifier: identifier, owner: self) as? NSTableCellView {
-            // TODO necessary?
-            if let value = self.tableView(tableView, objectValueFor: tableColumn, row: row) as? String {
-                existingView.textField?.stringValue = value
-            }
             return existingView
         }
 
@@ -245,8 +241,6 @@ extension SongTableViewController: NSTableViewDelegate {
         textField.controlSize = .small
         textField.isEditable = false
         textField.font = .systemFont(ofSize: 12)
-
-        textField.stringValue = song.textValues[columnID.elementIndex] ?? String()
         textField.textColor = textColor
 
         // Create a cell
