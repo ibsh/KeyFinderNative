@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import KeyFinderNative
 @testable import KeyFinder
 
 final class TaggerTests: XCTestCase {
