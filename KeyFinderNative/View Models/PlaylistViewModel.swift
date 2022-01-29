@@ -29,12 +29,6 @@ final class PlaylistViewModel {
         self.urls = urls
     }
 }
-//
-//extension PlaylistViewModel: Equatable {
-//    static func == (lhs: PlaylistViewModel, rhs: PlaylistViewModel) -> Bool {
-//        return lhs.identifier == rhs.identifier
-//    }
-//}
 
 extension PlaylistViewModel: Identifiable {
 

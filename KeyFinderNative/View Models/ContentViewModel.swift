@@ -10,6 +10,12 @@ import Foundation
 
 final class ContentViewModel: ObservableObject {
 
+    var activity: Activity {
+        didSet {
+            updateActivity()
+        }
+    }
+
     var playlists: [PlaylistViewModel] {
         didSet {
             updatePlaylistList()
@@ -45,6 +51,10 @@ final class ContentViewModel: ObservableObject {
         )
         self.playlists = [currentPlaylist]
         self.currentPlaylistIdentifier = currentPlaylist.identifier
+        self.activity = .waiting
+        self.playlistList = PlaylistListViewModel(playlists: playlists)
+        self.songList = SongListViewModel()
+        self.activityWrapper = ActivityWrapper(activity: activity)
     }
 
     func playlist(identifier: PlaylistViewModel.Identifier) -> PlaylistViewModel {
@@ -56,6 +66,10 @@ final class ContentViewModel: ObservableObject {
 
     var currentPlaylist: PlaylistViewModel {
         return playlist(identifier: currentPlaylistIdentifier)
+    }
+
+    private func updateActivity() {
+        activityWrapper = ActivityWrapper(activity: activity)
     }
 
     private func updatePlaylistList() {
@@ -90,6 +104,7 @@ final class ContentViewModel: ObservableObject {
         }
     }
 
-    @Published var playlistList = PlaylistListViewModel()
-    @Published var songList = SongListViewModel()
+    @Published var playlistList: PlaylistListViewModel
+    @Published var songList: SongListViewModel
+    @Published var activityWrapper: ActivityWrapper
 }

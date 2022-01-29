@@ -11,32 +11,7 @@ import iTunesLibrary
 
 struct ContentViewBody: View {
 
-    private enum Activity: CustomStringConvertible {
-        case waiting
-        case loading
-        case readingTags
-        case processing
-        case tagging
-
-        var description: String {
-            switch self {
-            case .waiting:
-                return String()
-            case .loading:
-                return "Reading file system"
-            case .readingTags:
-                return "Reading tags"
-            case .processing:
-                return "Analysing"
-            case .tagging:
-                return "Writing tags"
-            }
-        }
-    }
-
     @ObservedObject private var model = ContentViewModel()
-
-    @State private var activity = Activity.waiting
 
     private let fileURLTypeID = "public.file-url"
 
@@ -54,7 +29,7 @@ struct ContentViewBody: View {
                     )
                 )
                     .frame(maxWidth: 200)
-                    .disabled(activity != .waiting)
+                    .disabled(!model.activityWrapper.isWaiting)
                 SongListView(
                     model: self.model.songList,
                     songHandlers: SongHandlers(
@@ -64,20 +39,20 @@ struct ContentViewBody: View {
                     ),
                     songListEventHandler: songListEventHandler
                 )
-                    .disabled(activity != .waiting)
+                    .disabled(!model.activityWrapper.isWaiting)
                     .drop(
-                        if: activity == .waiting && model.currentPlaylistIdentifier == .keyFinder,
+                        if: model.activityWrapper.isWaiting && model.currentPlaylistIdentifier == .keyFinder,
                           of: [fileURLTypeID]
                     ) {
                         drop(items: $0)
                     }
             }
             HStack {
-                Text(activity.description)
+                Text(model.activityWrapper.activity.description)
                 Button("Find keys") {
                     process()
                 }
-                .disabled(activity != .waiting)
+                .disabled(!model.activityWrapper.isWaiting)
             }
             .padding()
         }.onAppear {
@@ -97,7 +72,7 @@ extension ContentViewBody {
 
         guard items.isEmpty == false else { return false }
 
-        activity = .loading
+        model.activity = .loadingSongs
 
         let preferences = Preferences()
         let itemDispatchGroup = DispatchGroup()
@@ -176,11 +151,11 @@ extension ContentViewBody {
             .sorted(by: { $0.path < $1.path })
 
         guard urls.isEmpty == false else {
-            activity = .waiting
+            model.activity = .waiting
             return
         }
 
-        activity = .readingTags
+        model.activity = .readingTags
 
         var tagStoresToMerge = [String: SongTagStore]()
 
@@ -204,7 +179,7 @@ extension ContentViewBody {
             DispatchQueue.main.async {
                 model.tagStores.merge(tagStoresToMerge, uniquingKeysWith: { $1 })
                 model.dirtyTagPaths.formIntersection(Set(tagStoresToMerge.keys))
-                activity = .waiting
+                model.activity = .waiting
             }
         }
     }
@@ -237,7 +212,7 @@ extension ContentViewBody {
             return
         }
 
-        activity = .processing
+        model.activity = .processing
 
         let preferences = Preferences()
         let tagInterpreter = SongTagInterpreter(preferences: preferences)
@@ -302,7 +277,7 @@ extension ContentViewBody {
             }
 
             DispatchQueue.main.async {
-                activity = .waiting
+                model.activity = .waiting
 
                 if preferences.writeAutomatically {
                     writeToTags(urlsToDecode, preferences: preferences)
@@ -323,7 +298,7 @@ extension ContentViewBody {
 
         print("Tagging \(urls.count) files")
 
-        activity = .tagging
+        model.activity = .tagging
 
         processingQueue.async {
 
@@ -378,6 +353,7 @@ extension ContentViewBody {
     }
 
     private func loadiTunesPlaylists() {
+        model.activity = .loadingPlaylists
         processingQueue.async {
             guard let iTunesLibrary = try? ITLibrary(apiVersion: "1.0") else { return }
             let iTunesPlaylists = iTunesLibrary
@@ -432,6 +408,7 @@ extension ContentViewBody {
                 }
             DispatchQueue.main.async {
                 model.playlists.append(contentsOf: iTunesPlaylists)
+                model.activity = .waiting
             }
         }
     }
