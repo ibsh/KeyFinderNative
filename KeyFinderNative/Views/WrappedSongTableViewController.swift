@@ -12,16 +12,16 @@ import SwiftUI
 
 struct WrappedSongTableViewController: NSViewControllerRepresentable {
 
-    @Binding var songs: Set<SongViewModel>
+    @ObservedObject var model: SongListViewModel
     let songHandlers: SongHandlers
-    let eventHandler: SongListEventHandler
+    let songListEventHandler: SongListEventHandler
 
     func makeNSViewController(
         context: NSViewControllerRepresentableContext<WrappedSongTableViewController>
     ) -> SongTableViewController {
         return SongTableViewController(
             songHandlers: songHandlers,
-            eventHandler: eventHandler
+            songListEventHandler: songListEventHandler
         )
     }
 
@@ -29,6 +29,6 @@ struct WrappedSongTableViewController: NSViewControllerRepresentable {
         _ nsViewController: SongTableViewController,
         context: NSViewControllerRepresentableContext<WrappedSongTableViewController>
     ) {
-        nsViewController.setSongs(songs)
+        nsViewController.setModel(model)
     }
 }

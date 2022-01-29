@@ -22,7 +22,7 @@ struct PlaylistListView: View {
     var body: some View {
 
         WrappedPlaylistTableViewController(
-            playlists: $model.playlists,
+            model: model,
             playlistHandlers: playlistHandlers
         )
     }

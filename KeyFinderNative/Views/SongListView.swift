@@ -20,14 +20,14 @@ struct SongListView: View {
 
     @ObservedObject var model: SongListViewModel
     let songHandlers: SongHandlers
-    let eventHandler: SongListEventHandler
+    let songListEventHandler: SongListEventHandler
 
     var body: some View {
 
         WrappedSongTableViewController(
-            songs: $model.songs,
+            model: model,
             songHandlers: songHandlers,
-            eventHandler: eventHandler
+            songListEventHandler: songListEventHandler
         )
     }
 }

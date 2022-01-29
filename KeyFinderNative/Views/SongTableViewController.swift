@@ -46,7 +46,7 @@ class SongTableViewController: NSViewController {
 
     init(
         songHandlers: SongHandlers,
-        eventHandler: SongListEventHandler
+        songListEventHandler: SongListEventHandler
     ) {
         self.songHandlers = songHandlers
         columns = Constants.SongList.ColumnID.allCases.map { columnID in
@@ -70,7 +70,7 @@ class SongTableViewController: NSViewController {
         columns.forEach {
             tableView.addTableColumn($0)
         }
-        eventHandler.delegate = self
+        songListEventHandler.delegate = self
     }
 
     // MARK: - Overrides
@@ -141,9 +141,9 @@ class SongTableViewController: NSViewController {
 
 extension SongTableViewController {
 
-    func setSongs(_ songs: Set<SongViewModel>) {
+    func setModel(_ model: SongListViewModel) {
         self.songs = SongTableViewController.sort(
-            songs: songs,
+            songs: model.songs,
             descriptors: tableView.sortDescriptors
         )
     }

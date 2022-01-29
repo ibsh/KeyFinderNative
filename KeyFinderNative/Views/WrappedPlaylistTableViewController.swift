@@ -12,7 +12,7 @@ import SwiftUI
 
 struct WrappedPlaylistTableViewController: NSViewControllerRepresentable {
 
-    @Binding var playlists: [PlaylistViewModel]
+    @ObservedObject var model: PlaylistListViewModel
     let playlistHandlers: PlaylistHandlers
 
     func makeNSViewController(
@@ -27,6 +27,6 @@ struct WrappedPlaylistTableViewController: NSViewControllerRepresentable {
         _ nsViewController: PlaylistTableViewController,
         context: NSViewControllerRepresentableContext<WrappedPlaylistTableViewController>
     ) {
-        nsViewController.setPlaylists(playlists)
+        nsViewController.setPlaylists(model.playlists)
     }
 }
