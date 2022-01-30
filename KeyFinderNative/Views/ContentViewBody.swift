@@ -21,32 +21,20 @@ struct ContentViewBody: View {
 
     var body: some View {
         VStack {
-            HStack {
-                PlaylistListView(
-                    model: self.model.playlistList,
-                    playlistHandlers: PlaylistHandlers(
-                        selected: selectPlaylist
-                    )
-                )
-                    .frame(maxWidth: 200)
-                    .disabled(!model.activityWrapper.isWaiting)
-                SongListView(
-                    model: self.model.songList,
-                    songHandlers: SongHandlers(
-                        writeToTags: writeToTags,
-                        showInFinder: showInFinder,
-                        deleteRows: deleteRows
-                    ),
-                    songListEventHandler: songListEventHandler
-                )
-                    .disabled(!model.activityWrapper.isWaiting)
-                    .drop(
-                        if: model.activityWrapper.isWaiting && model.currentPlaylistIdentifier == .keyFinder,
-                          of: [fileURLTypeID]
-                    ) {
-                        drop(items: $0)
-                    }
-            }
+            SplitView(
+                model: model,
+                playlistHandlers: PlaylistHandlers(
+                    selected: selectPlaylist
+                ),
+                songHandlers: SongHandlers(
+                    writeToTags: writeToTags,
+                    showInFinder: showInFinder,
+                    deleteRows: deleteRows
+                ),
+                songListEventHandler: songListEventHandler,
+                droppedFileURLHandler: droppedFileURLs
+            )
+                .disabled(!model.activityWrapper.isWaiting)
             HStack {
                 Text(model.activityWrapper.activity.description)
                 Button("Find keys") {
@@ -64,46 +52,37 @@ struct ContentViewBody: View {
 
 extension ContentViewBody {
 
-    private func drop(items: [NSItemProvider]) -> Bool {
+    private func droppedFileURLs(_ droppedFileURLs: Set<URL>) {
         dispatchPrecondition(condition: .onQueue(.main))
 
         guard model.currentPlaylistIdentifier == .keyFinder else {
             fatalError("Nooope")
         }
 
-        guard items.isEmpty == false else { return false }
+        guard droppedFileURLs.isEmpty == false else { return }
 
         model.activity = .loadingSongs
 
         let preferences = Preferences()
         let itemDispatchGroup = DispatchGroup()
 
-        var urls = Set<URL>()
+        var songURLs = Set<URL>()
 
-        for item in items {
+        processingQueue.async {
 
-            guard item.registeredTypeIdentifiers.contains(fileURLTypeID) else {
-                continue
-            }
-
-            itemDispatchGroup.enter()
-
-            item.loadItem(forTypeIdentifier: fileURLTypeID) { urlData, _ in
+            for droppedFileURL in droppedFileURLs {
+                itemDispatchGroup.enter()
                 defer { itemDispatchGroup.leave() }
-                guard let urlData = urlData as? Data else { fatalError("No URL data") }
-                let url = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
-                let subURLs = files(inDirectory: url)
-                urls.formUnion(subURLs)
+                let subURLs = files(inDirectory: droppedFileURL)
+                songURLs.formUnion(subURLs)
+            }
+
+            itemDispatchGroup.notify(queue: .main) {
+                let playlist = model.playlist(identifier: .keyFinder)
+                playlist.urls.formUnion(songURLs)
+                readTags(preferences: preferences)
             }
         }
-
-        itemDispatchGroup.notify(queue: .main) {
-            let playlist = model.playlist(identifier: .keyFinder)
-            playlist.urls.formUnion(urls)
-            readTags(preferences: preferences)
-        }
-
-        return true
     }
 
     // TODO this is probably crap, I wrote it in no time.

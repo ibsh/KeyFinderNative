@@ -9,14 +9,15 @@
 import Cocoa
 import DifferenceKit
 
-class SongTableViewController: NSViewController {
+final class SongTableViewController: NSViewController {
 
     private let songHandlers: SongHandlers
+    private let droppedFileURLHandler: DroppedFileURLHandler
 
-    private let scrollingTableView = ScrollingTableView()
+    private let dragDropScrollingTableView = DragDropScrollingTableView()
 
     private var tableView: NSTableView {
-        return scrollingTableView.tableView
+        return dragDropScrollingTableView.tableView
     }
 
     private let columns: [NSTableColumn]
@@ -46,9 +47,11 @@ class SongTableViewController: NSViewController {
 
     init(
         songHandlers: SongHandlers,
-        songListEventHandler: SongListEventHandler
+        songListEventHandler: SongListEventHandler,
+        droppedFileURLHandler: @escaping DroppedFileURLHandler
     ) {
         self.songHandlers = songHandlers
+        self.droppedFileURLHandler = droppedFileURLHandler
         columns = Constants.SongList.ColumnID.allCases.map { columnID in
             let column = NSTableColumn(
                 identifier: NSUserInterfaceItemIdentifier(
@@ -65,11 +68,6 @@ class SongTableViewController: NSViewController {
         }
         measuringView.textContainer?.maximumNumberOfLines = 1
         super.init(nibName: nil, bundle: nil)
-        tableView.dataSource = self
-        tableView.delegate = self
-        columns.forEach {
-            tableView.addTableColumn($0)
-        }
         songListEventHandler.delegate = self
     }
 
@@ -84,11 +82,12 @@ class SongTableViewController: NSViewController {
     }
 
     override func loadView() {
-        view = scrollingTableView
+        view = dragDropScrollingTableView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         tableView.sortDescriptors = [
             NSSortDescriptor(
                 key: Constants.SongList.ColumnID.path.rawValue,
@@ -99,8 +98,17 @@ class SongTableViewController: NSViewController {
             .solidHorizontalGridLineMask,
             .solidVerticalGridLineMask,
         ]
+        tableView.dataSource = self
+        tableView.delegate = self
+        columns.forEach {
+            tableView.addTableColumn($0)
+        }
         tableView.usesAlternatingRowBackgroundColors = true
         tableView.allowsMultipleSelection = true
+
+        dragDropScrollingTableView.delegate = self
+        dragDropScrollingTableView.hasVerticalScroller = true
+        dragDropScrollingTableView.hasHorizontalScroller = true
 
         let menu = NSMenu()
         menu.addItem(
@@ -141,11 +149,19 @@ class SongTableViewController: NSViewController {
 
 extension SongTableViewController {
 
+    func setIsEnabled(_ isEnabled: Bool) {
+        tableView.isEnabled = isEnabled
+    }
+
     func setModel(_ model: SongListViewModel) {
         self.songs = SongTableViewController.sort(
             songs: model.songs,
             descriptors: tableView.sortDescriptors
         )
+    }
+
+    func setDragDropIsEnabled(_ dragDropIsEnabled: Bool) {
+        dragDropScrollingTableView.setDragDropIsEnabled(dragDropIsEnabled)
     }
 }
 
@@ -172,7 +188,7 @@ extension SongTableViewController: NSTableViewDataSource {
             fatalError("index out of range")
         }
 
-        return songs[row].textValues[columnID.elementIndex]
+        return songs[row].textValues[columnID.elementIndex] ?? String()
     }
 }
 
@@ -276,6 +292,15 @@ extension SongTableViewController: NSTableViewDelegate {
             songs: Set(songs),
             descriptors: tableView.sortDescriptors
         )
+    }
+}
+
+// MARK: - DragDropScrollingTableViewDelegate
+
+extension SongTableViewController: DragDropScrollingTableViewDelegate {
+
+    func dropped(fileURLs: Set<URL>) {
+        droppedFileURLHandler(fileURLs)
     }
 }
 

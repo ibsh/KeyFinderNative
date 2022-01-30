@@ -18,7 +18,7 @@ private func sine(
     return Float(magnitude) * sin(Float(index) * frequency / Float(sampleRate) * 2 * Float.pi)
 }
 
-class FourierTransformTests: XCTestCase {
+final class FourierTransformTests: XCTestCase {
 
     func testFourierTransform() {
 

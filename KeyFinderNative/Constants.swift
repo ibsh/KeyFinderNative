@@ -186,4 +186,9 @@ enum Constants {
             }
         }
     }
+
+    enum SplitView {
+
+        static let restorationID = "uk.co.ibrahimshaath.keyfindernative.splitview.restoration"
+    }
 }

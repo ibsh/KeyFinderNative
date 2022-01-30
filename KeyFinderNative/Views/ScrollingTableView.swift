@@ -25,18 +25,44 @@ class ScrollingTableView: NSView {
     }
 
     override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        setup()
+        fatalError("init(frame:) has not been implemented")
     }
 
     @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+// MARK: - Interface
+
+extension ScrollingTableView {
+
+    var hasVerticalScroller: Bool {
+        get {
+            return scrollView.hasVerticalScroller
+        }
+        set {
+            scrollView.hasVerticalScroller = newValue
+        }
+    }
+
+    var hasHorizontalScroller: Bool {
+        get {
+            return scrollView.hasHorizontalScroller
+        }
+        set {
+            scrollView.hasHorizontalScroller = newValue
+        }
+    }
+}
+
+// MARK: - Layout
+
+extension ScrollingTableView {
 
     private func setup() {
         scrollView.documentView = tableView
-        scrollView.hasVerticalScroller = true
 
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

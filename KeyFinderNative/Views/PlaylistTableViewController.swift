@@ -9,7 +9,7 @@
 import Cocoa
 import DifferenceKit
 
-class PlaylistTableViewController: NSViewController {
+final class PlaylistTableViewController: NSViewController {
 
     private let playlistHandlers: PlaylistHandlers
 
@@ -48,17 +48,8 @@ class PlaylistTableViewController: NSViewController {
         playlistHandlers: PlaylistHandlers
     ) {
         self.playlistHandlers = playlistHandlers
-        let column = NSTableColumn(
-            identifier: NSUserInterfaceItemIdentifier(
-                rawValue: "PLAYLISTS"
-            )
-        )
-        column.title = "Playlists"
         measuringView.textContainer?.maximumNumberOfLines = 1
         super.init(nibName: nil, bundle: nil)
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.addTableColumn(column)
     }
 
     // MARK: - Overrides
@@ -77,18 +68,36 @@ class PlaylistTableViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let column = NSTableColumn(
+            identifier: NSUserInterfaceItemIdentifier(
+                rawValue: "PLAYLISTS"
+            )
+        )
+        column.title = "Playlists"
+
         tableView.gridStyleMask = [
             .solidHorizontalGridLineMask,
             .solidVerticalGridLineMask,
         ]
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.addTableColumn(column)
         tableView.usesAlternatingRowBackgroundColors = true
         tableView.allowsMultipleSelection = false
+
+        scrollingTableView.hasVerticalScroller = true
+        scrollingTableView.hasHorizontalScroller = false
     }
 }
 
 // MARK: - Interface
 
 extension PlaylistTableViewController {
+
+    func setIsEnabled(_ isEnabled: Bool) {
+        tableView.isEnabled = isEnabled
+    }
 
     func setPlaylists(_ playlists: [PlaylistViewModel]) {
         self.playlists = playlists
