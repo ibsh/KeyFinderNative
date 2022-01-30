@@ -55,7 +55,8 @@ struct ContentViewBody: View {
                 .disabled(!model.activityWrapper.isWaiting)
             }
             .padding()
-        }.onAppear {
+        }
+        .onAppear {
             loadiTunesPlaylists()
         }
     }

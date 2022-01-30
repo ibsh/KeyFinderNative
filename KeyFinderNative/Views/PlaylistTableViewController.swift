@@ -113,7 +113,7 @@ extension PlaylistTableViewController: NSTableViewDelegate {
         objectValueFor tableColumn: NSTableColumn?,
         row: Int
     ) -> Any? {
-        guard row >= 0, row < playlists.count else {
+        guard (0..<playlists.count).contains(row) else {
             fatalError("index out of range")
         }
 
