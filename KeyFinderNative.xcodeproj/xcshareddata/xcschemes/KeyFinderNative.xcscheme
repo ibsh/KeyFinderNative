@@ -34,7 +34,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "61157F5F259D54FE00D953D9"
                BuildableName = "KeyFinderNativeTests.xctest"
-               BlueprintName = "KeyFinderNativeTests"
+               BlueprintName = "KeyFinderTests"
                ReferencedContainer = "container:KeyFinderNative.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -83,6 +83,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "KeyFinder"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

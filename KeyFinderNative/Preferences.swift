@@ -1,6 +1,6 @@
 //
 //  Preferences.swift
-//  KeyFinderNative
+//  KeyFinder
 //
 //  Created by Ibrahim Sha'ath on 14/02/2021.
 //  Copyright © 2021 Ibrahim Sha'ath. All rights reserved.

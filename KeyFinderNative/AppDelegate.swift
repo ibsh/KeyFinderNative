@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  KeyFinderNative
+//  KeyFinder
 //
 //  Created by Ibrahim Sha'ath on 30/12/2020.
 //  Copyright © 2020 Ibrahim Sha'ath. All rights reserved.

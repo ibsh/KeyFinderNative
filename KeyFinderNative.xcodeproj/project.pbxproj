@@ -113,7 +113,7 @@
 		61157F58259D54FE00D953D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		61157F5A259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61157F5B259D54FE00D953D9 /* KeyFinderNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyFinderNative.entitlements; sourceTree = "<group>"; };
-		61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyFinderNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61157F60259D54FE00D953D9 /* KeyFinderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyFinderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourierTransformerTests.swift; sourceTree = "<group>"; };
 		61157F66259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		614B6BBD25C7492B00655B73 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
@@ -207,7 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				61157F4B259D54FD00D953D9 /* KeyFinder.app */,
-				61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */,
+				61157F60259D54FE00D953D9 /* KeyFinderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -359,11 +359,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 61157F69259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinder" */;
 			buildPhases = (
-				614590DD259DA36D00D74FB2 /* ShellScript */,
+				614590DD259DA36D00D74FB2 /* Swiftlint */,
 				61157F47259D54FD00D953D9 /* Sources */,
 				61157F48259D54FD00D953D9 /* Frameworks */,
 				61157F49259D54FD00D953D9 /* Resources */,
-				619E9B2C2773A8DB004A7233 /* ShellScript */,
+				619E9B2C2773A8DB004A7233 /* Carthage copy frameworks */,
 				6109AC5B2774E78D0056D433 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -375,9 +375,9 @@
 			productReference = 61157F4B259D54FD00D953D9 /* KeyFinder.app */;
 			productType = "com.apple.product-type.application";
 		};
-		61157F5F259D54FE00D953D9 /* KeyFinderNativeTests */ = {
+		61157F5F259D54FE00D953D9 /* KeyFinderTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61157F6C259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderNativeTests" */;
+			buildConfigurationList = 61157F6C259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderTests" */;
 			buildPhases = (
 				61157F5C259D54FE00D953D9 /* Sources */,
 				61157F5D259D54FE00D953D9 /* Frameworks */,
@@ -388,9 +388,9 @@
 			dependencies = (
 				61157F62259D54FE00D953D9 /* PBXTargetDependency */,
 			);
-			name = KeyFinderNativeTests;
+			name = KeyFinderTests;
 			productName = KeyFinderNativeTests;
-			productReference = 61157F60259D54FE00D953D9 /* KeyFinderNativeTests.xctest */;
+			productReference = 61157F60259D54FE00D953D9 /* KeyFinderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -427,7 +427,7 @@
 			projectRoot = "";
 			targets = (
 				61157F4A259D54FD00D953D9 /* KeyFinder */,
-				61157F5F259D54FE00D953D9 /* KeyFinderNativeTests */,
+				61157F5F259D54FE00D953D9 /* KeyFinderTests */,
 			);
 		};
 /* End PBXProject section */
@@ -452,7 +452,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		614590DD259DA36D00D74FB2 /* ShellScript */ = {
+		614590DD259DA36D00D74FB2 /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -461,6 +461,7 @@
 			);
 			inputPaths = (
 			);
+			name = Swiftlint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -469,7 +470,7 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
-		619E9B2C2773A8DB004A7233 /* ShellScript */ = {
+		619E9B2C2773A8DB004A7233 /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -479,6 +480,7 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/Mac/TagLib.framework",
 			);
+			name = "Carthage copy frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -827,7 +829,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61157F6C259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderNativeTests" */ = {
+		61157F6C259D54FE00D953D9 /* Build configuration list for PBXNativeTarget "KeyFinderTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61157F6D259D54FE00D953D9 /* Debug */,

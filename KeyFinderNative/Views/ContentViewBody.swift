@@ -13,8 +13,6 @@ struct ContentViewBody: View {
 
     @ObservedObject private var model = ContentViewModel()
 
-    private let fileURLTypeID = "public.file-url"
-
     private let processingQueue = DispatchQueue.global(qos: .userInitiated)
 
     let songListEventHandler: SongListEventHandler
