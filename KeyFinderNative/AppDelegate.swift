@@ -35,12 +35,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.center()
-        window.setFrameAutosaveName("Main Window")
-
         contentView = ContentView()
         window.contentView = NSHostingView(rootView: contentView)
+        window.center()
         window.makeKeyAndOrderFront(nil)
+        window.setFrameAutosaveName(Constants.MainWindow.frameAutosaveName)
         window.styleMask.remove(.closable)
     }
 
@@ -66,9 +65,9 @@ extension AppDelegate {
             defer: false
         )
         let prefsView = PreferencesView(window: prefsWindow)
-        prefsWindow.title = "Preferences"
+        prefsWindow.title = NSLocalizedString("Preferences", comment: "Title of preferences window")
         prefsWindow.center()
-        prefsWindow.setFrameAutosaveName("Preferences Window")
+        prefsWindow.setFrameAutosaveName(Constants.PreferencesWindow.frameAutosaveName)
         prefsWindow.contentView = NSHostingView(rootView: prefsView)
         _ = NSApp.runModal(for: prefsWindow)
     }

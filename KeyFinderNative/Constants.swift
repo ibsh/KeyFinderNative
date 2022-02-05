@@ -191,4 +191,14 @@ enum Constants {
 
         static let restorationID = "uk.co.ibrahimshaath.keyfindernative.splitview.restoration"
     }
+
+    enum MainWindow {
+
+        static let frameAutosaveName = "uk.co.ibrahimshaath.keyfindernative.window.main.frameautosave"
+    }
+
+    enum PreferencesWindow {
+
+        static let frameAutosaveName = "uk.co.ibrahimshaath.keyfindernative.window.preferences.frameautosave"
+    }
 }
