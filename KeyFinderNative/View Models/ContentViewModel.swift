@@ -46,7 +46,7 @@ final class ContentViewModel: ObservableObject {
     init() {
         let currentPlaylist = PlaylistViewModel(
             identifier: .keyFinder,
-            name: NSLocalizedString("Keyfinder drag and drop", comment: "Title of the internal drag and drop file 'playlist'."),
+            name: NSLocalizedString("KeyFinder drag and drop", comment: "Title of the internal drag and drop file 'playlist'."),
             urls: Set()
         )
         self.playlists = [currentPlaylist]

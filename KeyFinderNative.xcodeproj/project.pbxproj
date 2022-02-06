@@ -116,6 +116,8 @@
 		61157F64259D54FE00D953D9 /* FourierTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourierTransformerTests.swift; sourceTree = "<group>"; };
 		61157F66259D54FE00D953D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		614B6BBD25C7492B00655B73 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		614D5AC927AF064D00BFA2E5 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Main.strings"; sourceTree = "<group>"; };
+		614D5ACB27AF10E400BFA2E5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
 		6162087C27A6420F006A6656 /* DragDropScrollingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragDropScrollingTableView.swift; sourceTree = "<group>"; };
 		6162087E27A73E12006A6656 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		6162088027A73E8E006A6656 /* SwiftUIBridging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIBridging.swift; sourceTree = "<group>"; };
@@ -160,6 +162,17 @@
 		61F868A1279E4A2E00CC237F /* ContentViewBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewBody.swift; sourceTree = "<group>"; };
 		61F8F3D52786A8250023EB25 /* SongTagInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreter.swift; sourceTree = "<group>"; };
 		61F8F3D82786AB560023EB25 /* SongTagInterpreterSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagInterpreterSpy.swift; sourceTree = "<group>"; };
+		61F965A027B05EA700B44A93 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A127B05EB900B44A93 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A227B05EF400B44A93 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Main.strings"; sourceTree = "<group>"; };
+		61F965A327B05EFB00B44A93 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A427B05F5B00B44A93 /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A527B05F7000B44A93 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A627B05F8300B44A93 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A727B05F8F00B44A93 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965A827B05FB500B44A93 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Main.strings"; sourceTree = "<group>"; };
+		61F965AA27B05FC300B44A93 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		61F965AB27B05FD500B44A93 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Main.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -418,6 +431,18 @@
 			knownRegions = (
 				Base,
 				"en-GB",
+				fr,
+				da,
+				de,
+				"en-US",
+				es,
+				hr,
+				it,
+				nl,
+				pl,
+				"pt-BR",
+				ru,
+				sv,
 			);
 			mainGroup = 61157F42259D54FD00D953D9;
 			productRefGroup = 61157F4C259D54FD00D953D9 /* Products */;
@@ -484,7 +509,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd KeyFinderNative\nfind ./ -name \"*.swift\" -print0 -or -name \"*.m\" -print0 -or -name \"*.mm\" -print0 | xargs -0 genstrings -a -SwiftUI -o Base.lproj\n";
+			shellScript = "cd KeyFinderNative\nfind ./ -name \"*.swift\" -print0 -or -name \"*.m\" -print0 -or -name \"*.mm\" -print0 | xargs -0 genstrings -SwiftUI -o Base.lproj\n";
 		};
 		619E9B2C2773A8DB004A7233 /* Carthage copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -592,6 +617,19 @@
 			isa = PBXVariantGroup;
 			children = (
 				61157F58259D54FE00D953D9 /* Base */,
+				614D5AC927AF064D00BFA2E5 /* en-GB */,
+				614D5ACB27AF10E400BFA2E5 /* fr */,
+				61F965A027B05EA700B44A93 /* da */,
+				61F965A127B05EB900B44A93 /* de */,
+				61F965A227B05EF400B44A93 /* en-US */,
+				61F965A327B05EFB00B44A93 /* es */,
+				61F965A427B05F5B00B44A93 /* hr */,
+				61F965A527B05F7000B44A93 /* it */,
+				61F965A627B05F8300B44A93 /* nl */,
+				61F965A727B05F8F00B44A93 /* pl */,
+				61F965A827B05FB500B44A93 /* pt-BR */,
+				61F965AA27B05FC300B44A93 /* ru */,
+				61F965AB27B05FD500B44A93 /* sv */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

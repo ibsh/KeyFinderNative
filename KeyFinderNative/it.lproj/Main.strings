@@ -1,0 +1,51 @@
+
+/* Class = "NSMenuItem"; title = "KeyFinder"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "KeyFinder";
+
+/* Class = "NSMenuItem"; title = "Quit KeyFinder"; ObjectID = "4sb-4s-VLi"; */
+"4sb-4s-VLi.title" = "Quit KeyFinder";
+
+/* Class = "NSMenuItem"; title = "About KeyFinder"; ObjectID = "5kV-Vb-QxS"; */
+"5kV-Vb-QxS.title" = "About KeyFinder";
+
+/* Class = "NSMenu"; title = "Edit"; ObjectID = "AIn-8N-UeE"; */
+"AIn-8N-UeE.title" = "Edit";
+
+/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
+"AYu-sK-qS6.title" = "Main Menu";
+
+/* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
+"BOF-NM-1cW.title" = "Preferences…";
+
+/* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
+"Kd2-mp-pUS.title" = "Show All";
+
+/* Class = "NSMenuItem"; title = "Edit"; ObjectID = "L9S-Lj-dut"; */
+"L9S-Lj-dut.title" = "Edit";
+
+/* Class = "NSMenuItem"; title = "Services"; ObjectID = "NMo-om-nkz"; */
+"NMo-om-nkz.title" = "Services";
+
+/* Class = "NSMenuItem"; title = "Hide KeyFinder"; ObjectID = "Olw-nP-bQN"; */
+"Olw-nP-bQN.title" = "Hide KeyFinder";
+
+/* Class = "NSMenuItem"; title = "Delete"; ObjectID = "VAw-1y-74E"; */
+"VAw-1y-74E.title" = "Delete";
+
+/* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "Vdr-fp-XzO"; */
+"Vdr-fp-XzO.title" = "Hide Others";
+
+/* Class = "NSMenuItem"; title = "Select All"; ObjectID = "hhC-VU-KbS"; */
+"hhC-VU-KbS.title" = "Select All";
+
+/* Class = "NSMenu"; title = "Services"; ObjectID = "hz9-B4-Xy5"; */
+"hz9-B4-Xy5.title" = "Services";
+
+/* Class = "NSMenuItem"; title = "Show in Finder"; ObjectID = "lqq-Iu-tdl"; */
+"lqq-Iu-tdl.title" = "Show in Finder";
+
+/* Class = "NSMenu"; title = "KeyFinder"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "KeyFinder";
+
+/* Class = "NSMenuItem"; title = "Write Key to Tags"; ObjectID = "zT1-1q-SGQ"; */
+"zT1-1q-SGQ.title" = "Write Key to Tags";
