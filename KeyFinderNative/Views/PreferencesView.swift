@@ -19,7 +19,7 @@ struct PreferencesView: View {
         VStack {
             Toggle(
                 isOn: $preferences.writeAutomatically,
-                label: { Text("Write to tags automatically during batch jobs", comment: "Preferences toggle label") }
+                label: { Text("Write to tags automatically", comment: "Preferences toggle label") }
             )
             Toggle(
                 isOn: $preferences.skipFilesWithExistingMetadata,
