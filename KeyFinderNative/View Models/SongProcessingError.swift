@@ -18,7 +18,7 @@ extension SongProcessingError: CustomStringConvertible {
     var description: String {
         switch self {
         case .existingMetadata:
-            return "Skipped file with existing metadata"
+            return NSLocalizedString("Skipped file with existing metadata", comment: "File analysis status message")
         case .decoder(let decoderError):
             return decoderError.description
         }

@@ -21,15 +21,15 @@ enum Activity: CustomStringConvertible {
         case .waiting:
             return String()
         case .loadingPlaylists:
-            return "Reading playlists"
+            return NSLocalizedString("Reading playlists", comment: "Application status string")
         case .loadingSongs:
-            return "Reading file system"
+            return NSLocalizedString("Reading file system", comment: "Application status string")
         case .readingTags:
-            return "Reading tags"
+            return NSLocalizedString("Reading tags", comment: "Application status string")
         case .processing:
-            return "Analysing"
+            return NSLocalizedString("Analysing", comment: "Application status string")
         case .tagging:
-            return "Writing tags"
+            return NSLocalizedString("Writing tags", comment: "Application status string")
         }
     }
 }

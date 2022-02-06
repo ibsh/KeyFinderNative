@@ -21,12 +21,33 @@ final class Decoder {
 
         var description: String {
             switch self {
-            case .durationExceedsPreference: return "File too long"
-            case .couldNotDeriveReadBuffer: return "Cannot decode this file"
-            case .couldNotDeriveWorkingBuffer: return "Internal error deriving working buffer"
-            case .couldNotDeriveConverter: return "Internal error deriving converter"
-            case .couldNotDeriveChannelData: return "Internal error decoding channel data"
-            case .other(let error): return error
+            case .durationExceedsPreference:
+                return NSLocalizedString(
+                    "File too long",
+                    comment: "Error message"
+                )
+            case .couldNotDeriveReadBuffer:
+                return NSLocalizedString(
+                    "Cannot decode this file",
+                    comment: "Error message"
+                )
+            case .couldNotDeriveWorkingBuffer:
+                return NSLocalizedString(
+                    "Internal error deriving working buffer",
+                    comment: "Error message"
+                )
+            case .couldNotDeriveConverter:
+                return NSLocalizedString(
+                    "Internal error deriving converter",
+                    comment: "Error message"
+                )
+            case .couldNotDeriveChannelData:
+                return NSLocalizedString(
+                    "Internal error decoding channel data",
+                    comment: "Error message"
+                )
+            case .other(let error):
+                return error
             }
         }
     }

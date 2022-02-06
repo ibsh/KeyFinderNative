@@ -35,6 +35,8 @@
 #import "TagLib/trueaudiofile.h"
 #import "TagLib/wavpackfile.h"
 
+NSString *fieldNotAvailable = NSLocalizedString(@"N/A", @"Shown when a particular metadata field is not available to the current file's type.");
+
 #pragma mark - AVFileMetadata header
 
 class AVFileMetadata {
@@ -230,11 +232,11 @@ NSString * AVFileMetadata::getComment() const {
 }
 
 NSString * AVFileMetadata::getGrouping() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 NSString * AVFileMetadata::getKey() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 bool AVFileMetadata::setTitle(NSString *value) {
@@ -272,19 +274,19 @@ bool AVFileMetadata::setKey(NSString */*key*/) {
 #pragma mark - NullFileMetadata implementation
 
 NSString * NullFileMetadata::getTitle() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 NSString * NullFileMetadata::getArtist() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 NSString * NullFileMetadata::getAlbum() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 NSString * NullFileMetadata::getComment() const {
-    return @"NOT APPLICABLE FIXME";
+    return fieldNotAvailable;
 }
 
 bool NullFileMetadata::setTitle(NSString */*tit*/) {
@@ -361,7 +363,7 @@ bool MpegID3FileMetadata::hasId3v2_4Tag() const {
 }
 
 NSString * MpegID3FileMetadata::getGrouping() const {
-    if (!hasId3v2Tag()) return @"NOT APPLICABLE FIXME";
+    if (!hasId3v2Tag()) return fieldNotAvailable;
     return getGroupingId3(mpegFile->ID3v2Tag());
 }
 
@@ -374,7 +376,7 @@ NSString * MpegID3FileMetadata::getGroupingId3(const TagLib::ID3v2::Tag* tag) co
 }
 
 NSString * MpegID3FileMetadata::getKey() const {
-    if (!hasId3v2Tag()) return @"NOT APPLICABLE FIXME";
+    if (!hasId3v2Tag()) return fieldNotAvailable;
     return getKeyId3(mpegFile->ID3v2Tag());
 }
 

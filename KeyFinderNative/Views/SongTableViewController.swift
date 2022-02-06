@@ -113,20 +113,20 @@ final class SongTableViewController: NSViewController {
         let menu = NSMenu()
         menu.addItem(
             NSMenuItem(
-                title: "Select All",
+                title: NSLocalizedString("Select All", comment: "Song list menu item"),
                 action: #selector(selectAllMenuItem(_:)),
                 keyEquivalent: "a"
             )
         )
         menu.addItem(
             NSMenuItem(
-                title: "Write key to tags",
+                title: NSLocalizedString("Write key to tags", comment: "Song list menu item"),
                 action: #selector(writeKeyToTagsMenuItem(_:)),
                 keyEquivalent: "t"
             )
         )
         let deleteItem = NSMenuItem(
-            title: "Delete selected rows",
+            title: NSLocalizedString("Delete selected rows", comment: "Song list menu item"),
             action: #selector(deleteMenuItem(_:)),
             keyEquivalent: NSString(format: "%c", NSDeleteCharacter) as String
         )
@@ -136,7 +136,7 @@ final class SongTableViewController: NSViewController {
         )
         menu.addItem(
             NSMenuItem(
-                title: "Show in Finder",
+                title: NSLocalizedString("Show in Finder", comment: "Song list menu item"),
                 action: #selector(showInFinderMenuItem(_:)),
                 keyEquivalent: ""
             )

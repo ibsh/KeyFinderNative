@@ -35,9 +35,10 @@ struct ContentViewBody: View {
                 .disabled(!model.activityWrapper.isWaiting)
             HStack {
                 Text(model.activityWrapper.activity.description)
-                Button("Find keys") {
-                    process()
-                }
+                Button(
+                    action: { process() },
+                    label: { Text("Find keys", comment: "Analysis button text") }
+                )
                 .disabled(!model.activityWrapper.isWaiting)
             }
             .padding()

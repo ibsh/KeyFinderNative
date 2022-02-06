@@ -173,15 +173,15 @@ enum Constants {
 
             var displayName: String {
                 switch self {
-                case .path: return "Path"
-                case .filename: return "Filename"
-                case .title: return "Title tag"
-                case .artist: return "Artist tag"
-                case .album: return "Album tag"
-                case .comment: return "Comment tag"
-                case .grouping: return "Grouping tag"
-                case .key: return "Key tag"
-                case .resultString: return "Detected key"
+                case .path: return NSLocalizedString("Path", comment: "Header of file path column")
+                case .filename: return NSLocalizedString("Filename", comment: "Header of file name column")
+                case .title: return NSLocalizedString("Title tag", comment: "Header of title tag column")
+                case .artist: return NSLocalizedString("Artist tag", comment: "Header of artist tag column")
+                case .album: return NSLocalizedString("Album tag", comment: "Header of album tag column")
+                case .comment: return NSLocalizedString("Comment tag", comment: "Header of comment tag column")
+                case .grouping: return NSLocalizedString("Grouping tag", comment: "Header of grouping tag column")
+                case .key: return NSLocalizedString("Key tag", comment: "Header of key tag column")
+                case .resultString: return NSLocalizedString("Detected key", comment: "Header of result column")
                 }
             }
         }

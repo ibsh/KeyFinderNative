@@ -74,7 +74,10 @@ final class PlaylistTableViewController: NSViewController {
                 rawValue: "PLAYLISTS"
             )
         )
-        column.title = "Playlists"
+        column.title = NSLocalizedString(
+            "Playlists",
+            comment: "Column header for playlists table"
+        )
 
         tableView.gridStyleMask = [
             .solidHorizontalGridLineMask,
